@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import enTranslations from './locales/en.ts';
+import ptBRTranslations from './locales/pt-BR.ts';
 
 type Language = 'en' | 'pt-BR';
 
 interface TranslationsContextType {
-  language: string;
+  language: Language;
   setLanguage: (language: Language) => void;
   t: (key: string, replacements?: Record<string, string | number>) => string;
 }
@@ -13,45 +15,20 @@ const TranslationsContext = createContext<TranslationsContextType | undefined>(u
 const availableLanguages: Language[] = ['en', 'pt-BR'];
 const defaultLanguage: Language = 'pt-BR';
 
+const translationsData: Record<Language, Record<string, string>> = {
+  'en': enTranslations,
+  'pt-BR': ptBRTranslations,
+};
+
 export const TranslationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<string>(() => {
+  const [language, setLanguageState] = useState<Language>(() => {
     try {
       const savedLang = localStorage.getItem('language');
-      return savedLang && availableLanguages.includes(savedLang as Language) ? savedLang : defaultLanguage;
+      return savedLang && availableLanguages.includes(savedLang as Language) ? (savedLang as Language) : defaultLanguage;
     } catch (e) {
       return defaultLanguage;
     }
   });
-  const [translations, setTranslations] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const loadTranslations = async () => {
-      try {
-        const response = await fetch(`/locales/${language}.json`);
-        if (!response.ok) {
-            console.error(`Could not load translations for ${language}, falling back to 'en'.`);
-            const fallbackResponse = await fetch(`/locales/en.json`);
-            const data = await fallbackResponse.json();
-            setTranslations(data);
-            return;
-        }
-        const data = await response.json();
-        setTranslations(data);
-      } catch (error) {
-        console.error('Failed to load translations:', error);
-        // Attempt to load English as a last resort
-        try {
-            const fallbackResponse = await fetch(`/locales/en.json`);
-            const data = await fallbackResponse.json();
-            setTranslations(data);
-        } catch (fallbackError) {
-             console.error('Failed to load fallback English translations:', fallbackError);
-        }
-      }
-    };
-
-    loadTranslations();
-  }, [language]);
 
   const setLanguage = (lang: Language) => {
     try {
@@ -61,6 +38,8 @@ export const TranslationsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
     setLanguageState(lang);
   };
+
+  const translations = translationsData[language] || translationsData.en;
 
   const t = useCallback((key: string, replacements?: Record<string, string | number>): string => {
     let translation = translations[key] || key;

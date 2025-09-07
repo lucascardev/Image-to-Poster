@@ -31,7 +31,7 @@ const InstallInstructions: React.FC = () => {
                 <div className="flex items-center">
                     <div className="flex-shrink-0 mr-4">
                         <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center border border-slate-200">
-                            <img src="https://down-br.img.susercontent.com/file/e6acf0c8f7a6308b5b1e234448ec072d.webp" alt="Cola em fita" className="w-16 h-16 object-contain" />
+                            <img src="https://i.imgur.com/8Yp4VzN.png" alt="Cola em fita" className="w-16 h-16 object-contain" />
                         </div>
                     </div>
                     <div className="flex-1">
