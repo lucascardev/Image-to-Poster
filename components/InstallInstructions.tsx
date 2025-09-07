@@ -28,13 +28,13 @@ const InstallInstructions: React.FC = () => {
 
             {/* Recommended Tool Section */}
             <div className="bg-emerald-50 border-l-4 border-emerald-400 p-6 rounded-r-lg shadow-md">
-                <div className="flex items-center">
-                    <div className="flex-shrink-0 mr-4">
-                        <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center border border-slate-200">
-                            <img src="https://i.imgur.com/8Yp4VzN.png" alt="Cola em fita" className="w-16 h-16 object-contain" />
+                <div className="flex flex-col items-center text-center">
+                    <div className="flex-shrink-0 mb-4">
+                        <div className="w-32 h-32 bg-white rounded-lg flex items-center justify-center border border-slate-200">
+                            <img src="https://down-br.img.susercontent.com/file/e5911e1c10d17311c2eac01e911d9f11.webp" alt="Cola em fita" className="w-28 h-28 object-contain" />
                         </div>
                     </div>
-                    <div className="flex-1">
+                    <div>
                         <h3 className="text-lg font-bold text-emerald-900">{t('recommendedToolTitle')}</h3>
                         <p className="mt-1 text-sm text-emerald-800">
                             {t('recommendedToolDesc')}
