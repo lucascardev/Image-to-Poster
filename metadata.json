@@ -1,0 +1,5 @@
+{
+  "name": "Poster Print Splitter",
+  "description": "Split a single image across multiple pages to print a large-scale poster. This app slices your image and adds adjustable crop marks to each page, making it easy to trim and assemble them into a giant printout.",
+  "requestFramePermissions": []
+}
