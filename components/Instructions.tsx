@@ -1,8 +1,13 @@
 import React from 'react';
 import { DownloadIcon, CutIcon, AssembleIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
+import type { AppSettings } from '../types';
 
-const Instructions: React.FC = () => {
+interface InstructionsProps {
+    settings: AppSettings;
+}
+
+const Instructions: React.FC<InstructionsProps> = ({ settings }) => {
     const { t } = useTranslations();
 
     const Step: React.FC<{ icon: React.ReactNode; title: string; children: React.ReactNode }> = ({ icon, title, children }) => (
@@ -30,7 +35,7 @@ const Instructions: React.FC = () => {
                     {t('step2Desc')}
                 </Step>
                 <Step icon={<AssembleIcon className="w-6 h-6" />} title={t('step3Title')}>
-                    {t('step3Desc')}
+                    {settings.addOverlap ? t('step3DescOverlap') : t('step3Desc')}
                 </Step>
             </div>
         </div>

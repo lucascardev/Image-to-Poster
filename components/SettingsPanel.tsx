@@ -1,6 +1,6 @@
 import React from 'react';
 import type { AppSettings, CropMarkType } from '../types';
-import { UploadIcon, GridIcon, MarginIcon, CutIcon } from './Icons';
+import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
 import AdPlaceholder from './AdPlaceholder';
 import ModernSlider from './ModernSlider';
@@ -184,8 +184,25 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
         <p className="text-sm text-slate-500 mt-2">{t('cropMarksDescription')}</p>
       </InputGroup>
 
+      <InputGroup label={t('step5Label')} icon={<GlueIcon className="w-6 h-6 text-indigo-500" />}>
+        <div className="flex items-center justify-between pt-2">
+          <span className="font-medium text-slate-700">{t('addOverlapLabel')}</span>
+          <label htmlFor="overlap-toggle" className="relative inline-flex items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              id="overlap-toggle" 
+              className="sr-only peer"
+              checked={settings.addOverlap}
+              onChange={(e) => handleSettingChange('addOverlap', e.target.checked)}
+            />
+            <div className="w-11 h-6 bg-slate-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-300 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+          </label>
+        </div>
+        <p className="text-sm text-slate-500 mt-2">{t('addOverlapDesc')}</p>
+      </InputGroup>
+
       <div className="mt-8">
-        <AdPlaceholder className="h-64 w-full" />
+        <AdPlaceholder type="honeygain-alt" className="h-64 w-full" />
       </div>
     </div>
   );

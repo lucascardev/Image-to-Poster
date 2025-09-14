@@ -78,7 +78,7 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, isLoading, settings })
         </div>
       </div>
 
-      <AdPlaceholder className="h-24 w-full mb-6" />
+      <AdPlaceholder type="honeygain" className="mb-6" />
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center min-h-[400px]">

@@ -6,6 +6,7 @@ export interface AppSettings {
   printerMargin: number;
   marginUnit: 'mm' | 'in';
   cropMarkType: CropMarkType;
+  addOverlap: boolean;
 }
 
 export interface ImageInfo {

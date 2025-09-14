@@ -76,3 +76,50 @@ export const ShoppingCartIcon: React.FC<IconProps> = (props) => (
     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c.51 0 .962-.328 1.093-.828l2.857-8.571A.75.75 0 0018.89 4.5H5.25L4.817 2.625A.75.75 0 004.05 2H2.25zM7.5 15.75A2.25 2.25 0 105.25 18a2.25 2.25 0 002.25-2.25zM15 15.75A2.25 2.25 0 1012.75 18a2.25 2.25 0 002.25-2.25z" />
   </svg>
 );
+
+export const PlayIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.647c1.295.742 1.295 2.545 0 3.286L7.279 20.99c-1.25.722-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
+    </svg>
+);
+
+export const GlueIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v11.482l-4.5-1.636M9.75 3.104l4.5 1.636V14.586l-4.5-1.636m0 .002L12 12.25l2.25 1.696M9.75 14.586V12.25m0 2.336L12 12.25m-2.25 2.336L12 12.25m2.25 2.336L12 12.25m0 0V3.104m0 9.146L12 2.25l-2.25.854m4.5 0L12 2.25l2.25.854M12 15a2.25 2.25 0 00-2.25 2.25v4.5A2.25 2.25 0 0012 24a2.25 2.25 0 002.25-2.25v-4.5A2.25 2.25 0 0012 15z" />
+  </svg>
+);
+
+export const HoneygainLogoIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+    <polyline points="7.5 12 10.5 15 16.5 9"></polyline>
+  </svg>
+);
+
+export const SevenKBetLogoIcon: React.FC<IconProps> = (props) => (
+    <svg viewBox="0 0 130 24" fill="white" xmlns="http://www.w3.org/2000/svg" {...props}>
+        <text x="0" y="19" fontFamily="Arial, sans-serif" fontSize="24" fontWeight="bold">7K</text>
+        <text x="38" y="19" fontFamily="Arial, sans-serif" fontSize="24" fontWeight="normal">BET.BR</text>
+        <rect x="110" y="2" width="20" height="20" rx="4" fill="#84cc16"/>
+        <path d="M115 12h10m-5-5v10" stroke="white" strokeWidth="2"/>
+    </svg>
+);
+
+export const CashIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+);
+
+export const FaceScanIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.5v.75A.75.75 0 004.5 6h15a.75.75 0 00.75-.75V4.5M3.75 19.5v-.75A.75.75 0 014.5 18h15a.75.75 0 01.75.75v.75M8.25 12h7.5" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9.375c.328-.328.788-.525 1.28-.525h3.44c.492 0 .952.197 1.28.525M9 14.625c.328.328.788.525 1.28.525h3.44c.492 0 .952-.197 1.28-.525" />
+    </svg>
+);
+
+export const PowerIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+    </svg>
+);
