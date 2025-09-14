@@ -305,15 +305,15 @@ const App: React.FC = () => {
             </div>
             <LanguageSwitcher />
           </div>
-          <AdPlaceholder type="sevenkbet" className="h-24 w-full max-w-4xl mx-auto mt-4" />
         </div>
       </header>
 
       <main className="flex-grow container mx-auto p-4 max-w-7xl">
         {!imageInfo ? (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-12 mb-8">
+            <div className="lg:col-span-12">
               <HowItWorks />
+              <AdPlaceholder type="sevenkbet" className="h-24 w-full max-w-4xl mx-auto mt-8" />
             </div>
             <div className="lg:col-span-6">
                <SettingsPanel 
