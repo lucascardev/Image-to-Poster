@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslations } from '../hooks/useTranslations';
+import { BrazilFlagIcon, UkFlagIcon } from './Icons';
 
 const LanguageSwitcher: React.FC = () => {
   const { language, setLanguage } = useTranslations();
@@ -8,25 +9,27 @@ const LanguageSwitcher: React.FC = () => {
     setLanguage(lang);
   };
 
-  const commonClasses = "px-3 py-1 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors";
-  const activeClasses = "bg-indigo-600 text-white";
-  const inactiveClasses = "text-slate-600 bg-slate-200 hover:bg-slate-300";
+  const commonClasses = "flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200";
+  const activeClasses = "bg-white text-indigo-600 shadow-md scale-105";
+  const inactiveClasses = "text-slate-500 bg-slate-100 hover:bg-slate-200";
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-1 bg-slate-200 p-1 rounded-full">
       <button
         onClick={() => handleLanguageChange('pt-BR')}
         className={`${commonClasses} ${language === 'pt-BR' ? activeClasses : inactiveClasses}`}
         aria-pressed={language === 'pt-BR'}
       >
-        PT-BR
+        <BrazilFlagIcon className="w-5 h-5" />
+        <span>PT-BR</span>
       </button>
       <button
         onClick={() => handleLanguageChange('en')}
         className={`${commonClasses} ${language === 'en' ? activeClasses : inactiveClasses}`}
         aria-pressed={language === 'en'}
       >
-        EN
+        <UkFlagIcon className="w-5 h-5" />
+        <span>EN</span>
       </button>
     </div>
   );

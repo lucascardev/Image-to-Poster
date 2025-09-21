@@ -7,7 +7,7 @@ const InstallInstructions: React.FC = () => {
     const affiliateLink = "https://s.shopee.com.br/5L2LDyPjr3";
 
     return (
-        <div className="space-y-8 sticky top-24">
+        <div className="space-y-8">
             <div className="bg-blue-50 border-l-4 border-blue-400 p-6 rounded-r-lg shadow-md">
                 <div className="flex">
                     <div className="flex-shrink-0">

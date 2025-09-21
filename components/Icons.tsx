@@ -10,8 +10,11 @@ export const UploadIcon: React.FC<IconProps> = (props) => (
 );
 
 export const LogoIcon: React.FC<IconProps> = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" {...props}>
-        <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM128 288c0-17.7 14.3-32 32-32h32v-32c0-17.7 14.3-32 32-32h32c17.7 0 32 14.3 32 32v32h32c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32h-32v32c0 17.7-14.3 32-32 32h-32c-17.7 0-32-14.3-32-32v-32h-32c-17.7 0-32-14.3-32-32v-32z"/>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <rect x="3" y="3" width="8" height="8" rx="1.5" />
+        <rect x="13" y="3" width="8" height="8" rx="1.5" opacity="0.6" />
+        <rect x="3" y="13" width="8" height="8" rx="1.5" opacity="0.6" />
+        <rect x="13" y="13" width="8" height="8" rx="1.5" opacity="0.6" />
     </svg>
 );
 
@@ -122,4 +125,36 @@ export const PowerIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
     </svg>
+);
+
+export const BrazilFlagIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
+    <defs>
+      <clipPath id="br-clip">
+        <circle cx="10" cy="10" r="10" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#br-clip)">
+      <rect width="20" height="20" fill="#009B3A" />
+      <path d="M10 3L18.5 10L10 17L1.5 10L10 3Z" fill="#FFCC29" />
+      <circle cx="10" cy="10" r="3.5" fill="#002776" />
+    </g>
+  </svg>
+);
+
+export const UkFlagIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
+     <defs>
+      <clipPath id="uk-clip">
+        <circle cx="10" cy="10" r="10" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#uk-clip)">
+      <rect width="20" height="20" fill="#012169" />
+      <path d="M0 0L20 20M20 0L0 20" stroke="#FFF" strokeWidth="3" />
+      <path d="M0 0L20 20M20 0L0 20" stroke="#C8102E" strokeWidth="2" />
+      <path d="M10 0V20M0 10H20" stroke="#FFF" strokeWidth="5" />
+      <path d="M10 0V20M0 10H20" stroke="#C8102E" strokeWidth="3" />
+    </g>
+  </svg>
 );

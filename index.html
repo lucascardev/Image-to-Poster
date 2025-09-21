@@ -1,14 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Poster Print Splitter</title>
+    <title>Print My Poster - Crie Pôsteres Gigantes para Impressão</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Crie e imprima facilmente pôsteres grandes de várias páginas a partir de qualquer imagem. Ferramenta online e gratuita para dividir fotos e criar arte de parede gigante." />
+    <meta name="keywords" content="pôster, imprimir, dividir imagem, pôster gigante, poster de várias páginas, fatiador de imagem, criador de poster, poster maker, print poster, poster em varias folhas, imprimir imagem grande" />
+    <link rel="canonical" href="https://www.printmyposter.art/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.printmyposter.art/" />
+    <meta property="og:title" content="Print My Poster - Crie Pôsteres Gigantes para Impressão" />
+    <meta property="og:description" content="Transforme qualquer imagem em um pôster de parede gigante. Divida sua foto em várias páginas A4, baixe o PDF e imprima em casa." />
+
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234f46e5'%3E%3Crect x='3' y='3' width='8' height='8' rx='1.5' /%3E%3Crect x='13' y='3' width='8' height='8' rx='1.5' opacity='0.6' /%3E%3Crect x='3' y='13' width='8' height='8' rx='1.5' opacity='0.6' /%3E%3Crect x='13' y='13' width='8' height='8' rx='1.5' opacity='0.6' /%3E%3C/svg%3E" />
+    
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8535684513041652"
      crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      body {
+        background-color: #f8fafc; /* bg-slate-50 */
+      }
+      #root {
+        isolation: isolate;
+      }
       /* Custom Slider Styles */
       .modern-slider {
         -webkit-appearance: none;
@@ -49,12 +69,14 @@
   "imports": {
     "react": "https://aistudiocdn.com/react@^19.1.1",
     "react/": "https://aistudiocdn.com/react@^19.1.1/",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/"
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "jspdf": "https://aistudiocdn.com/jspdf@^3.0.3",
+    "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"
   }
 }
 </script>
 </head>
-  <body class="bg-slate-50 text-slate-800">
+  <body class="text-slate-800">
     <div id="root"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="module" src="/index.tsx"></script>

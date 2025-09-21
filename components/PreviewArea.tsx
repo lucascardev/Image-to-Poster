@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
-import { LoadingIcon, DownloadIcon } from './Icons';
+import React from 'react';
+import { LoadingIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
 import { A4_WIDTH_MM, A4_HEIGHT_MM, MM_PER_INCH } from '../constants';
 import type { AppSettings } from '../types';
 import AdPlaceholder from './AdPlaceholder';
-
-declare global {
-  interface Window {
-    jspdf: any;
-  }
-}
 
 interface PreviewAreaProps {
   pages: string[];
@@ -19,31 +13,7 @@ interface PreviewAreaProps {
 
 const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, isLoading, settings }) => {
   const { t } = useTranslations();
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
-
-  const handleDownloadPdf = async () => {
-    if (!pages.length || !window.jspdf) return;
-    setIsGeneratingPdf(true);
-
-    try {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('p', 'mm', 'a4');
-      
-      pages.forEach((pageSrc, index) => {
-        if (index > 0) {
-          doc.addPage();
-        }
-        doc.addImage(pageSrc, 'JPEG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
-      });
-
-      doc.save('poster.pdf');
-    } catch (error) {
-      console.error("Failed to generate PDF:", error);
-    } finally {
-      setIsGeneratingPdf(false);
-    }
-  };
-
+  
   const marginInMm = settings.marginUnit === 'in'
     ? settings.printerMargin * MM_PER_INCH
     : settings.printerMargin;
@@ -55,28 +25,7 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, isLoading, settings })
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <div className="flex justify-between items-center border-b pb-4 mb-6">
-        <h2 className="text-2xl font-bold">{t('previewTitle')}</h2>
-        <div>
-           <button
-            onClick={handleDownloadPdf}
-            disabled={pages.length === 0 || isLoading || isGeneratingPdf}
-            className="flex items-center bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors"
-          >
-            {isGeneratingPdf ? (
-              <>
-                <LoadingIcon className="w-5 h-5 mr-2 animate-spin" />
-                {t('downloadingMessage')}
-              </>
-            ) : (
-              <>
-                <DownloadIcon className="w-5 h-5 mr-2" />
-                {t('downloadPdfButton')}
-              </>
-            )}
-          </button>
-        </div>
-      </div>
+      <h2 className="text-2xl font-bold border-b pb-4 mb-6">{t('previewTitle')}</h2>
 
       <AdPlaceholder type="honeygain" className="mb-6" />
 

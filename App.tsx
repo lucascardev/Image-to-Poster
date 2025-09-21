@@ -1,383 +1,387 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import type { AppSettings, ImageInfo, ResolutionWarning } from './types';
-import { A4_HEIGHT_MM, A4_WIDTH_MM, MM_PER_INCH, RECOMMENDED_DPI } from './constants';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import jsPDF from 'jspdf';
+
+// Components
 import SettingsPanel from './components/SettingsPanel';
 import PreviewArea from './components/PreviewArea';
 import Instructions from './components/Instructions';
 import ResolutionWarningDisplay from './components/ResolutionWarningDisplay';
-import { LogoIcon, PixIcon } from './components/Icons';
+import DownloadPanel from './components/DownloadPanel';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import { useTranslations } from './hooks/useTranslations';
-import AdPlaceholder from './components/AdPlaceholder';
-import InstallInstructions from './components/InstallInstructions';
 import DonationModal from './components/DonationModal';
 import HowItWorks from './components/HowItWorks';
+import InstallInstructions from './components/InstallInstructions';
+import StatsWidget from './components/StatsWidget';
+import AdPlaceholder from './components/AdPlaceholder';
+import ThreeBackground from './components/ThreeBackground';
+import { LogoIcon, PixIcon } from './components/Icons';
 
+// Types and Constants
+import type { AppSettings, ImageInfo, ResolutionWarning } from './types';
+import { A4_WIDTH_MM, A4_HEIGHT_MM, MM_PER_INCH, RECOMMENDED_DPI } from './constants';
+import { useTranslations } from './hooks/useTranslations';
 
-const App: React.FC = () => {
+const initialSettings: AppSettings = {
+  gridCols: 3,
+  gridRows: 2,
+  printerMargin: 5,
+  marginUnit: 'mm',
+  cropMarkType: 'corners',
+  addOverlap: true,
+};
+
+// A simple debounce function
+function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<F>): Promise<ReturnType<F>> =>
+    new Promise(resolve => {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+      timeout = setTimeout(() => resolve(func(...args)), waitFor);
+    });
+}
+
+function App() {
+  const { t } = useTranslations();
+  const [settings, setSettings] = useState<AppSettings>(initialSettings);
   const [imageInfo, setImageInfo] = useState<ImageInfo | null>(null);
-  const [settings, setSettings] = useState<AppSettings>({
-    gridCols: 2,
-    gridRows: 2,
-    printerMargin: 5,
-    marginUnit: 'mm',
-    cropMarkType: 'none',
-    addOverlap: true,
-  });
-  const [processedPages, setProcessedPages] = useState<string[]>([]);
+  const [pages, setPages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
   const [resolutionWarning, setResolutionWarning] = useState<ResolutionWarning | null>(null);
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
-  const { t } = useTranslations();
+  const [postersCreatedCount, setPostersCreatedCount] = useState(1247); // Start with a realistic number
+
+  const imageRef = useRef<HTMLImageElement | null>(null);
+
+  const generatePages = useCallback(async () => {
+    if (!imageInfo || !imageRef.current || !imageRef.current.complete || imageRef.current.naturalWidth === 0) {
+      setPages([]);
+      return;
+    }
+    setIsLoading(true);
+
+    const img = imageRef.current;
+    const newPages: string[] = [];
+
+    const marginInMm = settings.marginUnit === 'in'
+      ? settings.printerMargin * MM_PER_INCH
+      : settings.printerMargin;
+    
+    // The overlap should be contained within the margin area
+    const overlapWidthMm = settings.addOverlap ? Math.min(marginInMm, 10) : 0; // Cap overlap at 10mm
+
+    const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+    const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+
+    const totalPrintableWidthMm = (pagePrintableWidthMm * settings.gridCols);
+    const totalPrintableHeightMm = (pagePrintableHeightMm * settings.gridRows);
+    
+    const totalImageAreaRatio = totalPrintableWidthMm / totalPrintableHeightMm;
+    const imageRatio = img.naturalWidth / img.naturalHeight;
+
+    let srcWidth, srcHeight, srcX, srcY;
+
+    if (imageRatio > totalImageAreaRatio) {
+      // Image is wider than the paper grid, so it will be cropped on the sides
+      srcHeight = img.naturalHeight;
+      srcWidth = srcHeight * totalImageAreaRatio;
+      srcY = 0;
+      srcX = (img.naturalWidth - srcWidth) / 2;
+    } else {
+      // Image is taller or same ratio, so it will be cropped top/bottom
+      srcWidth = img.naturalWidth;
+      srcHeight = srcWidth / totalImageAreaRatio;
+      srcX = 0;
+      srcY = (img.naturalHeight - srcHeight) / 2;
+    }
+    
+    const requiredWidth = Math.round((totalPrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI);
+    const requiredHeight = Math.round((totalPrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI);
+    
+    if (img.naturalWidth < requiredWidth || img.naturalHeight < requiredHeight) {
+      setResolutionWarning({
+        requiredWidth,
+        requiredHeight,
+        actualWidth: img.naturalWidth,
+        actualHeight: img.naturalHeight,
+      });
+    } else {
+      setResolutionWarning(null);
+    }
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        setIsLoading(false);
+        return;
+    }
+    
+    const mmToPx = (mm: number) => (mm / MM_PER_INCH) * RECOMMENDED_DPI;
+    
+    canvas.width = mmToPx(A4_WIDTH_MM);
+    canvas.height = mmToPx(A4_HEIGHT_MM);
+
+    const marginPx = mmToPx(marginInMm);
+    const overlapPx = mmToPx(overlapWidthMm);
+
+    const tileWidthPx = mmToPx(pagePrintableWidthMm);
+    const tileHeightPx = mmToPx(pagePrintableHeightMm);
+
+    for (let row = 0; row < settings.gridRows; row++) {
+      for (let col = 0; col < settings.gridCols; col++) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const sX = srcX + (srcWidth / settings.gridCols) * col;
+        const sY = srcY + (srcHeight / settings.gridRows) * row;
+        const sW = srcWidth / settings.gridCols;
+        const sH = srcHeight / settings.gridRows;
+        
+        const dX = marginPx - (col > 0 ? overlapPx : 0);
+        const dY = marginPx - (row > 0 ? overlapPx : 0);
+        const dW = tileWidthPx + (col > 0 ? overlapPx : 0) + (col < settings.gridCols -1 ? overlapPx : 0);
+        const dH = tileHeightPx + (row > 0 ? overlapPx : 0) + (row < settings.gridRows - 1 ? overlapPx : 0);
+
+        ctx.drawImage(
+            img,
+            sX - (sW/tileWidthPx) * (col > 0 ? overlapPx : 0), 
+            sY - (sH/tileHeightPx) * (row > 0 ? overlapPx : 0), 
+            sW + (sW/tileWidthPx) * ((col > 0 ? overlapPx : 0) + (col < settings.gridCols - 1 ? overlapPx : 0)), 
+            sH + (sH/tileHeightPx) * ((row > 0 ? overlapPx : 0) + (row < settings.gridRows - 1 ? overlapPx : 0)),
+            dX, dY, dW, dH);
+        
+        // Add overlap area visualization
+        if (settings.addOverlap) {
+          ctx.save();
+          ctx.fillStyle = '#38bdf833'; // light blue with alpha
+          
+          if (col > 0) { // left overlap area
+            ctx.fillRect(marginPx - overlapPx, marginPx - overlapPx, overlapPx, tileHeightPx + (overlapPx * 2));
+          }
+           if (row > 0) { // top overlap area
+            ctx.fillRect(marginPx-overlapPx, marginPx - overlapPx, tileWidthPx + (overlapPx * 2), overlapPx);
+          }
+          ctx.restore();
+          
+          // Draw striped pattern on the glue tab area (outside printable area)
+           ctx.save();
+           const region = new Path2D();
+           // Right overlap tab
+           if (col < settings.gridCols - 1) {
+             region.rect(marginPx + tileWidthPx, 0, marginPx, canvas.height);
+           }
+           // Bottom overlap tab
+           if (row < settings.gridRows - 1) {
+             region.rect(0, marginPx + tileHeightPx, canvas.width, marginPx);
+           }
+           ctx.clip(region);
+          
+           ctx.fillStyle = '#e0f2fe'; // light blue
+           ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+           ctx.strokeStyle = '#38bdf8'; // darker blue
+           ctx.lineWidth = 1;
+           ctx.beginPath();
+           for(let i = -canvas.height; i < canvas.width; i += 15) {
+               ctx.moveTo(i, 0);
+               ctx.lineTo(i + canvas.height, canvas.height);
+           }
+           ctx.stroke();
+           ctx.restore();
+        }
+
+        // Add crop marks
+        if (settings.cropMarkType !== 'none') {
+            ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; // red-500
+            ctx.lineWidth = 1;
+            ctx.setLineDash([mmToPx(2), mmToPx(2)]);
+
+            const lineLength = marginPx * 0.75;
+            const rightEdge = marginPx + tileWidthPx;
+            const bottomEdge = marginPx + tileHeightPx;
+            
+            ctx.beginPath();
+            if(settings.cropMarkType === 'full') {
+                 // Horizontal lines
+                ctx.moveTo(0, marginPx); ctx.lineTo(canvas.width, marginPx);
+                ctx.moveTo(0, bottomEdge); ctx.lineTo(canvas.width, bottomEdge);
+
+                // Vertical lines
+                ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, canvas.height);
+                ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, canvas.height);
+            } else { // corners
+                // TL
+                ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, lineLength);
+                ctx.moveTo(0, marginPx); ctx.lineTo(lineLength, marginPx);
+                // TR
+                ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, lineLength);
+                ctx.moveTo(canvas.width, marginPx); ctx.lineTo(rightEdge - lineLength, marginPx);
+                // BL
+                ctx.moveTo(marginPx, canvas.height); ctx.lineTo(marginPx, bottomEdge - lineLength);
+                ctx.moveTo(0, bottomEdge); ctx.lineTo(lineLength, bottomEdge);
+                // BR
+                ctx.moveTo(rightEdge, canvas.height); ctx.lineTo(rightEdge, bottomEdge - lineLength);
+                ctx.moveTo(canvas.width, bottomEdge); ctx.lineTo(rightEdge - lineLength, bottomEdge);
+            }
+            ctx.stroke();
+        }
+
+        newPages.push(canvas.toDataURL('image/jpeg', 0.95));
+      }
+    }
+    setPages(newPages);
+    setIsLoading(false);
+  }, [imageInfo, settings]);
+
+  const debouncedGeneratePages = useCallback(debounce(generatePages, 300), [generatePages]);
+
+  useEffect(() => {
+    debouncedGeneratePages();
+  }, [settings, imageInfo, debouncedGeneratePages]);
 
   const handleImageUpload = (file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
+      const url = e.target?.result as string;
       const img = new Image();
       img.onload = () => {
-        setImageInfo({
-          url: e.target?.result as string,
-          width: img.naturalWidth,
-          height: img.naturalHeight,
-        });
+        imageRef.current = img;
+        setImageInfo({ url, width: img.naturalWidth, height: img.naturalHeight });
       };
-      img.src = e.target?.result as string;
+      img.src = url;
     };
     reader.readAsDataURL(file);
   };
 
-  const processImage = useCallback(async () => {
-    if (!imageInfo) return;
+  const handleDownloadPdf = async () => {
+    if (pages.length === 0) return;
+    setIsGeneratingPdf(true);
+    setPostersCreatedCount(c => c + 1);
 
-    setIsLoading(true);
-    setResolutionWarning(null);
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    });
 
-    // Resolution check
-    const totalWidthInches = (settings.gridCols * A4_WIDTH_MM) / MM_PER_INCH;
-    const totalHeightInches = (settings.gridRows * A4_HEIGHT_MM) / MM_PER_INCH;
-    const requiredWidthPx = totalWidthInches * RECOMMENDED_DPI;
-    const requiredHeightPx = totalHeightInches * RECOMMENDED_DPI;
+    const appName = t('appTitle');
+    const appUrl = t('brandingLine2');
 
-    if (imageInfo.width < requiredWidthPx || imageInfo.height < requiredHeightPx) {
-      setResolutionWarning({
-        requiredWidth: Math.round(requiredWidthPx),
-        requiredHeight: Math.round(requiredHeightPx),
-        actualWidth: imageInfo.width,
-        actualHeight: imageInfo.height,
-      });
-    }
-
-    const pages: string[] = [];
-    const imageElement = new Image();
-    imageElement.src = imageInfo.url;
-    await new Promise(resolve => imageElement.onload = resolve);
-
-    const sourceCellWidth = imageElement.naturalWidth / settings.gridCols;
-    const sourceCellHeight = imageElement.naturalHeight / settings.gridRows;
-    
-    const canvasWidth = (A4_WIDTH_MM / MM_PER_INCH) * 300;
-    const canvasHeight = (A4_HEIGHT_MM / MM_PER_INCH) * 300;
-    
-    const marginInMm = settings.marginUnit === 'in' 
-      ? settings.printerMargin * MM_PER_INCH
-      : settings.printerMargin;
-    
-    const marginXPx = (marginInMm / A4_WIDTH_MM) * canvasWidth;
-    const marginYPx = (marginInMm / A4_HEIGHT_MM) * canvasHeight;
-
-    for (let row = 0; row < settings.gridRows; row++) {
-      for (let col = 0; col < settings.gridCols; col++) {
-        const canvas = document.createElement('canvas');
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) continue;
-        
-        ctx.fillStyle = 'white';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        const sx = col * sourceCellWidth;
-        const sy = row * sourceCellHeight;
-
-        const OVERLAP_MM = 10;
-        const overlapPxX = (OVERLAP_MM / A4_WIDTH_MM) * canvasWidth;
-        const overlapPxY = (OVERLAP_MM / A4_HEIGHT_MM) * canvasHeight;
-
-        const hasRightTab = settings.addOverlap && col < settings.gridCols - 1;
-        const hasBottomTab = settings.addOverlap && row < settings.gridRows - 1;
-
-        const printableWidth = canvas.width - (2 * marginXPx);
-        const printableHeight = canvas.height - (2 * marginYPx);
-
-        // Define the image's destination rectangle, shrinking it to make space for tabs
-        const dWidth = printableWidth - (hasRightTab ? overlapPxX : 0);
-        const dHeight = printableHeight - (hasBottomTab ? overlapPxY : 0);
-        const dx = marginXPx;
-        const dy = marginYPx;
-
-        // Draw the image slice
-        ctx.drawImage(
-          imageElement,
-          sx,
-          sy,
-          sourceCellWidth,
-          sourceCellHeight,
-          dx,
-          dy,
-          dWidth,
-          dHeight
-        );
-
-        // Draw glue tabs in the empty margin space
-        if (settings.addOverlap) {
-            const patternCanvas = document.createElement('canvas');
-            const patternCtx = patternCanvas.getContext('2d');
-            patternCanvas.width = 8;
-            patternCanvas.height = 8;
-            if (patternCtx) {
-                patternCtx.strokeStyle = 'rgba(59, 130, 246, 0.7)'; // blue-500
-                patternCtx.lineWidth = 1.5;
-                patternCtx.beginPath();
-                patternCtx.moveTo(0, 8);
-                patternCtx.lineTo(8, 0);
-                patternCtx.stroke();
-            }
-            const pattern = ctx.createPattern(patternCanvas, 'repeat');
-            if (pattern) {
-                ctx.fillStyle = pattern;
-            }
-            
-            if (hasRightTab) {
-                ctx.fillRect(dx + dWidth, dy, overlapPxX, dHeight);
-            }
-            if (hasBottomTab) {
-                ctx.fillRect(dx, dy + dHeight, dWidth, overlapPxY);
-            }
-            // Fill the corner if both tabs exist
-            if (hasRightTab && hasBottomTab) {
-                ctx.fillRect(dx + dWidth, dy + dHeight, overlapPxX, overlapPxY);
-            }
-        }
-        
-        // Define actual image edges for crop marks
-        const imageEdgeTop = dy;
-        const imageEdgeBottom = dy + dHeight;
-        const imageEdgeLeft = dx;
-        const imageEdgeRight = dx + dWidth;
-
-        if (settings.cropMarkType !== 'none') {
-            ctx.strokeStyle = 'rgba(220, 38, 38, 0.9)'; // More opaque red
-            ctx.lineWidth = 3; 
-
-            if (settings.cropMarkType === 'full') {
-                ctx.setLineDash([8, 6]);
-                ctx.beginPath();
-                
-                // Top horizontal line (always has a cuttable edge above it or is on the edge)
-                ctx.moveTo(0, imageEdgeTop);
-                ctx.lineTo(canvas.width, imageEdgeTop);
-
-                // Left vertical line (always has a cuttable edge to its left or is on the edge)
-                ctx.moveTo(imageEdgeLeft, 0);
-                ctx.lineTo(imageEdgeLeft, canvas.height);
-
-                // Bottom horizontal line (only if it's a cuttable edge)
-                if (!hasBottomTab) {
-                    ctx.moveTo(0, imageEdgeBottom);
-                    ctx.lineTo(canvas.width, imageEdgeBottom);
-                }
-
-                // Right vertical line (only if it's a cuttable edge)
-                if (!hasRightTab) {
-                    ctx.moveTo(imageEdgeRight, 0);
-                    ctx.lineTo(imageEdgeRight, canvas.height);
-                }
-                
-                ctx.stroke();
-                ctx.setLineDash([]);
-            } else if (settings.cropMarkType === 'corners') {
-                const markLength = 70; // Increased length
-                ctx.beginPath();
-                
-                // Top-left corner (always cuttable)
-                ctx.moveTo(0, imageEdgeTop); ctx.lineTo(markLength, imageEdgeTop);
-                ctx.moveTo(imageEdgeLeft, 0); ctx.lineTo(imageEdgeLeft, markLength);
-                
-                // Top-right corner
-                ctx.moveTo(canvas.width - markLength, imageEdgeTop); ctx.lineTo(canvas.width, imageEdgeTop);
-                if (!hasRightTab) {
-                    ctx.moveTo(imageEdgeRight, 0); ctx.lineTo(imageEdgeRight, markLength);
-                }
-
-                // Bottom-left corner
-                ctx.moveTo(imageEdgeLeft, canvas.height - markLength); ctx.lineTo(imageEdgeLeft, canvas.height);
-                if (!hasBottomTab) {
-                    ctx.moveTo(0, imageEdgeBottom); ctx.lineTo(markLength, imageEdgeBottom);
-                }
-                
-                // Bottom-right corner
-                if (!hasBottomTab) {
-                    ctx.moveTo(canvas.width - markLength, imageEdgeBottom); ctx.lineTo(canvas.width, imageEdgeBottom);
-                }
-                if (!hasRightTab) {
-                    ctx.moveTo(imageEdgeRight, canvas.height - markLength); ctx.lineTo(imageEdgeRight, canvas.height);
-                }
-                
-                ctx.stroke();
-            }
-        }
-
-        const isLastPage = row === settings.gridRows - 1 && col === settings.gridCols - 1;
-        if (isLastPage) {
-            // --- Branding Card ---
-            const cardPadding = 40;
-            const lineSpacing = 10;
-            const cornerRadius = 20;
-            const cardOffset = 20;
-
-            const line1 = t('brandingLine1', { appName: t('appTitle') });
-            const line2 = t('brandingLine2');
-            
-            // Measure text for card dimensions
-            ctx.font = 'bold 36px sans-serif';
-            const line1Metrics = ctx.measureText(line1);
-            ctx.font = '30px sans-serif';
-            const line2Metrics = ctx.measureText(line2);
-
-            const cardWidth = Math.max(line1Metrics.width, line2Metrics.width) + (cardPadding * 2);
-            const cardHeight = 36 + 30 + lineSpacing + (cardPadding * 2); // font sizes + spacing + padding
-
-            // Position card in bottom-right of printable area
-            const cardX = canvas.width - marginXPx - cardWidth - cardOffset;
-            const cardY = canvas.height - marginYPx - cardHeight - cardOffset;
-
-            // Draw card background
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(cardX, cardY, cardWidth, cardHeight, cornerRadius);
-            ctx.fill();
-            ctx.stroke();
-
-            // Draw text
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-            ctx.fillStyle = '#334155'; // slate-700
-
-            const textX = cardX + cardPadding;
-            const textY1 = cardY + cardPadding;
-
-            ctx.font = 'bold 36px sans-serif';
-            ctx.fillText(line1, textX, textY1);
-
-            const textY2 = textY1 + 36 + lineSpacing;
-            ctx.font = '30px sans-serif';
-            ctx.fillText(line2, textX, textY2);
-        }
-
-        pages.push(canvas.toDataURL('image/jpeg', 0.95));
+    for (let i = 0; i < pages.length; i++) {
+      if (i > 0) {
+        pdf.addPage();
       }
+      pdf.addImage(pages[i], 'JPEG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+
+      // Add branding to the bottom margin
+      pdf.setFontSize(6);
+      pdf.setTextColor(150);
+      const brandingText1 = t('brandingLine1', { appName });
+      const brandingText2 = appUrl;
+      pdf.text(brandingText1, A4_WIDTH_MM / 2, A4_HEIGHT_MM - 3, { align: 'center' });
+      pdf.text(brandingText2, A4_WIDTH_MM / 2, A4_HEIGHT_MM - 1.5, { align: 'center' });
     }
     
-    setProcessedPages(pages);
-    setIsLoading(false);
-  }, [imageInfo, settings, t]);
-
+    // Using a timeout to give user feedback before the save dialog blocks the UI
+    setTimeout(() => {
+      pdf.save('print-my-poster.pdf');
+      setIsGeneratingPdf(false);
+    }, 100);
+  };
+  
+  // Fake poster count increment
   useEffect(() => {
-    if (imageInfo) {
-      processImage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageInfo, settings]);
+    const interval = setInterval(() => {
+      setPostersCreatedCount(c => c + Math.floor(Math.random() * 3) + 1);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-white shadow-md p-4 sticky top-0 z-10">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <LogoIcon className="h-12 w-12 text-indigo-600" />
-              <div>
-                <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-500">{t('appTitle')}</h1>
-                <p className="text-slate-600 mt-1 font-medium">{t('appNewSubtitle')}</p>
+    <>
+      <ThreeBackground />
+      <div className="relative min-h-screen font-sans">
+        <header className="bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-200">
+            <div className="container mx-auto px-4">
+                <div className="flex justify-between items-center py-6">
+                    <div className="flex items-center gap-3">
+                       <LogoIcon className="h-8 w-8 text-indigo-600" />
+                       <div>
+                         <h1 className="text-xl font-bold text-slate-800">{t('appTitle')}</h1>
+                         <p className="text-sm text-slate-500 hidden sm:block">{t('appNewSubtitle')}</p>
+                       </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <StatsWidget count={postersCreatedCount} />
+                        <LanguageSwitcher />
+                        <button 
+                            onClick={() => setIsDonationModalOpen(true)}
+                            className="hidden sm:inline-flex items-center gap-2 bg-green-100 text-green-800 font-bold text-sm py-2 px-3 rounded-md hover:bg-green-200 transition-colors"
+                        >
+                            <PixIcon className="w-5 h-5" />
+                            {t('donateWithPix')}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main className="container mx-auto p-4 md:py-12 md:px-8">
+            {!imageInfo && (
+              <div className="mb-8">
+                <HowItWorks />
+              </div>
+            )}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+              <div className="lg:col-span-1">
+                <SettingsPanel 
+                  settings={settings}
+                  onSettingsChange={setSettings}
+                  onImageUpload={handleImageUpload}
+                  hasImage={!!imageInfo}
+                />
+              </div>
+              <div className="lg:col-span-2 space-y-8">
+                {resolutionWarning && (
+                  <ResolutionWarningDisplay
+                    warning={resolutionWarning}
+                    cols={settings.gridCols}
+                    rows={settings.gridRows}
+                  />
+                )}
+
+                {pages.length > 0 ? (
+                  <>
+                    <PreviewArea pages={pages} isLoading={isLoading} settings={settings} />
+                    <AdPlaceholder type="sevenkbet" />
+                    <DownloadPanel onDownload={handleDownloadPdf} disabled={isGeneratingPdf || isLoading || pages.length === 0} isGenerating={isGeneratingPdf} />
+                    <Instructions settings={settings} />
+                    <InstallInstructions />
+                  </>
+                ) : (
+                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-md">
+                     <h2 className="text-2xl font-bold border-b pb-4 mb-6">{t('previewTitle')}</h2>
+                     <div className="text-center py-12 px-6 border-2 border-slate-200 border-dashed rounded-lg">
+                        <LogoIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                        <h3 className="text-xl font-bold text-slate-700">{t('uploadPromptTitle')}</h3>
+                        <p className="text-slate-500 mt-2">{t('uploadPromptSubtitle')}</p>
+                     </div>
+                  </div>
+                )}
               </div>
             </div>
-            <LanguageSwitcher />
-          </div>
-        </div>
-      </header>
-
-      <main className="flex-grow container mx-auto p-4 max-w-7xl">
-        {!imageInfo ? (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-12">
-              <HowItWorks />
-              <AdPlaceholder type="sevenkbet" className="h-24 w-full max-w-4xl mx-auto mt-8" />
-            </div>
-            <div className="lg:col-span-6">
-               <SettingsPanel 
-                settings={settings} 
-                onSettingsChange={setSettings}
-                onImageUpload={handleImageUpload}
-                hasImage={!!imageInfo}
-              />
-            </div>
-            <div className="lg:col-span-6">
-              <InstallInstructions />
-            </div>
-          </div>
-        ) : (
-           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-3">
-              <SettingsPanel 
-                settings={settings} 
-                onSettingsChange={setSettings}
-                onImageUpload={handleImageUpload}
-                hasImage={!!imageInfo}
-              />
-            </div>
-            <div className="lg:col-span-6">
-              {resolutionWarning && (
-                <ResolutionWarningDisplay 
-                  warning={resolutionWarning} 
-                  cols={settings.gridCols}
-                  rows={settings.gridRows}
-                />
-              )}
-              <PreviewArea pages={processedPages} isLoading={isLoading} settings={settings} />
-              <Instructions settings={settings} />
-            </div>
-            <div className="lg:col-span-3">
-              <InstallInstructions />
-            </div>
-          </div>
-        )}
-      </main>
-
-      <footer className="text-center p-4 text-slate-500 text-sm border-t border-slate-200 mt-8">
-          <AdPlaceholder type="sevenkbet-alt" className="h-24 w-full max-w-4xl mx-auto mb-4" />
-          <div className="container mx-auto max-w-7xl flex flex-wrap justify-between items-center gap-4">
-            <div className="flex items-center gap-2 text-left">
-              <LogoIcon className="h-6 w-6 text-slate-400" />
-              <p>{t('footerText', { year: new Date().getFullYear() })}</p>
-            </div>
-             <button
-              onClick={() => setIsDonationModalOpen(true)}
-              className="flex items-center gap-2 bg-green-100 text-green-800 font-bold py-2 px-4 rounded-md hover:bg-green-200 transition-colors"
-            >
-              <PixIcon className="w-5 h-5" />
-              {t('donateWithPix')}
-            </button>
-          </div>
-      </footer>
-
-      <DonationModal 
-        isOpen={isDonationModalOpen} 
-        onClose={() => setIsDonationModalOpen(false)} 
-      />
-    </div>
+        </main>
+        <footer className="bg-slate-800/90 text-slate-400 mt-24 py-10 text-center text-sm">
+             <p>{t('footerText', { year: new Date().getFullYear() })}</p>
+        </footer>
+      </div>
+      <DonationModal isOpen={isDonationModalOpen} onClose={() => setIsDonationModalOpen(false)} />
+    </>
   );
-};
+}
 
 export default App;
