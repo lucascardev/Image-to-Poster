@@ -1,3 +1,4 @@
+
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Transforme qualquer imagem em um pôster gigante de várias páginas.",
@@ -85,5 +86,7 @@ export default {
   "sevenKBetAltCTA": "Jogue com Segurança",
   "downloadStepTitle": "Passo Final: Baixar Seu Pôster",
   "downloadStepDesc": "Seu pôster de várias páginas está pronto. Clique no botão abaixo para baixar o PDF para impressão.",
-  "postersCreated": "Pôsteres Criados Hoje"
+  "postersCreated": "Pôsteres Criados Hoje",
+  "fullscreenButton": "Ver em Tela Cheia",
+  "fullscreenPreviewAlt": "Pré-visualização em tela cheia do pôster montado"
 }

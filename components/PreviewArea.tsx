@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { LoadingIcon } from './Icons';
+import { LoadingIcon, ExpandIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
 import { A4_WIDTH_MM, A4_HEIGHT_MM, MM_PER_INCH } from '../constants';
 import type { AppSettings } from '../types';
@@ -9,9 +10,10 @@ interface PreviewAreaProps {
   pages: string[];
   isLoading: boolean;
   settings: AppSettings;
+  onOpenFullscreen: () => void;
 }
 
-const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, isLoading, settings }) => {
+const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, isLoading, settings, onOpenFullscreen }) => {
   const { t } = useTranslations();
   
   const marginInMm = settings.marginUnit === 'in'
@@ -25,7 +27,19 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, isLoading, settings })
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold border-b pb-4 mb-6">{t('previewTitle')}</h2>
+      <div className="flex justify-between items-center border-b pb-4 mb-6">
+        <h2 className="text-2xl font-bold">{t('previewTitle')}</h2>
+        {pages.length > 0 && (
+          <button 
+              onClick={onOpenFullscreen}
+              className="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
+              aria-label={t('fullscreenButton')}
+          >
+              <ExpandIcon className="w-5 h-5" />
+              <span>{t('fullscreenButton')}</span>
+          </button>
+        )}
+      </div>
 
       <AdPlaceholder type="honeygain" className="mb-6" />
 
@@ -41,7 +55,10 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, isLoading, settings })
             style={{ gridTemplateColumns: `repeat(${settings.gridCols}, 1fr)` }}
           >
             {pages.map((pageSrc, index) => (
-              <div key={index} className="relative aspect-[210/297] bg-white overflow-hidden print-page">
+              <div 
+                key={index} 
+                className="relative aspect-[210/297] bg-white overflow-hidden print-page"
+              >
                 <img src={pageSrc} alt={t('pageAltText', { index: index + 1 })} className="w-full h-full object-contain print-page-image" />
                 <div className="absolute top-1 left-1 bg-black bg-opacity-50 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
                   {index + 1}

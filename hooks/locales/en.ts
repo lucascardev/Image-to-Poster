@@ -1,3 +1,4 @@
+
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Turn any image into a giant, multi-page poster.",
@@ -85,5 +86,7 @@ export default {
   "sevenKBetAltCTA": "Play Securely",
   "downloadStepTitle": "Final Step: Download Your Poster",
   "downloadStepDesc": "Your multi-page poster is ready. Click the button below to download the printable PDF.",
-  "postersCreated": "Posters Created Today"
+  "postersCreated": "Posters Created Today",
+  "fullscreenButton": "View in Fullscreen",
+  "fullscreenPreviewAlt": "Fullscreen preview of the assembled poster"
 }

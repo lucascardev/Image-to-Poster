@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { AppSettings, CropMarkType } from '../types';
 import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon } from './Icons';
@@ -49,6 +50,13 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
   };
 
   const handleSettingChange = <K extends keyof AppSettings,>(key: K, value: AppSettings[K]) => {
+    // Prevent setting a 1x1 grid manually
+    if (key === 'gridCols' && value === 1 && settings.gridRows === 1) {
+      return;
+    }
+    if (key === 'gridRows' && value === 1 && settings.gridCols === 1) {
+      return;
+    }
     onSettingsChange({ ...settings, [key]: value });
   };
   

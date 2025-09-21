@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import jsPDF from 'jspdf';
 
@@ -14,7 +15,7 @@ import InstallInstructions from './components/InstallInstructions';
 import StatsWidget from './components/StatsWidget';
 import AdPlaceholder from './components/AdPlaceholder';
 import ThreeBackground from './components/ThreeBackground';
-import { LogoIcon, PixIcon } from './components/Icons';
+import { LogoIcon, PixIcon, CloseIcon, ExpandIcon } from './components/Icons';
 
 // Types and Constants
 import type { AppSettings, ImageInfo, ResolutionWarning } from './types';
@@ -43,6 +44,62 @@ function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
     });
 }
 
+// --- Start of embedded FullscreenPreviewModal ---
+interface FullscreenPreviewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  src: string | null;
+}
+
+const FullscreenPreviewModal: React.FC<FullscreenPreviewModalProps> = ({ isOpen, onClose, src }) => {
+  const { t } = useTranslations();
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') onClose();
+  }, [onClose]);
+
+  useEffect(() => {
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, handleKeyDown]);
+
+  if (!isOpen || !src) return null;
+  
+  return (
+    <div 
+      className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+        <div className="relative w-full h-full flex items-center justify-center" onClick={e => e.stopPropagation()}>
+            <button 
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 bg-black/40 rounded-full text-white hover:bg-black/60 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label={t('closeButton')}
+            >
+              <CloseIcon className="w-6 h-6" />
+            </button>
+            
+            <div className="flex flex-col items-center justify-center gap-4">
+                <div className="max-w-[95vw] max-h-[95vh]">
+                    <img 
+                        src={src} 
+                        alt={t('fullscreenPreviewAlt')}
+                        className="w-auto h-auto max-w-full max-h-full object-contain rounded-md shadow-2xl"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+  );
+};
+// --- End of embedded FullscreenPreviewModal ---
+
 function App() {
   const { t } = useTranslations();
   const [settings, setSettings] = useState<AppSettings>(initialSettings);
@@ -53,8 +110,19 @@ function App() {
   const [resolutionWarning, setResolutionWarning] = useState<ResolutionWarning | null>(null);
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const [postersCreatedCount, setPostersCreatedCount] = useState(1247); // Start with a realistic number
+  const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
+  const [fullPreviewSrc, setFullPreviewSrc] = useState<string | null>(null);
+
 
   const imageRef = useRef<HTMLImageElement | null>(null);
+  
+  const handleOpenFullscreen = () => {
+    setIsFullscreenOpen(true);
+  };
+  
+  const handleCloseFullscreen = () => {
+    setIsFullscreenOpen(false);
+  };
 
   const generatePages = useCallback(async () => {
     if (!imageInfo || !imageRef.current || !imageRef.current.complete || imageRef.current.naturalWidth === 0) {
@@ -236,6 +304,63 @@ function App() {
     setPages(newPages);
     setIsLoading(false);
   }, [imageInfo, settings]);
+  
+  const generateFullPreview = useCallback(async (pageSources: string[]): Promise<string | null> => {
+    if (pageSources.length === 0 || !settings) return null;
+
+    const { gridCols, gridRows } = settings;
+    
+    // Load the first image to determine dimensions.
+    const firstPageImg = new Image();
+    firstPageImg.src = pageSources[0];
+    await new Promise(resolve => { firstPageImg.onload = resolve; });
+
+    const { naturalWidth: pageW, naturalHeight: pageH } = firstPageImg;
+
+    if (pageW === 0 || pageH === 0) return null;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = pageW * gridCols;
+    canvas.height = pageH * gridRows;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    // Asynchronously load all page images
+    const imagePromises = pageSources.map(src => {
+        const img = new Image();
+        img.src = src;
+        return new Promise<HTMLImageElement>(resolve => { img.onload = () => resolve(img); });
+    });
+    
+    const loadedImages = await Promise.all(imagePromises);
+
+    // Draw images onto the canvas grid
+    let imageIndex = 0;
+    for (let row = 0; row < gridRows; row++) {
+        for (let col = 0; col < gridCols; col++) {
+            if (loadedImages[imageIndex]) {
+                ctx.drawImage(loadedImages[imageIndex], col * pageW, row * pageH, pageW, pageH);
+            }
+            imageIndex++;
+        }
+    }
+
+    return canvas.toDataURL('image/jpeg', 0.95);
+  }, [settings]);
+
+  // Effect to generate the full preview whenever the pages or grid changes
+  useEffect(() => {
+    const createPreview = async () => {
+        if (pages.length > 0) {
+            const src = await generateFullPreview(pages);
+            setFullPreviewSrc(src);
+        } else {
+            setFullPreviewSrc(null);
+        }
+    };
+    createPreview();
+  }, [pages, settings.gridCols, settings.gridRows, generateFullPreview]);
+
 
   const debouncedGeneratePages = useCallback(debounce(generatePages, 300), [generatePages]);
 
@@ -249,6 +374,41 @@ function App() {
       const url = e.target?.result as string;
       const img = new Image();
       img.onload = () => {
+        // Automatically adjust grid based on image resolution for best quality
+        const marginInMm = settings.marginUnit === 'in'
+          ? settings.printerMargin * MM_PER_INCH
+          : settings.printerMargin;
+
+        const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+        const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+
+        const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
+        const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
+
+        let suggestedCols = 1;
+        let suggestedRows = 1;
+        
+        // Avoid division by zero if margins are too large
+        if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
+            suggestedCols = Math.round(img.naturalWidth / pagePrintableWidthPx);
+            suggestedRows = Math.round(img.naturalHeight / pagePrintableHeightPx);
+        }
+
+        let newCols = Math.max(1, Math.min(10, suggestedCols)); // Clamp between 1 and 10
+        let newRows = Math.max(1, Math.min(10, suggestedRows)); // Clamp between 1 and 10
+        
+        // Rule: If automatic suggestion is 1x1, default to 2x2.
+        if (newCols === 1 && newRows === 1) {
+            newCols = 2;
+            newRows = 2;
+        }
+
+        setSettings(prev => ({
+            ...prev,
+            gridCols: newCols,
+            gridRows: newRows,
+        }));
+
         imageRef.current = img;
         setImageInfo({ url, width: img.naturalWidth, height: img.naturalHeight });
       };
@@ -356,7 +516,7 @@ function App() {
 
                 {pages.length > 0 ? (
                   <>
-                    <PreviewArea pages={pages} isLoading={isLoading} settings={settings} />
+                    <PreviewArea pages={pages} isLoading={isLoading} settings={settings} onOpenFullscreen={handleOpenFullscreen} />
                     <AdPlaceholder type="sevenkbet" />
                     <DownloadPanel onDownload={handleDownloadPdf} disabled={isGeneratingPdf || isLoading || pages.length === 0} isGenerating={isGeneratingPdf} />
                     <Instructions settings={settings} />
@@ -380,6 +540,11 @@ function App() {
         </footer>
       </div>
       <DonationModal isOpen={isDonationModalOpen} onClose={() => setIsDonationModalOpen(false)} />
+      <FullscreenPreviewModal 
+        isOpen={isFullscreenOpen} 
+        onClose={handleCloseFullscreen} 
+        src={fullPreviewSrc} 
+      />
     </>
   );
 }

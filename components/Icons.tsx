@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 // Common props for icons
@@ -117,7 +118,7 @@ export const CashIcon: React.FC<IconProps> = (props) => (
 export const FaceScanIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.5v.75A.75.75 0 004.5 6h15a.75.75 0 00.75-.75V4.5M3.75 19.5v-.75A.75.75 0 014.5 18h15a.75.75 0 01.75.75v.75M8.25 12h7.5" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9.375c.328-.328.788-.525 1.28-.525h3.44c.492 0 .952.197 1.28.525M9 14.625c.328.328.788.525 1.28.525h3.44c.492 0 .952-.197 1.28-.525" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9.375c.328-.328.788-.525 1.28-.525h3.44c.492 0 .952.197 1.28.525M9 14.625c.328.328.788.525 1.28.525h3.44c.492 0 .952-.197 1.28.525" />
     </svg>
 );
 
@@ -157,4 +158,10 @@ export const UkFlagIcon: React.FC<IconProps> = (props) => (
       <path d="M10 0V20M0 10H20" stroke="#C8102E" strokeWidth="3" />
     </g>
   </svg>
+);
+
+export const ExpandIcon: React.FC<IconProps> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9m5.25 11.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
+    </svg>
 );
