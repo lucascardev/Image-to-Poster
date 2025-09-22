@@ -32,6 +32,8 @@ export default {
   "pageAltText": "Página {index}",
   "uploadPromptTitle": "Envie sua imagem para começar",
   "uploadPromptSubtitle": "A pré-visualização do seu pôster aparecerá aqui.",
+  "uploadingMessage": "Carregando imagem...",
+  "uploadingSubtitle": "Aguarde um momento.",
   "instructionsTitle": "Como Montar Seu Pôster",
   "step1Title": "Baixar e Imprimir",
   "step1Desc": "Clique em 'Baixar PDF' e imprima todas as páginas em escala de 100% (tamanho real).",

@@ -106,6 +106,7 @@ function App() {
   const [imageInfo, setImageInfo] = useState<ImageInfo | null>(null);
   const [pages, setPages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
   const [resolutionWarning, setResolutionWarning] = useState<ResolutionWarning | null>(null);
   const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
@@ -369,51 +370,74 @@ function App() {
   }, [settings, imageInfo, debouncedGeneratePages]);
 
   const handleImageUpload = (file: File) => {
+    const startTime = Date.now();
+    setIsUploading(true);
     const reader = new FileReader();
     reader.onload = (e) => {
       const url = e.target?.result as string;
       const img = new Image();
       img.onload = () => {
-        // Automatically adjust grid based on image resolution for best quality
-        const marginInMm = settings.marginUnit === 'in'
-          ? settings.printerMargin * MM_PER_INCH
-          : settings.printerMargin;
+        const finishProcessing = () => {
+            // Automatically adjust grid based on image resolution for best quality
+            const marginInMm = settings.marginUnit === 'in'
+            ? settings.printerMargin * MM_PER_INCH
+            : settings.printerMargin;
 
-        const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
-        const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+            const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+            const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
 
-        const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
-        const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
+            const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
+            const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
 
-        let suggestedCols = 1;
-        let suggestedRows = 1;
+            let suggestedCols = 1;
+            let suggestedRows = 1;
+            
+            // Avoid division by zero if margins are too large
+            if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
+                suggestedCols = Math.round(img.naturalWidth / pagePrintableWidthPx);
+                suggestedRows = Math.round(img.naturalHeight / pagePrintableHeightPx);
+            }
+
+            let newCols = Math.max(1, Math.min(10, suggestedCols)); // Clamp between 1 and 10
+            let newRows = Math.max(1, Math.min(10, suggestedRows)); // Clamp between 1 and 10
+            
+            // Rule: If automatic suggestion is 1x1, default to 2x2.
+            if (newCols === 1 && newRows === 1) {
+                newCols = 2;
+                newRows = 2;
+            }
+
+            setSettings(prev => ({
+                ...prev,
+                gridCols: newCols,
+                gridRows: newRows,
+            }));
+
+            imageRef.current = img;
+            setImageInfo({ url, width: img.naturalWidth, height: img.naturalHeight });
+            setIsUploading(false);
+        };
         
-        // Avoid division by zero if margins are too large
-        if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
-            suggestedCols = Math.round(img.naturalWidth / pagePrintableWidthPx);
-            suggestedRows = Math.round(img.naturalHeight / pagePrintableHeightPx);
-        }
-
-        let newCols = Math.max(1, Math.min(10, suggestedCols)); // Clamp between 1 and 10
-        let newRows = Math.max(1, Math.min(10, suggestedRows)); // Clamp between 1 and 10
+        const elapsedTime = Date.now() - startTime;
+        const minLoadingTime = 2000; // 2 seconds
+        const remainingTime = minLoadingTime - elapsedTime;
         
-        // Rule: If automatic suggestion is 1x1, default to 2x2.
-        if (newCols === 1 && newRows === 1) {
-            newCols = 2;
-            newRows = 2;
+        if (remainingTime > 0) {
+            setTimeout(finishProcessing, remainingTime);
+        } else {
+            finishProcessing();
         }
-
-        setSettings(prev => ({
-            ...prev,
-            gridCols: newCols,
-            gridRows: newRows,
-        }));
-
-        imageRef.current = img;
-        setImageInfo({ url, width: img.naturalWidth, height: img.naturalHeight });
       };
+      img.onerror = () => {
+        console.error("Error loading image.");
+        setIsUploading(false);
+      }
       img.src = url;
     };
+    reader.onerror = () => {
+      console.error("Error reading file.");
+      setIsUploading(false);
+    }
     reader.readAsDataURL(file);
   };
 
@@ -503,6 +527,7 @@ function App() {
                   onSettingsChange={setSettings}
                   onImageUpload={handleImageUpload}
                   hasImage={!!imageInfo}
+                  isUploading={isUploading}
                 />
               </div>
               <div className="lg:col-span-2 space-y-8">

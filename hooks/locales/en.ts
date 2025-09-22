@@ -32,6 +32,8 @@ export default {
   "pageAltText": "Page {index}",
   "uploadPromptTitle": "Upload your image to get started",
   "uploadPromptSubtitle": "Your poster preview will appear here.",
+  "uploadingMessage": "Uploading image...",
+  "uploadingSubtitle": "Please wait a moment.",
   "instructionsTitle": "How to Assemble Your Poster",
   "step1Title": "Download & Print",
   "step1Desc": "Click 'Download PDF' and print all pages at 100% scale (actual size).",

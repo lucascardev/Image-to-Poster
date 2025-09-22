@@ -1,7 +1,7 @@
 
 import React from 'react';
 import type { AppSettings, CropMarkType } from '../types';
-import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon } from './Icons';
+import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon, LoadingIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
 import AdPlaceholder from './AdPlaceholder';
 import ModernSlider from './ModernSlider';
@@ -12,6 +12,7 @@ interface SettingsPanelProps {
   onSettingsChange: (settings: AppSettings) => void;
   onImageUpload: (file: File) => void;
   hasImage: boolean;
+  isUploading: boolean;
 }
 
 const RadioPill: React.FC<{
@@ -40,7 +41,7 @@ const RadioPill: React.FC<{
   );
 };
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange, onImageUpload, hasImage }) => {
+const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange, onImageUpload, hasImage, isUploading }) => {
   const { t } = useTranslations();
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,13 +104,23 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
       
       <InputGroup label={t('step1Label')} icon={<UploadIcon className="w-6 h-6 text-indigo-500" />}>
         <div className="mt-1 flex flex-col items-center justify-center px-6 pt-8 pb-8 border-2 border-slate-300 border-dashed rounded-md text-center">
-          <UploadIcon className="w-10 h-10 text-slate-400 mb-4" />
-          <label htmlFor="file-upload" className="relative cursor-pointer bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 transition-colors">
-            <span>{hasImage ? t('replaceImage') : t('uploadFile')}</span>
-            <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" />
-          </label>
-          <p className="mt-2 text-sm text-slate-600">{t('dragAndDrop')}</p>
-          <p className="mt-1 text-xs text-slate-500">{t('fileTypes')}</p>
+          {isUploading ? (
+            <>
+              <LoadingIcon className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
+              <p className="text-lg font-semibold text-slate-700">{t('uploadingMessage')}</p>
+              <p className="mt-1 text-sm text-slate-500">{t('uploadingSubtitle')}</p>
+            </>
+          ) : (
+            <>
+              <UploadIcon className="w-10 h-10 text-slate-400 mb-4" />
+              <label htmlFor="file-upload" className="relative cursor-pointer bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 transition-colors">
+                <span>{hasImage ? t('replaceImage') : t('uploadFile')}</span>
+                <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" disabled={isUploading} />
+              </label>
+              <p className="mt-2 text-sm text-slate-600">{t('dragAndDrop')}</p>
+              <p className="mt-1 text-xs text-slate-500">{t('fileTypes')}</p>
+            </>
+          )}
         </div>
       </InputGroup>
 
