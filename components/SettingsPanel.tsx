@@ -1,7 +1,7 @@
 
 import React from 'react';
 import type { AppSettings, CropMarkType } from '../types';
-import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon, LoadingIcon } from './Icons';
+import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon, LoadingIcon, WarningIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
 import AdPlaceholder from './AdPlaceholder';
 import ModernSlider from './ModernSlider';
@@ -87,6 +87,10 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
   const unitButtonClasses = "px-2 py-0.5 rounded-md transition-colors text-sm font-medium";
   const activeUnitClasses = "bg-white shadow text-slate-800";
   const inactiveUnitClasses = "text-slate-500 hover:bg-slate-200";
+  
+  const marginInMm = settings.marginUnit === 'in' ? settings.printerMargin * MM_PER_INCH : settings.printerMargin;
+  const showMarginWarning = marginInMm < 6;
+
 
   const InputGroup: React.FC<{ label: string; icon: React.ReactNode; children: React.ReactNode }> = ({ label, icon, children }) => (
     <div className="mb-6">
@@ -174,6 +178,14 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
             />
          </div>
          <p className="text-sm text-slate-500 mt-2">{t('marginDescription')}</p>
+         {showMarginWarning && (
+            <div className="mt-3 flex items-start p-3 bg-red-50 border border-red-200 rounded-md">
+                <WarningIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <div className="ml-2">
+                    <p className="text-sm font-medium text-red-700">{t('marginWarning')}</p>
+                </div>
+            </div>
+        )}
       </InputGroup>
 
       <InputGroup label={t('step4Label')} icon={<CutIcon className="w-6 h-6 text-indigo-500" />}>

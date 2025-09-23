@@ -25,7 +25,7 @@ import { useTranslations } from './hooks/useTranslations';
 const initialSettings: AppSettings = {
   gridCols: 3,
   gridRows: 2,
-  printerMargin: 5,
+  printerMargin: 6,
   marginUnit: 'mm',
   cropMarkType: 'corners',
   addOverlap: true,
@@ -223,45 +223,9 @@ function App() {
             sH + (sH/tileHeightPx) * ((row > 0 ? overlapPx : 0) + (row < settings.gridRows - 1 ? overlapPx : 0)),
             dX, dY, dW, dH);
         
-        // Add overlap area visualization
-        if (settings.addOverlap) {
-          ctx.save();
-          ctx.fillStyle = '#38bdf833'; // light blue with alpha
-          
-          if (col > 0) { // left overlap area
-            ctx.fillRect(marginPx - overlapPx, marginPx - overlapPx, overlapPx, tileHeightPx + (overlapPx * 2));
-          }
-           if (row > 0) { // top overlap area
-            ctx.fillRect(marginPx-overlapPx, marginPx - overlapPx, tileWidthPx + (overlapPx * 2), overlapPx);
-          }
-          ctx.restore();
-          
-          // Draw striped pattern on the glue tab area (outside printable area)
-           ctx.save();
-           const region = new Path2D();
-           // Right overlap tab
-           if (col < settings.gridCols - 1) {
-             region.rect(marginPx + tileWidthPx, 0, marginPx, canvas.height);
-           }
-           // Bottom overlap tab
-           if (row < settings.gridRows - 1) {
-             region.rect(0, marginPx + tileHeightPx, canvas.width, marginPx);
-           }
-           ctx.clip(region);
-          
-           ctx.fillStyle = '#e0f2fe'; // light blue
-           ctx.fillRect(0, 0, canvas.width, canvas.height);
-          
-           ctx.strokeStyle = '#38bdf8'; // darker blue
-           ctx.lineWidth = 1;
-           ctx.beginPath();
-           for(let i = -canvas.height; i < canvas.width; i += 15) {
-               ctx.moveTo(i, 0);
-               ctx.lineTo(i + canvas.height, canvas.height);
-           }
-           ctx.stroke();
-           ctx.restore();
-        }
+        // NOTE: The visualization for overlap/glue tabs has been removed as it was confusing for users.
+        // The image overlap for alignment is still present, but without any visual overlay in the preview.
+        // Users will rely on the instructions to understand the alignment and gluing process.
 
         // Add crop marks
         if (settings.cropMarkType !== 'none') {
@@ -369,77 +333,93 @@ function App() {
     debouncedGeneratePages();
   }, [settings, imageInfo, debouncedGeneratePages]);
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = async (file: File) => {
     const startTime = Date.now();
     setIsUploading(true);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const url = e.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        const finishProcessing = () => {
-            // Automatically adjust grid based on image resolution for best quality
-            const marginInMm = settings.marginUnit === 'in'
+    
+    try {
+      const url = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            if (e.target?.result) {
+                resolve(e.target.result as string)
+            } else {
+                reject(new Error("FileReader did not return a result."))
+            }
+        };
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+      });
+
+      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = (error) => reject(error);
+        image.src = url;
+        if (image.complete) resolve(image);
+      });
+
+      await img.decode();
+
+      if (img.naturalWidth === 0 || img.naturalHeight === 0) {
+        throw new Error("Image loaded with zero dimensions.");
+      }
+
+      const finishProcessing = () => {
+        // Automatically adjust grid based on image resolution for best quality
+        const marginInMm = settings.marginUnit === 'in'
             ? settings.printerMargin * MM_PER_INCH
             : settings.printerMargin;
 
-            const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
-            const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+        const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+        const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
 
-            const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
-            const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
+        const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
+        const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
 
-            let suggestedCols = 1;
-            let suggestedRows = 1;
-            
-            // Avoid division by zero if margins are too large
-            if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
-                suggestedCols = Math.round(img.naturalWidth / pagePrintableWidthPx);
-                suggestedRows = Math.round(img.naturalHeight / pagePrintableHeightPx);
-            }
+        let suggestedCols = 1;
+        let suggestedRows = 1;
 
-            let newCols = Math.max(1, Math.min(10, suggestedCols)); // Clamp between 1 and 10
-            let newRows = Math.max(1, Math.min(10, suggestedRows)); // Clamp between 1 and 10
-            
-            // Rule: If automatic suggestion is 1x1, default to 2x2.
-            if (newCols === 1 && newRows === 1) {
-                newCols = 2;
-                newRows = 2;
-            }
-
-            setSettings(prev => ({
-                ...prev,
-                gridCols: newCols,
-                gridRows: newRows,
-            }));
-
-            imageRef.current = img;
-            setImageInfo({ url, width: img.naturalWidth, height: img.naturalHeight });
-            setIsUploading(false);
-        };
-        
-        const elapsedTime = Date.now() - startTime;
-        const minLoadingTime = 2000; // 2 seconds
-        const remainingTime = minLoadingTime - elapsedTime;
-        
-        if (remainingTime > 0) {
-            setTimeout(finishProcessing, remainingTime);
-        } else {
-            finishProcessing();
+        if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
+            suggestedCols = Math.round(img.naturalWidth / pagePrintableWidthPx);
+            suggestedRows = Math.round(img.naturalHeight / pagePrintableHeightPx);
         }
-      };
-      img.onerror = () => {
-        console.error("Error loading image.");
+
+        let newCols = Math.max(1, Math.min(10, suggestedCols));
+        let newRows = Math.max(1, Math.min(10, suggestedRows));
+        
+        if (newCols === 1 && newRows === 1) {
+            newCols = 2;
+            newRows = 2;
+        }
+
+        setSettings(prev => ({
+            ...prev,
+            gridCols: newCols,
+            gridRows: newRows,
+        }));
+
+        imageRef.current = img;
+        setImageInfo({ url, width: img.naturalWidth, height: img.naturalHeight });
         setIsUploading(false);
+      };
+      
+      const elapsedTime = Date.now() - startTime;
+      const minLoadingTime = 2000;
+      const remainingTime = minLoadingTime - elapsedTime;
+      
+      if (remainingTime > 0) {
+          setTimeout(finishProcessing, remainingTime);
+      } else {
+          finishProcessing();
       }
-      img.src = url;
-    };
-    reader.onerror = () => {
-      console.error("Error reading file.");
+
+    } catch (error) {
+      console.error("Failed to upload and process image:", error);
       setIsUploading(false);
     }
-    reader.readAsDataURL(file);
   };
+
 
   const handleDownloadPdf = async () => {
     if (pages.length === 0) return;
