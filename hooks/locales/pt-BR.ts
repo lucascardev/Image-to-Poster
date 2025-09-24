@@ -91,5 +91,6 @@ export default {
   "downloadStepDesc": "Seu pôster de várias páginas está pronto. Clique no botão abaixo para baixar o PDF para impressão.",
   "postersCreated": "Pôsteres Criados Hoje",
   "fullscreenButton": "Ver em Tela Cheia",
-  "fullscreenPreviewAlt": "Pré-visualização em tela cheia do pôster montado"
+  "fullscreenPreviewAlt": "Pré-visualização em tela cheia do pôster montado",
+  "brandingText": "Criado com: printmyposter.art"
 }

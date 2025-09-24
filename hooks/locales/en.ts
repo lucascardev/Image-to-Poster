@@ -91,5 +91,6 @@ export default {
   "downloadStepDesc": "Your multi-page poster is ready. Click the button below to download the printable PDF.",
   "postersCreated": "Posters Created Today",
   "fullscreenButton": "View in Fullscreen",
-  "fullscreenPreviewAlt": "Fullscreen preview of the assembled poster"
+  "fullscreenPreviewAlt": "Fullscreen preview of the assembled poster",
+  "brandingText": "Created with: printmyposter.art"
 }

@@ -484,49 +484,37 @@ function App() {
       unit: 'mm',
       format: 'a4',
     });
+    
+    const smallBrandingText = "printmyposter.art";
+    const largeBrandingText = t('brandingText');
 
     for (let i = 0; i < pages.length; i++) {
       if (i > 0) {
         pdf.addPage();
       }
       pdf.addImage(pages[i], 'JPEG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+
+      // Add small branding to the bottom margin of every page
+      pdf.setFontSize(6);
+      pdf.setTextColor(150, 150, 150); // Light gray
+      const textDimensionsSmall = pdf.getTextDimensions(smallBrandingText);
+      const textXSmall = (A4_WIDTH_MM - textDimensionsSmall.w) / 2; // Centered
+      const textYSmall = A4_HEIGHT_MM - 2; // Position 2mm from the bottom
+      pdf.text(smallBrandingText, textXSmall, textYSmall);
     }
     
-    // Add branding mark to the last page
+    // Add larger branding mark to the last page
     if (pages.length > 0) {
         pdf.setPage(pages.length);
 
-        const brandingText = "printmyposter.art";
-        const padding = 2; // mm
-        const fontSize = 7;
+        pdf.setFontSize(10);
+        pdf.setTextColor(128, 128, 128); // Medium gray
         
-        pdf.setFontSize(fontSize);
-
-        const textDimensions = pdf.getTextDimensions(brandingText);
-        const boxWidth = textDimensions.w + (padding * 2);
-        const boxHeight = textDimensions.h + padding;
-        const marginFromEdge = 3; // mm
-
-        const marginInMm = settings.marginUnit === 'in'
-          ? settings.printerMargin * MM_PER_INCH
-          : settings.printerMargin;
-
-        const boxX = A4_WIDTH_MM - marginInMm - marginFromEdge - boxWidth;
-        const boxY = A4_HEIGHT_MM - marginInMm - marginFromEdge - boxHeight;
+        const textDimensionsLarge = pdf.getTextDimensions(largeBrandingText);
+        const textXLarge = (A4_WIDTH_MM - textDimensionsLarge.w) / 2; // Centered
+        const textYLarge = A4_HEIGHT_MM - 6; // Position 6mm from the bottom, above the small one
         
-        const textX = boxX + padding;
-        const textY = boxY + textDimensions.h + (padding / 2) - 0.5;
-
-        // Set fill for the box with opacity
-        pdf.saveGraphicsState();
-        pdf.setGState(new (pdf as any).GState({opacity: 0.6}));
-        pdf.setFillColor(0, 0, 0);
-        pdf.roundedRect(boxX, boxY, boxWidth, boxHeight, 1.5, 1.5, 'F');
-        pdf.restoreGraphicsState();
-        
-        // Set text color (no opacity)
-        pdf.setTextColor(255, 255, 255);
-        pdf.text(brandingText, textX, textY);
+        pdf.text(largeBrandingText, textXLarge, textYLarge);
     }
 
     setTimeout(() => {
