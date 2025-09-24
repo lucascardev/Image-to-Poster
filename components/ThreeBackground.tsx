@@ -128,9 +128,10 @@ const ThreeBackground: React.FC = () => {
             // Interaction with mouse
             const planeScreenPosition = plane.position.clone().project(camera);
             if(mouse) {
-                const distance = mouse.distanceTo(planeScreenPosition);
+                const planeScreenVec2 = new THREE.Vector2(planeScreenPosition.x, planeScreenPosition.y);
+                const distance = mouse.distanceTo(planeScreenVec2);
                 if (distance < interactionRadius) {
-                    const repelDirection = new THREE.Vector2().subVectors(planeScreenPosition, mouse).normalize();
+                    const repelDirection = new THREE.Vector2().subVectors(planeScreenVec2, mouse).normalize();
                     const forceStrength = (1 - distance / interactionRadius) * repelForce;
                     plane.velocity.x += repelDirection.x * forceStrength;
                     plane.velocity.y += repelDirection.y * forceStrength;

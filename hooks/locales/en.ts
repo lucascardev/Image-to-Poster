@@ -42,7 +42,7 @@ export default {
   "step2Desc": "Use the <strong>dashed red lines</strong> as your cutting guides. Carefully trim along these lines to remove the unprinted margins. This ensures your poster pieces will align perfectly.",
   "step3Title": "Assemble the Poster",
   "step3Desc": "Lay out the printed pages in order. Carefully align the edges and tape them together from the back.",
-  "step3DescOverlap": "A portion of the image is repeated on adjacent pages to serve as an <strong>alignment guide</strong>. Apply glue or tape to this overlap area on the back of one page and place the edge of the next page over it, aligning the images perfectly.",
+  "step3DescOverlap": "A portion of the image is repeated on adjacent pages to serve as an <strong>alignment guide</strong>. The <strong>blue striped area</strong> indicates where to apply glue or tape. Glue this tab to the back of the next page, aligning the images perfectly.",
   "warningTitle": "Low Resolution Warning",
   "warningMessage": "For a good quality print of {cols}x{rows} pages, your image should be at least <strong>{requiredWidth}px by {requiredHeight}px</strong>. Your image is <strong>{actualWidth}px by {actualHeight}px</strong>. The result may look blurry or pixelated when printed.",
   "advertisement": "Advertisement",

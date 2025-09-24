@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import jsPDF from 'jspdf';
 
@@ -127,8 +126,8 @@ function App() {
 
   const generatePages = useCallback(async () => {
     if (!imageInfo || !imageRef.current || !imageRef.current.complete || imageRef.current.naturalWidth === 0) {
-      setPages([]);
-      return;
+        setPages([]);
+        return;
     }
     setIsLoading(true);
 
@@ -136,49 +135,73 @@ function App() {
     const newPages: string[] = [];
 
     const marginInMm = settings.marginUnit === 'in'
-      ? settings.printerMargin * MM_PER_INCH
-      : settings.printerMargin;
-    
-    // The overlap should be contained within the margin area
-    const overlapWidthMm = settings.addOverlap ? Math.min(marginInMm, 10) : 0; // Cap overlap at 10mm
+        ? settings.printerMargin * MM_PER_INCH
+        : settings.printerMargin;
+
+    const overlapWidthMm = settings.addOverlap ? Math.min(marginInMm, 10) : 0;
 
     const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
     const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
 
-    const totalPrintableWidthMm = (pagePrintableWidthMm * settings.gridCols);
-    const totalPrintableHeightMm = (pagePrintableHeightMm * settings.gridRows);
-    
-    const totalImageAreaRatio = totalPrintableWidthMm / totalPrintableHeightMm;
-    const imageRatio = img.naturalWidth / img.naturalHeight;
+    // Convert dimensions to pixels for canvas operations
+    const mmToPx = (mm: number) => (mm / MM_PER_INCH) * RECOMMENDED_DPI;
 
-    let srcWidth, srcHeight, srcX, srcY;
+    const pagePrintableWidthPx = mmToPx(pagePrintableWidthMm);
+    const pagePrintableHeightPx = mmToPx(pagePrintableHeightMm);
 
-    if (imageRatio > totalImageAreaRatio) {
-      // Image is wider than the paper grid, so it will be cropped on the sides
-      srcHeight = img.naturalHeight;
-      srcWidth = srcHeight * totalImageAreaRatio;
-      srcY = 0;
-      srcX = (img.naturalWidth - srcWidth) / 2;
-    } else {
-      // Image is taller or same ratio, so it will be cropped top/bottom
-      srcWidth = img.naturalWidth;
-      srcHeight = srcWidth / totalImageAreaRatio;
-      srcX = 0;
-      srcY = (img.naturalHeight - srcHeight) / 2;
+    const totalPrintableWidthPx = pagePrintableWidthPx * settings.gridCols;
+    const totalPrintableHeightPx = pagePrintableHeightPx * settings.gridRows;
+
+    // Create a large canvas for the entire poster layout
+    const largeCanvas = document.createElement('canvas');
+    largeCanvas.width = totalPrintableWidthPx;
+    largeCanvas.height = totalPrintableHeightPx;
+    const largeCtx = largeCanvas.getContext('2d');
+    if (!largeCtx) {
+        setIsLoading(false);
+        return;
     }
-    
-    const requiredWidth = Math.round((totalPrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI);
-    const requiredHeight = Math.round((totalPrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI);
-    
-    if (img.naturalWidth < requiredWidth || img.naturalHeight < requiredHeight) {
-      setResolutionWarning({
-        requiredWidth,
-        requiredHeight,
-        actualWidth: img.naturalWidth,
-        actualHeight: img.naturalHeight,
-      });
+
+    // Fill with white to handle letterboxing/pillarboxing
+    largeCtx.fillStyle = 'white';
+    largeCtx.fillRect(0, 0, largeCanvas.width, largeCanvas.height);
+
+    // Calculate scaled image dimensions to fit within the large canvas, preserving aspect ratio
+    const imageRatio = img.naturalWidth / img.naturalHeight;
+    const canvasRatio = largeCanvas.width / largeCanvas.height;
+
+    let scaledWidth, scaledHeight, offsetX, offsetY;
+
+    if (imageRatio > canvasRatio) {
+        // Image is wider than the grid, so fit to width (pillarbox)
+        scaledWidth = largeCanvas.width;
+        scaledHeight = scaledWidth / imageRatio;
+        offsetX = 0;
+        offsetY = (largeCanvas.height - scaledHeight) / 2;
     } else {
-      setResolutionWarning(null);
+        // Image is taller or same ratio, fit to height (letterbox)
+        scaledHeight = largeCanvas.height;
+        scaledWidth = scaledHeight * imageRatio;
+        offsetY = 0;
+        offsetX = (largeCanvas.width - scaledWidth) / 2;
+    }
+
+    // Draw the scaled image onto the large canvas, centered
+    largeCtx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
+
+    // Resolution warning logic (remains the same and is still relevant)
+    const requiredWidth = Math.round((pagePrintableWidthMm * settings.gridCols / MM_PER_INCH) * RECOMMENDED_DPI);
+    const requiredHeight = Math.round((pagePrintableHeightMm * settings.gridRows / MM_PER_INCH) * RECOMMENDED_DPI);
+
+    if (img.naturalWidth < requiredWidth || img.naturalHeight < requiredHeight) {
+        setResolutionWarning({
+            requiredWidth,
+            requiredHeight,
+            actualWidth: img.naturalWidth,
+            actualHeight: img.naturalHeight,
+        });
+    } else {
+        setResolutionWarning(null);
     }
 
     const canvas = document.createElement('canvas');
@@ -187,88 +210,118 @@ function App() {
         setIsLoading(false);
         return;
     }
-    
-    const mmToPx = (mm: number) => (mm / MM_PER_INCH) * RECOMMENDED_DPI;
-    
+
     canvas.width = mmToPx(A4_WIDTH_MM);
     canvas.height = mmToPx(A4_HEIGHT_MM);
 
     const marginPx = mmToPx(marginInMm);
     const overlapPx = mmToPx(overlapWidthMm);
 
-    const tileWidthPx = mmToPx(pagePrintableWidthMm);
-    const tileHeightPx = mmToPx(pagePrintableHeightMm);
+    const tileWidthPx = pagePrintableWidthPx;
+    const tileHeightPx = pagePrintableHeightPx;
+
+    // Create a pattern for the stripes only once
+    const patternCanvas = document.createElement('canvas');
+    const patternCtx = patternCanvas.getContext('2d');
+    let stripePattern: CanvasPattern | null = null;
+    if (patternCtx) {
+        const stripeWidth = mmToPx(2);
+        patternCanvas.width = stripeWidth * 2;
+        patternCanvas.height = stripeWidth * 2;
+        patternCtx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // blue-500, 50% opacity
+        patternCtx.lineWidth = mmToPx(0.5);
+        patternCtx.beginPath();
+        patternCtx.moveTo(0, stripeWidth * 2);
+        patternCtx.lineTo(stripeWidth * 2, 0);
+        patternCtx.stroke();
+        stripePattern = ctx.createPattern(patternCanvas, 'repeat');
+    }
 
     for (let row = 0; row < settings.gridRows; row++) {
-      for (let col = 0; col < settings.gridCols; col++) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let col = 0; col < settings.gridCols; col++) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        const sX = srcX + (srcWidth / settings.gridCols) * col;
-        const sY = srcY + (srcHeight / settings.gridRows) * row;
-        const sW = srcWidth / settings.gridCols;
-        const sH = srcHeight / settings.gridRows;
-        
-        const dX = marginPx - (col > 0 ? overlapPx : 0);
-        const dY = marginPx - (row > 0 ? overlapPx : 0);
-        const dW = tileWidthPx + (col > 0 ? overlapPx : 0) + (col < settings.gridCols -1 ? overlapPx : 0);
-        const dH = tileHeightPx + (row > 0 ? overlapPx : 0) + (row < settings.gridRows - 1 ? overlapPx : 0);
+            const hasRightTab = settings.addOverlap && col < settings.gridCols - 1;
+            const hasBottomTab = settings.addOverlap && row < settings.gridRows - 1;
 
-        ctx.drawImage(
-            img,
-            sX - (sW/tileWidthPx) * (col > 0 ? overlapPx : 0), 
-            sY - (sH/tileHeightPx) * (row > 0 ? overlapPx : 0), 
-            sW + (sW/tileWidthPx) * ((col > 0 ? overlapPx : 0) + (col < settings.gridCols - 1 ? overlapPx : 0)), 
-            sH + (sH/tileHeightPx) * ((row > 0 ? overlapPx : 0) + (row < settings.gridRows - 1 ? overlapPx : 0)),
-            dX, dY, dW, dH);
-        
-        // NOTE: The visualization for overlap/glue tabs has been removed as it was confusing for users.
-        // The image overlap for alignment is still present, but without any visual overlay in the preview.
-        // Users will rely on the instructions to understand the alignment and gluing process.
+            // Source rectangle from the large composite canvas
+            const sX_large = col * tileWidthPx;
+            const sY_large = row * tileHeightPx;
 
-        // Add crop marks
-        if (settings.cropMarkType !== 'none') {
-            ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; // red-500
-            ctx.lineWidth = 1;
-            ctx.setLineDash([mmToPx(2), mmToPx(2)]);
+            // The desired width/height from the large canvas, including overlap
+            const sW_desired = tileWidthPx + (hasRightTab ? overlapPx : 0);
+            const sH_desired = tileHeightPx + (hasBottomTab ? overlapPx : 0);
 
-            const lineLength = marginPx * 0.75;
-            const rightEdge = marginPx + tileWidthPx;
-            const bottomEdge = marginPx + tileHeightPx;
-            
-            ctx.beginPath();
-            if(settings.cropMarkType === 'full') {
-                 // Horizontal lines
-                ctx.moveTo(0, marginPx); ctx.lineTo(canvas.width, marginPx);
-                ctx.moveTo(0, bottomEdge); ctx.lineTo(canvas.width, bottomEdge);
+            // The actual width/height we can take, clamped to the large canvas bounds
+            const sW_actual = Math.min(sW_desired, largeCanvas.width - sX_large);
+            const sH_actual = Math.min(sH_desired, largeCanvas.height - sY_large);
 
-                // Vertical lines
-                ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, canvas.height);
-                ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, canvas.height);
-            } else { // corners
-                // TL
-                ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, lineLength);
-                ctx.moveTo(0, marginPx); ctx.lineTo(lineLength, marginPx);
-                // TR
-                ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, lineLength);
-                ctx.moveTo(canvas.width, marginPx); ctx.lineTo(rightEdge - lineLength, marginPx);
-                // BL
-                ctx.moveTo(marginPx, canvas.height); ctx.lineTo(marginPx, bottomEdge - lineLength);
-                ctx.moveTo(0, bottomEdge); ctx.lineTo(lineLength, bottomEdge);
-                // BR
-                ctx.moveTo(rightEdge, canvas.height); ctx.lineTo(rightEdge, bottomEdge - lineLength);
-                ctx.moveTo(canvas.width, bottomEdge); ctx.lineTo(rightEdge - lineLength, bottomEdge);
+            // Destination rectangle on the page canvas. The destination dimensions
+            // must match the source dimensions we are actually taking.
+            const dX = marginPx;
+            const dY = marginPx;
+            const dW = sW_actual;
+            const dH = sH_actual;
+
+            // Draw the tile from the large canvas to the current page canvas
+            if (sW_actual > 0 && sH_actual > 0) {
+                ctx.drawImage(
+                    largeCanvas,
+                    sX_large, sY_large, sW_actual, sH_actual,
+                    dX, dY, dW, dH
+                );
             }
-            ctx.stroke();
-        }
 
-        newPages.push(canvas.toDataURL('image/jpeg', 0.95));
-      }
+            // Add glue tab visualization (stripes)
+            if (settings.addOverlap && stripePattern) {
+                ctx.save();
+                ctx.fillStyle = stripePattern;
+                if (hasRightTab) {
+                    ctx.fillRect(marginPx + tileWidthPx, marginPx, overlapPx, tileHeightPx);
+                }
+                if (hasBottomTab) {
+                    ctx.fillRect(marginPx, marginPx + tileHeightPx, tileWidthPx, overlapPx);
+                }
+                if (hasRightTab && hasBottomTab) {
+                    ctx.fillRect(marginPx + tileWidthPx, marginPx + tileHeightPx, overlapPx, overlapPx);
+                }
+                ctx.restore();
+            }
+
+            // Add crop marks
+            if (settings.cropMarkType !== 'none') {
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; // red-500
+                ctx.lineWidth = 1;
+                ctx.setLineDash([mmToPx(2), mmToPx(2)]);
+                const lineLength = marginPx * 0.75;
+                const rightEdge = marginPx + tileWidthPx;
+                const bottomEdge = marginPx + tileHeightPx;
+                ctx.beginPath();
+                if (settings.cropMarkType === 'full') {
+                    ctx.moveTo(0, marginPx); ctx.lineTo(canvas.width, marginPx);
+                    ctx.moveTo(0, bottomEdge); ctx.lineTo(canvas.width, bottomEdge);
+                    ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, canvas.height);
+                    ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, canvas.height);
+                } else { // corners
+                    ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, lineLength);
+                    ctx.moveTo(0, marginPx); ctx.lineTo(lineLength, marginPx);
+                    ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, lineLength);
+                    ctx.moveTo(canvas.width, marginPx); ctx.lineTo(rightEdge - lineLength, marginPx);
+                    ctx.moveTo(marginPx, canvas.height); ctx.lineTo(marginPx, bottomEdge - lineLength);
+                    ctx.moveTo(0, bottomEdge); ctx.lineTo(lineLength, bottomEdge);
+                    ctx.moveTo(rightEdge, canvas.height); ctx.lineTo(rightEdge, bottomEdge - lineLength);
+                    ctx.moveTo(canvas.width, bottomEdge); ctx.lineTo(rightEdge - lineLength, bottomEdge);
+                }
+                ctx.stroke();
+            }
+            newPages.push(canvas.toDataURL('image/jpeg', 0.95));
+        }
     }
     setPages(newPages);
     setIsLoading(false);
-  }, [imageInfo, settings]);
+}, [imageInfo, settings]);
   
   const generateFullPreview = useCallback(async (pageSources: string[]): Promise<string | null> => {
     if (pageSources.length === 0 || !settings) return null;
@@ -432,25 +485,50 @@ function App() {
       format: 'a4',
     });
 
-    const appName = t('appTitle');
-    const appUrl = t('brandingLine2');
-
     for (let i = 0; i < pages.length; i++) {
       if (i > 0) {
         pdf.addPage();
       }
       pdf.addImage(pages[i], 'JPEG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
-
-      // Add branding to the bottom margin
-      pdf.setFontSize(6);
-      pdf.setTextColor(150);
-      const brandingText1 = t('brandingLine1', { appName });
-      const brandingText2 = appUrl;
-      pdf.text(brandingText1, A4_WIDTH_MM / 2, A4_HEIGHT_MM - 3, { align: 'center' });
-      pdf.text(brandingText2, A4_WIDTH_MM / 2, A4_HEIGHT_MM - 1.5, { align: 'center' });
     }
     
-    // Using a timeout to give user feedback before the save dialog blocks the UI
+    // Add branding mark to the last page
+    if (pages.length > 0) {
+        pdf.setPage(pages.length);
+
+        const brandingText = "printmyposter.art";
+        const padding = 2; // mm
+        const fontSize = 7;
+        
+        pdf.setFontSize(fontSize);
+
+        const textDimensions = pdf.getTextDimensions(brandingText);
+        const boxWidth = textDimensions.w + (padding * 2);
+        const boxHeight = textDimensions.h + padding;
+        const marginFromEdge = 3; // mm
+
+        const marginInMm = settings.marginUnit === 'in'
+          ? settings.printerMargin * MM_PER_INCH
+          : settings.printerMargin;
+
+        const boxX = A4_WIDTH_MM - marginInMm - marginFromEdge - boxWidth;
+        const boxY = A4_HEIGHT_MM - marginInMm - marginFromEdge - boxHeight;
+        
+        const textX = boxX + padding;
+        const textY = boxY + textDimensions.h + (padding / 2) - 0.5;
+
+        // Set fill for the box with opacity
+        pdf.saveGraphicsState();
+        pdf.setGState(new (pdf as any).GState({opacity: 0.6}));
+        pdf.setFillColor(0, 0, 0);
+        pdf.roundedRect(boxX, boxY, boxWidth, boxHeight, 1.5, 1.5, 'F');
+        pdf.restoreGraphicsState();
+        
+        // Set text color (no opacity)
+        pdf.setTextColor(255, 255, 255);
+        pdf.text(brandingText, textX, textY);
+    }
+
     setTimeout(() => {
       pdf.save('print-my-poster.pdf');
       setIsGeneratingPdf(false);
