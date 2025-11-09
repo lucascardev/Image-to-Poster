@@ -91,5 +91,14 @@ export default {
   "postersCreated": "Pósteres Creados Hoy",
   "fullscreenButton": "Ver en Pantalla Completa",
   "fullscreenPreviewAlt": "Vista previa en pantalla completa del póster montado",
-  "brandingText": "Creado con: printmyposter.art"
+  "brandingText": "Creado con: printmyposter.art",
+  "adModalTitle": "Desbloquea Tu Descarga",
+  "adModalDesc": "Para iniciar la descarga, visita la página de nuestro patrocinador. La descarga se desbloqueará después de que permanezcas allí durante {seconds} segundos.",
+  "adModalButton": "Visitar Patrocinador y Desbloquear",
+  "adModalWaitingTitle": "Desbloqueando...",
+  "adModalCountdown": "segundos restantes...",
+  "adModalStayOnPage": "Por favor, permanece en la página del patrocinador para continuar la cuenta atrás. Volver a esta pestaña pausará el temporizador.",
+  "adModalUnlockedTitle": "¡Descarga Desbloqueada!",
+  "adModalUnlockedDesc": "¡Gracias por tu apoyo! Tu PDF está listo para descargar.",
+  "adModalDownloadNow": "Descargar Ahora"
 }

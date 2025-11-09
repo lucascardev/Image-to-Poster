@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import jsPDF from 'jspdf';
 
@@ -16,6 +17,7 @@ import StatsWidget from './components/StatsWidget';
 import AdPlaceholder from './components/AdPlaceholder';
 import ThreeBackground from './components/ThreeBackground';
 import { LogoIcon, PixIcon, CloseIcon, ExpandIcon } from './components/Icons';
+import AdCountdownModal from './components/AdCountdownModal';
 
 // Types and Constants
 import type { AppSettings, ImageInfo, ResolutionWarning } from './types';
@@ -113,6 +115,7 @@ function App() {
   const [postersCreatedCount, setPostersCreatedCount] = useState(1247); // Start with a realistic number
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [fullPreviewSrc, setFullPreviewSrc] = useState<string | null>(null);
+  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
 
 
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -489,7 +492,7 @@ function App() {
   };
 
 
-  const handleDownloadPdf = async () => {
+  const generateAndSavePdf = async () => {
     if (pages.length === 0) return;
     setIsGeneratingPdf(true);
     setPostersCreatedCount(c => c + 1);
@@ -538,6 +541,10 @@ function App() {
     }, 100);
   };
   
+  const handleDownloadClick = () => {
+    setIsAdModalOpen(true);
+  };
+
   // Fake poster count increment
   useEffect(() => {
     const interval = setInterval(() => {
@@ -604,7 +611,7 @@ function App() {
                   <>
                     <PreviewArea pages={pages} isLoading={isLoading} settings={settings} onOpenFullscreen={handleOpenFullscreen} />
                     <AdPlaceholder type="sevenkbet" />
-                    <DownloadPanel onDownload={handleDownloadPdf} disabled={isGeneratingPdf || isLoading || pages.length === 0} isGenerating={isGeneratingPdf} />
+                    <DownloadPanel onDownload={handleDownloadClick} disabled={isGeneratingPdf || isLoading || pages.length === 0} isGenerating={isGeneratingPdf} />
                     <Instructions settings={settings} />
                     <InstallInstructions />
                   </>
@@ -630,6 +637,11 @@ function App() {
         isOpen={isFullscreenOpen} 
         onClose={handleCloseFullscreen} 
         src={fullPreviewSrc} 
+      />
+      <AdCountdownModal
+        isOpen={isAdModalOpen}
+        onClose={() => setIsAdModalOpen(false)}
+        onDownload={generateAndSavePdf}
       />
     </>
   );

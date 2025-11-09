@@ -1,4 +1,5 @@
 
+
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Turn any image into a giant poster and print it at home on your regular printer.",
@@ -92,5 +93,14 @@ export default {
   "postersCreated": "Posters Created Today",
   "fullscreenButton": "View in Fullscreen",
   "fullscreenPreviewAlt": "Fullscreen preview of the assembled poster",
-  "brandingText": "Created with: printmyposter.art"
+  "brandingText": "Created with: printmyposter.art",
+  "adModalTitle": "Unlock Your Download",
+  "adModalDesc": "To start the download, please visit our sponsor's page. The download will unlock after you stay there for {seconds} seconds.",
+  "adModalButton": "Visit Sponsor & Unlock Download",
+  "adModalWaitingTitle": "Unlocking in Progress...",
+  "adModalCountdown": "seconds remaining...",
+  "adModalStayOnPage": "Please stay on the sponsor's page to continue the countdown. Returning to this tab will pause the timer.",
+  "adModalUnlockedTitle": "Download Unlocked!",
+  "adModalUnlockedDesc": "Thank you for your support! Your PDF is now ready to download.",
+  "adModalDownloadNow": "Download Now"
 }

@@ -1,4 +1,5 @@
 
+
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Transforme qualquer imagem em um pôster gigante e imprima em casa na sua impressora comum.",
@@ -92,5 +93,14 @@ export default {
   "postersCreated": "Pôsteres Criados Hoje",
   "fullscreenButton": "Ver em Tela Cheia",
   "fullscreenPreviewAlt": "Pré-visualização em tela cheia do pôster montado",
-  "brandingText": "Criado com: printmyposter.art"
+  "brandingText": "Criado com: printmyposter.art",
+  "adModalTitle": "Desbloqueie Seu Download",
+  "adModalDesc": "Para iniciar o download, visite a página do nosso patrocinador. O download será desbloqueado após você permanecer lá por {seconds} segundos.",
+  "adModalButton": "Visitar Patrocinador e Desbloquear",
+  "adModalWaitingTitle": "Desbloqueando...",
+  "adModalCountdown": "segundos restantes...",
+  "adModalStayOnPage": "Por favor, permaneça na página do patrocinador para continuar a contagem. Voltar para esta aba pausará o cronômetro.",
+  "adModalUnlockedTitle": "Download Desbloqueado!",
+  "adModalUnlockedDesc": "Obrigado pelo seu apoio! Seu PDF está pronto para baixar.",
+  "adModalDownloadNow": "Baixar Agora"
 }
