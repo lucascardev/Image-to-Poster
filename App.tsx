@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import jsPDF from 'jspdf';
 
@@ -189,9 +190,9 @@ function App() {
     // Draw the scaled image onto the large canvas, centered
     largeCtx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
 
-    // Resolution warning logic (remains the same and is still relevant)
-    const requiredWidth = Math.round((pagePrintableWidthMm * settings.gridCols / MM_PER_INCH) * RECOMMENDED_DPI);
-    const requiredHeight = Math.round((pagePrintableHeightMm * settings.gridRows / MM_PER_INCH) * RECOMMENDED_DPI);
+    // Resolution warning logic, threshold lowered by half per user request
+    const requiredWidth = Math.round((pagePrintableWidthMm * settings.gridCols / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
+    const requiredHeight = Math.round((pagePrintableHeightMm * settings.gridRows / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
 
     if (img.naturalWidth < requiredWidth || img.naturalHeight < requiredHeight) {
         setResolutionWarning({
@@ -290,7 +291,7 @@ function App() {
                 ctx.restore();
             }
 
-            // Add crop marks
+            // Add crop marks based on assembly logic
             if (settings.cropMarkType !== 'none') {
                 ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; // red-500
                 ctx.lineWidth = 1;
@@ -298,21 +299,35 @@ function App() {
                 const lineLength = marginPx * 0.75;
                 const rightEdge = marginPx + tileWidthPx;
                 const bottomEdge = marginPx + tileHeightPx;
+
+                // Only draw crop marks for interior edges that need cutting: top and left.
+                const drawTop = row > 0;
+                const drawLeft = col > 0;
+
                 ctx.beginPath();
+                
                 if (settings.cropMarkType === 'full') {
-                    ctx.moveTo(0, marginPx); ctx.lineTo(canvas.width, marginPx);
-                    ctx.moveTo(0, bottomEdge); ctx.lineTo(canvas.width, bottomEdge);
-                    ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, canvas.height);
-                    ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, canvas.height);
+                    // Dashed line across the top margin area to be cut
+                    if (drawTop) { 
+                        ctx.moveTo(0, marginPx); 
+                        ctx.lineTo(canvas.width, marginPx); 
+                    }
+                    // Dashed line down the left margin area to be cut
+                    if (drawLeft) { 
+                        ctx.moveTo(marginPx, 0); 
+                        ctx.lineTo(marginPx, canvas.height); 
+                    }
                 } else { // corners
-                    ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, lineLength);
-                    ctx.moveTo(0, marginPx); ctx.lineTo(lineLength, marginPx);
-                    ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, lineLength);
-                    ctx.moveTo(canvas.width, marginPx); ctx.lineTo(rightEdge - lineLength, marginPx);
-                    ctx.moveTo(marginPx, canvas.height); ctx.lineTo(marginPx, bottomEdge - lineLength);
-                    ctx.moveTo(0, bottomEdge); ctx.lineTo(lineLength, bottomEdge);
-                    ctx.moveTo(rightEdge, canvas.height); ctx.lineTo(rightEdge, bottomEdge - lineLength);
-                    ctx.moveTo(canvas.width, bottomEdge); ctx.lineTo(rightEdge - lineLength, bottomEdge);
+                    // Top edge marks (for cutting the top margin)
+                    if (drawTop) {
+                        ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, lineLength);         // Top-left corner (vertical part)
+                        ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, lineLength);       // Top-right corner (vertical part)
+                    }
+                    // Left edge marks (for cutting the left margin)
+                    if (drawLeft) {
+                        ctx.moveTo(0, marginPx); ctx.lineTo(lineLength, marginPx);         // Top-left corner (horizontal part)
+                        ctx.moveTo(0, bottomEdge); ctx.lineTo(lineLength, bottomEdge);     // Bottom-left corner (horizontal part)
+                    }
                 }
                 ctx.stroke();
             }

@@ -1,7 +1,7 @@
 
 export default {
   "appTitle": "Print My Poster",
-  "appNewSubtitle": "Turn any image into a giant, multi-page poster.",
+  "appNewSubtitle": "Turn any image into a giant poster and print it at home on your regular printer.",
   "configTitle": "Configuration",
   "step1Label": "Step 1: Upload Image",
   "uploadFile": "Upload an Image",
