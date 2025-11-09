@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslations } from '../hooks/useTranslations';
-import { BrazilFlagIcon, UkFlagIcon } from './Icons';
+import { BrazilFlagIcon, UkFlagIcon, SpainFlagIcon } from './Icons';
 
 const LanguageSwitcher: React.FC = () => {
   const { language, setLanguage } = useTranslations();
 
-  const handleLanguageChange = (lang: 'en' | 'pt-BR') => {
+  const handleLanguageChange = (lang: 'en' | 'pt-BR' | 'es') => {
     setLanguage(lang);
   };
 
@@ -22,6 +22,14 @@ const LanguageSwitcher: React.FC = () => {
       >
         <BrazilFlagIcon className="w-5 h-5" />
         <span>PT-BR</span>
+      </button>
+      <button
+        onClick={() => handleLanguageChange('es')}
+        className={`${commonClasses} ${language === 'es' ? activeClasses : inactiveClasses}`}
+        aria-pressed={language === 'es'}
+      >
+        <SpainFlagIcon className="w-5 h-5" />
+        <span>ES</span>
       </button>
       <button
         onClick={() => handleLanguageChange('en')}

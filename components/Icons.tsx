@@ -143,6 +143,20 @@ export const BrazilFlagIcon: React.FC<IconProps> = (props) => (
   </svg>
 );
 
+export const SpainFlagIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
+    <defs>
+      <clipPath id="es-clip">
+        <circle cx="10" cy="10" r="10" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#es-clip)">
+      <rect width="20" height="20" fill="#c60b1e" />
+      <rect y="5" width="20" height="10" fill="#ffc400" />
+    </g>
+  </svg>
+);
+
 export const UkFlagIcon: React.FC<IconProps> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
      <defs>
