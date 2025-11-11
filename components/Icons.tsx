@@ -119,7 +119,7 @@ export const CashIcon: React.FC<IconProps> = (props) => (
 export const FaceScanIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.5v.75A.75.75 0 004.5 6h15a.75.75 0 00.75-.75V4.5M3.75 19.5v-.75A.75.75 0 014.5 18h15a.75.75 0 01.75.75v.75M8.25 12h7.5" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9.375c.328-.328.788-.525 1.28-.525h3.44c.492 0 .952.197 1.28.525M9 14.625c.328.328.788.525 1.28.525h3.44c.492 0 .952-.197 1.28.525" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 9.375c.328-.328.788-.525 1.28-.525h3.44c.492 0 .952.197 1.28.525M9 14.625c.328.328.788-.525 1.28.525h3.44c.492 0 .952-.197 1.28.525" />
     </svg>
 );
 
@@ -220,4 +220,10 @@ export const CheckCircleIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
+);
+
+export const ChevronDownIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" {...props}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+  </svg>
 );

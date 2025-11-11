@@ -583,11 +583,14 @@ function App() {
         </header>
 
         <main className="container mx-auto p-4 md:py-12 md:px-8">
+            
+             
             {!imageInfo && (
               <div className="mb-8">
                 <HowItWorks />
               </div>
             )}
+            <div id="container-1b88d1385b49e0f8d92886dc4c59c255"></div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
               <div className="lg:col-span-1">
                 <SettingsPanel 
