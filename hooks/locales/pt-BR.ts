@@ -102,5 +102,9 @@ export default {
   "adModalStayOnPage": "Por favor, permaneça na página do patrocinador para continuar a contagem. Voltar para esta aba pausará o cronômetro.",
   "adModalUnlockedTitle": "Download Desbloqueado!",
   "adModalUnlockedDesc": "Obrigado pelo seu apoio! Seu PDF está pronto para baixar.",
-  "adModalDownloadNow": "Baixar Agora"
+  "adModalDownloadNow": "Baixar Agora",
+  "shareButton": "Compartilhar",
+  "shareTitle": "Print My Poster",
+  "shareText": "Crie pôsteres gigantes de qualquer imagem de graça com esta ferramenta!",
+  "linkCopied": "Link Copiado!"
 }

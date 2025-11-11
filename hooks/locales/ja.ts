@@ -100,5 +100,9 @@ export default {
   "adModalStayOnPage": "カウントダウンを続けるには、スポンサーのページに留まってください。このタブに戻るとタイマーが一時停止します。",
   "adModalUnlockedTitle": "ダウンロードがアンロックされました！",
   "adModalUnlockedDesc": "ご協力ありがとうございます！PDFのダウンロード準備ができました。",
-  "adModalDownloadNow": "今すぐダウンロード"
+  "adModalDownloadNow": "今すぐダウンロード",
+  "shareButton": "共有",
+  "shareTitle": "ポスターを印刷",
+  "shareText": "この無料ツールで、どんな画像からでも巨大なポスターを作成しましょう！",
+  "linkCopied": "リンクをコピーしました！"
 }

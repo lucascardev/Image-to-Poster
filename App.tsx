@@ -16,7 +16,7 @@ import InstallInstructions from './components/InstallInstructions';
 import StatsWidget from './components/StatsWidget';
 import AdPlaceholder from './components/AdPlaceholder';
 import ThreeBackground from './components/ThreeBackground';
-import { LogoIcon, PixIcon, CloseIcon, ExpandIcon } from './components/Icons';
+import { LogoIcon, PixIcon, CloseIcon, ExpandIcon, ShareIcon, CheckCircleIcon } from './components/Icons';
 import AdCountdownModal from './components/AdCountdownModal';
 
 // Types and Constants
@@ -116,6 +116,7 @@ function App() {
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [fullPreviewSrc, setFullPreviewSrc] = useState<string | null>(null);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
 
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -545,6 +546,31 @@ function App() {
     setIsAdModalOpen(true);
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: t('shareTitle'),
+      text: t('shareText'),
+      url: 'https://www.printmyposter.art/',
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2000);
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+        alert('Could not copy link to clipboard.');
+      }
+    }
+  };
+
   // Fake poster count increment
   useEffect(() => {
     const interval = setInterval(() => {
@@ -569,6 +595,22 @@ function App() {
                     </div>
                     <div className="flex items-center gap-4">
                         <StatsWidget count={postersCreatedCount} />
+                        <button
+                          onClick={handleShare}
+                          className="hidden sm:inline-flex items-center justify-center gap-2 bg-white text-slate-700 font-bold text-sm py-2 px-3 rounded-md hover:bg-slate-50 transition-all duration-200 border border-slate-200 shadow-sm min-w-[140px]"
+                        >
+                          {shareCopied ? (
+                            <span className="flex items-center gap-2 text-green-600">
+                              <CheckCircleIcon className="w-5 h-5" />
+                              {t('linkCopied')}
+                            </span>
+                          ) : (
+                            <span className="flex items-center gap-2">
+                              <ShareIcon className="w-5 h-5 text-indigo-600" />
+                              {t('shareButton')}
+                            </span>
+                          )}
+                        </button>
                         <LanguageSwitcher />
                         <button 
                             onClick={() => setIsDonationModalOpen(true)}

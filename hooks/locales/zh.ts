@@ -100,5 +100,9 @@ export default {
   "adModalStayOnPage": "请停留在赞助商页面以继续倒计时。返回此标签页将暂停计时器。",
   "adModalUnlockedTitle": "下载已解锁！",
   "adModalUnlockedDesc": "感谢您的支持！您的PDF现在可以下载了。",
-  "adModalDownloadNow": "立即下载"
+  "adModalDownloadNow": "立即下载",
+  "shareButton": "分享",
+  "shareTitle": "打印我的海报",
+  "shareText": "使用此免费工具从任何图像创建巨型海报！",
+  "linkCopied": "链接已复制！"
 }

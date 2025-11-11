@@ -102,5 +102,9 @@ export default {
   "adModalStayOnPage": "Please stay on the sponsor's page to continue the countdown. Returning to this tab will pause the timer.",
   "adModalUnlockedTitle": "Download Unlocked!",
   "adModalUnlockedDesc": "Thank you for your support! Your PDF is now ready to download.",
-  "adModalDownloadNow": "Download Now"
+  "adModalDownloadNow": "Download Now",
+  "shareButton": "Share",
+  "shareTitle": "Print My Poster",
+  "shareText": "Create giant posters from any image for free with this tool!",
+  "linkCopied": "Link Copied!"
 }

@@ -100,5 +100,9 @@ export default {
   "adModalStayOnPage": "Por favor, permanece en la página del patrocinador para continuar la cuenta atrás. Volver a esta pestaña pausará el temporizador.",
   "adModalUnlockedTitle": "¡Descarga Desbloqueada!",
   "adModalUnlockedDesc": "¡Gracias por tu apoyo! Tu PDF está listo para descargar.",
-  "adModalDownloadNow": "Descargar Ahora"
+  "adModalDownloadNow": "Descargar Ahora",
+  "shareButton": "Compartir",
+  "shareTitle": "Imprime Mi Póster",
+  "shareText": "¡Crea pósteres gigantes a partir de cualquier imagen gratis con esta herramienta!",
+  "linkCopied": "¡Enlace Copiado!"
 }
