@@ -1,11 +1,11 @@
 import React from 'react';
 import { useTranslations } from '../hooks/useTranslations';
-import { BrazilFlagIcon, UkFlagIcon, SpainFlagIcon } from './Icons';
+import { BrazilFlagIcon, UkFlagIcon, SpainFlagIcon, ChinaFlagIcon, JapanFlagIcon } from './Icons';
 
 const LanguageSwitcher: React.FC = () => {
   const { language, setLanguage } = useTranslations();
 
-  const handleLanguageChange = (lang: 'en' | 'pt-BR' | 'es') => {
+  const handleLanguageChange = (lang: 'en' | 'pt-BR' | 'es' | 'zh' | 'ja') => {
     setLanguage(lang);
   };
 
@@ -30,6 +30,22 @@ const LanguageSwitcher: React.FC = () => {
       >
         <SpainFlagIcon className="w-5 h-5" />
         <span>ES</span>
+      </button>
+      <button
+        onClick={() => handleLanguageChange('zh')}
+        className={`${commonClasses} ${language === 'zh' ? activeClasses : inactiveClasses}`}
+        aria-pressed={language === 'zh'}
+      >
+        <ChinaFlagIcon className="w-5 h-5" />
+        <span>CN</span>
+      </button>
+       <button
+        onClick={() => handleLanguageChange('ja')}
+        className={`${commonClasses} ${language === 'ja' ? activeClasses : inactiveClasses}`}
+        aria-pressed={language === 'ja'}
+      >
+        <JapanFlagIcon className="w-5 h-5" />
+        <span>JP</span>
       </button>
       <button
         onClick={() => handleLanguageChange('en')}

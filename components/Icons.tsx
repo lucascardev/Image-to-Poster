@@ -158,6 +158,35 @@ export const SpainFlagIcon: React.FC<IconProps> = (props) => (
   </svg>
 );
 
+export const JapanFlagIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
+    <defs>
+      <clipPath id="jp-clip">
+        <circle cx="10" cy="10" r="10" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#jp-clip)">
+      <rect width="20" height="20" fill="#fff" />
+      <circle cx="10" cy="10" r="4.5" fill="#bc002d" />
+    </g>
+  </svg>
+);
+
+export const ChinaFlagIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
+    <defs>
+      <clipPath id="cn-clip">
+        <circle cx="10" cy="10" r="10" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#cn-clip)">
+      <rect width="20" height="20" fill="#ee1c25" />
+      <path d="M5 4L5.588 5.854 4.146 4.708 6.031 4.708 4.588 5.854 5 4z" fill="#ff0" transform="scale(1.2) translate(0.5, -0.5)"/>
+    </g>
+  </svg>
+);
+
+
 export const UkFlagIcon: React.FC<IconProps> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
      <defs>
