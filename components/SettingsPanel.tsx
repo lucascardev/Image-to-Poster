@@ -1,4 +1,3 @@
-
 import React from 'react';
 import type { AppSettings, CropMarkType } from '../types';
 import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon, LoadingIcon, WarningIcon } from './Icons';
@@ -13,6 +12,7 @@ interface SettingsPanelProps {
   onImageUpload: (file: File) => void;
   hasImage: boolean;
   isUploading: boolean;
+  uploadError: string | null;
 }
 
 const RadioPill: React.FC<{
@@ -41,7 +41,7 @@ const RadioPill: React.FC<{
   );
 };
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange, onImageUpload, hasImage, isUploading }) => {
+const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange, onImageUpload, hasImage, isUploading, uploadError }) => {
   const { t } = useTranslations();
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,9 +123,16 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
               </label>
               <p className="mt-2 text-sm text-slate-600">{t('dragAndDrop')}</p>
               <p className="mt-1 text-xs text-slate-500">{t('fileTypes')}</p>
+              <p className="mt-1 text-xs text-slate-500">{t('uploadRetryHint')}</p>
             </>
           )}
         </div>
+        {uploadError && (
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-700 flex items-start gap-2">
+              <WarningIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <span>{uploadError}</span>
+            </div>
+        )}
       </InputGroup>
 
       <InputGroup label={t('step2Label')} icon={<GridIcon className="w-6 h-6 text-indigo-500" />}>

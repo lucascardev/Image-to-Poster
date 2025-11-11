@@ -104,5 +104,9 @@ export default {
   "shareButton": "分享",
   "shareTitle": "打印我的海报",
   "shareText": "使用此免费工具从任何图像创建巨型海报！",
-  "linkCopied": "链接已复制！"
+  "linkCopied": "链接已复制！",
+  "uploadErrorGeneral": "无法加载图像。文件可能已损坏或格式不受支持。请尝试其他文件。",
+  "uploadErrorDimensions": "图像已加载但尺寸无效。文件可能已损坏。请尝试其他文件。",
+  "uploadErrorFallback": "上传过程中发生意外错误。请重试。",
+  "uploadRetryHint": "如果图片第一次加载失败，请再次尝试上传。"
 }

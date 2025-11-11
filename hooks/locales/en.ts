@@ -1,5 +1,3 @@
-
-
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Turn any image into a giant poster and print it at home on your regular printer.",
@@ -106,5 +104,9 @@ export default {
   "shareButton": "Share",
   "shareTitle": "Print My Poster",
   "shareText": "Create giant posters from any image for free with this tool!",
-  "linkCopied": "Link Copied!"
+  "linkCopied": "Link Copied!",
+  "uploadErrorGeneral": "Image could not be loaded. It might be corrupted or in an unsupported format. Please try another file.",
+  "uploadErrorDimensions": "Image loaded but has invalid dimensions. It might be corrupted. Please try another file.",
+  "uploadErrorFallback": "An unexpected error occurred during upload. Please try again.",
+  "uploadRetryHint": "If the image doesn't load on the first try, please try uploading it again."
 }

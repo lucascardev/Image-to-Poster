@@ -104,5 +104,9 @@ export default {
   "shareButton": "Compartir",
   "shareTitle": "Imprime Mi Póster",
   "shareText": "¡Crea pósteres gigantes a partir de cualquier imagen gratis con esta herramienta!",
-  "linkCopied": "¡Enlace Copiado!"
+  "linkCopied": "¡Enlace Copiado!",
+  "uploadErrorGeneral": "No se pudo cargar la imagen. Podría estar corrupta o en un formato no compatible. Por favor, intente con otro archivo.",
+  "uploadErrorDimensions": "La imagen se cargó pero tiene dimensiones no válidas. Podría estar corrupta. Por favor, intente con otro archivo.",
+  "uploadErrorFallback": "Ocurrió un error inesperado durante la carga. Por favor, inténtelo de nuevo.",
+  "uploadRetryHint": "Si la imagen no se carga al primer intento, por favor, intente subirla de nuevo."
 }

@@ -117,6 +117,7 @@ function App() {
   const [fullPreviewSrc, setFullPreviewSrc] = useState<string | null>(null);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
 
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -408,15 +409,16 @@ function App() {
   const handleImageUpload = async (file: File) => {
     const startTime = Date.now();
     setIsUploading(true);
+    setUploadError(null);
     
     try {
       const url = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => {
             if (e.target?.result) {
-                resolve(e.target.result as string)
+                resolve(e.target.result as string);
             } else {
-                reject(new Error("FileReader did not return a result."))
+                reject(new Error("FileReader did not return a result."));
             }
         };
         reader.onerror = (error) => reject(error);
@@ -426,15 +428,14 @@ function App() {
       const img = await new Promise<HTMLImageElement>((resolve, reject) => {
         const image = new Image();
         image.onload = () => resolve(image);
-        image.onerror = (error) => reject(error);
+        image.onerror = () => reject(new Error(t('uploadErrorGeneral')));
         image.src = url;
-        if (image.complete) resolve(image);
       });
 
       await img.decode();
 
       if (img.naturalWidth === 0 || img.naturalHeight === 0) {
-        throw new Error("Image loaded with zero dimensions.");
+        throw new Error(t('uploadErrorDimensions'));
       }
 
       const finishProcessing = () => {
@@ -488,6 +489,7 @@ function App() {
 
     } catch (error) {
       console.error("Failed to upload and process image:", error);
+      setUploadError((error as Error).message || t('uploadErrorFallback'));
       setIsUploading(false);
     }
   };
@@ -641,6 +643,7 @@ function App() {
                   onImageUpload={handleImageUpload}
                   hasImage={!!imageInfo}
                   isUploading={isUploading}
+                  uploadError={uploadError}
                 />
               </div>
               <div className="lg:col-span-2 space-y-8">

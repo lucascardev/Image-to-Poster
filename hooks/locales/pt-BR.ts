@@ -1,5 +1,3 @@
-
-
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Transforme qualquer imagem em um pôster gigante e imprima em casa na sua impressora comum.",
@@ -106,5 +104,9 @@ export default {
   "shareButton": "Compartilhar",
   "shareTitle": "Print My Poster",
   "shareText": "Crie pôsteres gigantes de qualquer imagem de graça com esta ferramenta!",
-  "linkCopied": "Link Copiado!"
+  "linkCopied": "Link Copiado!",
+  "uploadErrorGeneral": "A imagem não pôde ser carregada. Pode estar corrompida ou em um formato não suportado. Por favor, tente outro arquivo.",
+  "uploadErrorDimensions": "A imagem foi carregada, mas tem dimensões inválidas. Pode estar corrompida. Por favor, tente outro arquivo.",
+  "uploadErrorFallback": "Ocorreu um erro inesperado durante o upload. Por favor, tente novamente.",
+  "uploadRetryHint": "Se a imagem não carregar de primeira, por favor, tente enviá-la novamente."
 }
