@@ -6,7 +6,7 @@ export default {
   "uploadFile": "上传图片",
   "replaceImage": "替换图片",
   "dragAndDrop": "或拖放文件",
-  "fileTypes": "PNG, JPG, GIF，最大10MB",
+  "fileTypes": "PNG, JPG, GIF",
   "step2Label": "第2步：网格布局",
   "columnsLabel": "列",
   "rowsLabel": "行",

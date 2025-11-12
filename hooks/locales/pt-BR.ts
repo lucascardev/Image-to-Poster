@@ -6,7 +6,7 @@ export default {
   "uploadFile": "Enviar Imagem",
   "replaceImage": "Trocar Imagem",
   "dragAndDrop": "ou arraste e solte",
-  "fileTypes": "PNG, JPG, GIF de até 10MB",
+  "fileTypes": "PNG, JPG, GIF",
   "step2Label": "Passo 2: Layout da Grade",
   "columnsLabel": "Colunas",
   "rowsLabel": "Linhas",
@@ -108,5 +108,5 @@ export default {
   "uploadErrorGeneral": "A imagem não pôde ser carregada. Pode estar corrompida ou em um formato não suportado. Por favor, tente outro arquivo.",
   "uploadErrorDimensions": "A imagem foi carregada, mas tem dimensões inválidas. Pode estar corrompida. Por favor, tente outro arquivo.",
   "uploadErrorFallback": "Ocorreu um erro inesperado durante o upload. Por favor, tente novamente.",
-  "uploadRetryHint": "Se a imagem não carregar de primeira, por favor, tente enviá-la novamente."
+  "uploadRetryHint": "Se a imagem não carregar de primeira, tente novamente. Imagens grandes podem falhar por limitações de memória do navegador; tentar duas ou três vezes geralmente resolve."
 }

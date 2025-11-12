@@ -6,7 +6,7 @@ export default {
   "uploadFile": "Subir una Imagen",
   "replaceImage": "Reemplazar Imagen",
   "dragAndDrop": "o arrastra y suelta",
-  "fileTypes": "PNG, JPG, GIF de hasta 10MB",
+  "fileTypes": "PNG, JPG, GIF",
   "step2Label": "Paso 2: Diseño de la Cuadrícula",
   "columnsLabel": "Columnas",
   "rowsLabel": "Filas",

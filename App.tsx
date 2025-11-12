@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import jsPDF from 'jspdf';
 
@@ -16,7 +14,7 @@ import InstallInstructions from './components/InstallInstructions';
 import StatsWidget from './components/StatsWidget';
 import AdPlaceholder from './components/AdPlaceholder';
 import ThreeBackground from './components/ThreeBackground';
-import { LogoIcon, PixIcon, CloseIcon, ExpandIcon, ShareIcon, CheckCircleIcon } from './components/Icons';
+import { LogoIcon, PixIcon, CloseIcon, ExpandIcon, ShareIcon, CheckCircleIcon, UploadIcon } from './components/Icons';
 import AdCountdownModal from './components/AdCountdownModal';
 
 // Types and Constants
@@ -122,6 +120,16 @@ function App() {
 
   const imageRef = useRef<HTMLImageElement | null>(null);
   
+  // Effect to clean up object URLs on unmount or when image changes
+  useEffect(() => {
+    return () => {
+      if (imageInfo && imageInfo.url.startsWith('blob:')) {
+        URL.revokeObjectURL(imageInfo.url);
+      }
+    };
+  }, [imageInfo]);
+
+
   const handleOpenFullscreen = () => {
     setIsFullscreenOpen(true);
   };
@@ -158,42 +166,23 @@ function App() {
     const totalPrintableWidthPx = pagePrintableWidthPx * settings.gridCols;
     const totalPrintableHeightPx = pagePrintableHeightPx * settings.gridRows;
 
-    // Create a large canvas for the entire poster layout
-    const largeCanvas = document.createElement('canvas');
-    largeCanvas.width = totalPrintableWidthPx;
-    largeCanvas.height = totalPrintableHeightPx;
-    const largeCtx = largeCanvas.getContext('2d');
-    if (!largeCtx) {
-        setIsLoading(false);
-        return;
-    }
-
-    // Fill with white to handle letterboxing/pillarboxing
-    largeCtx.fillStyle = 'white';
-    largeCtx.fillRect(0, 0, largeCanvas.width, largeCanvas.height);
-
-    // Calculate scaled image dimensions to fit within the large canvas, preserving aspect ratio
+    // Calculate scaled image dimensions to fit within the total grid, preserving aspect ratio
     const imageRatio = img.naturalWidth / img.naturalHeight;
-    const canvasRatio = largeCanvas.width / largeCanvas.height;
+    const totalGridRatio = totalPrintableWidthPx / totalPrintableHeightPx;
 
-    let scaledWidth, scaledHeight, offsetX, offsetY;
+    let scaledImgWidth, scaledImgHeight, gridOffsetX, gridOffsetY;
 
-    if (imageRatio > canvasRatio) {
-        // Image is wider than the grid, so fit to width (pillarbox)
-        scaledWidth = largeCanvas.width;
-        scaledHeight = scaledWidth / imageRatio;
-        offsetX = 0;
-        offsetY = (largeCanvas.height - scaledHeight) / 2;
-    } else {
-        // Image is taller or same ratio, fit to height (letterbox)
-        scaledHeight = largeCanvas.height;
-        scaledWidth = scaledHeight * imageRatio;
-        offsetY = 0;
-        offsetX = (largeCanvas.width - scaledWidth) / 2;
+    if (imageRatio > totalGridRatio) { // Pillarbox
+        scaledImgWidth = totalPrintableWidthPx;
+        scaledImgHeight = scaledImgWidth / imageRatio;
+        gridOffsetX = 0;
+        gridOffsetY = (totalPrintableHeightPx - scaledImgHeight) / 2;
+    } else { // Letterbox
+        scaledImgHeight = totalPrintableHeightPx;
+        scaledImgWidth = scaledImgHeight * imageRatio;
+        gridOffsetY = 0;
+        gridOffsetX = (totalPrintableWidthPx - scaledImgWidth) / 2;
     }
-
-    // Draw the scaled image onto the large canvas, centered
-    largeCtx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight);
 
     // Resolution warning logic, threshold lowered by half per user request
     const requiredWidth = Math.round((pagePrintableWidthMm * settings.gridCols / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
@@ -251,32 +240,40 @@ function App() {
 
             const hasRightTab = settings.addOverlap && col < settings.gridCols - 1;
             const hasBottomTab = settings.addOverlap && row < settings.gridRows - 1;
-
-            // Source rectangle from the large composite canvas
-            const sX_large = col * tileWidthPx;
-            const sY_large = row * tileHeightPx;
-
-            // The desired width/height from the large canvas, including overlap
-            const sW_desired = tileWidthPx + (hasRightTab ? overlapPx : 0);
-            const sH_desired = tileHeightPx + (hasBottomTab ? overlapPx : 0);
-
-            // The actual width/height we can take, clamped to the large canvas bounds
-            const sW_actual = Math.min(sW_desired, largeCanvas.width - sX_large);
-            const sH_actual = Math.min(sH_desired, largeCanvas.height - sY_large);
-
-            // Destination rectangle on the page canvas. The destination dimensions
-            // must match the source dimensions we are actually taking.
-            const dX = marginPx;
-            const dY = marginPx;
-            const dW = sW_actual;
-            const dH = sH_actual;
-
-            // Draw the tile from the large canvas to the current page canvas
-            if (sW_actual > 0 && sH_actual > 0) {
+            
+            // Calculate this tile's area in the overall grid, including overlap
+            const tileGridX = col * tileWidthPx;
+            const tileGridY = row * tileHeightPx;
+            const tileGridW = tileWidthPx + (hasRightTab ? overlapPx : 0);
+            const tileGridH = tileHeightPx + (hasBottomTab ? overlapPx : 0);
+    
+            // Find the intersection of this tile with the scaled image area
+            const intersectX = Math.max(tileGridX, gridOffsetX);
+            const intersectY = Math.max(tileGridY, gridOffsetY);
+    
+            const intersectW = Math.min(tileGridX + tileGridW, gridOffsetX + scaledImgWidth) - intersectX;
+            const intersectH = Math.min(tileGridY + tileGridH, gridOffsetY + scaledImgHeight) - intersectY;
+    
+            // If there's an actual image portion to draw
+            if (intersectW > 0 && intersectH > 0) {
+                const scaleFactor = img.naturalWidth / scaledImgWidth;
+    
+                // Calculate source rect from original image
+                const sourceX = (intersectX - gridOffsetX) * scaleFactor;
+                const sourceY = (intersectY - gridOffsetY) * scaleFactor;
+                const sourceW = intersectW * scaleFactor;
+                const sourceH = intersectH * scaleFactor;
+                
+                // Calculate destination rect on the current page canvas
+                const destX = (intersectX - tileGridX) + marginPx;
+                const destY = (intersectY - tileGridY) + marginPx;
+                const destW = intersectW;
+                const destH = intersectH;
+    
                 ctx.drawImage(
-                    largeCanvas,
-                    sX_large, sY_large, sW_actual, sH_actual,
-                    dX, dY, dW, dH
+                    img,
+                    sourceX, sourceY, sourceW, sourceH,
+                    destX, destY, destW, destH
                 );
             }
 
@@ -406,92 +403,119 @@ function App() {
     debouncedGeneratePages();
   }, [settings, imageInfo, debouncedGeneratePages]);
 
-  const handleImageUpload = async (file: File) => {
-    const startTime = Date.now();
+  const handleImageUpload = (file: File) => {
     setIsUploading(true);
     setUploadError(null);
-    
-    try {
-      const url = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            if (e.target?.result) {
-                resolve(e.target.result as string);
+    const startTime = Date.now();
+
+    // Web Worker to decode the image in a separate thread, preventing main thread crashes.
+    const workerCode = `
+      self.onmessage = async (e) => {
+        const file = e.data;
+        try {
+          const bitmap = await createImageBitmap(file);
+          self.postMessage({ status: 'success', width: bitmap.width, height: bitmap.height });
+          bitmap.close(); // Release memory in the worker
+        } catch (error) {
+          self.postMessage({ status: 'error', message: "Image could not be decoded. It may be too large or corrupted." });
+        }
+      };
+    `;
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    const workerUrl = URL.createObjectURL(blob);
+    const worker = new Worker(workerUrl);
+
+    worker.postMessage(file);
+
+    worker.onmessage = (event) => {
+      const { status, width, height, message } = event.data;
+
+      if (status === 'error') {
+        console.error("Worker error:", message);
+        setUploadError(t('uploadErrorGeneral'));
+        setIsUploading(false);
+      } else {
+        // Worker successfully got dimensions. Now load image on main thread for canvas drawing.
+        const url = URL.createObjectURL(file);
+        const image = new Image();
+
+        image.onload = () => {
+            if (width === 0 || height === 0) {
+                setUploadError(t('uploadErrorDimensions'));
+                setIsUploading(false);
+                URL.revokeObjectURL(url);
+                return;
+            }
+
+            const finishProcessing = () => {
+                const marginInMm = settings.marginUnit === 'in' 
+                    ? settings.printerMargin * MM_PER_INCH 
+                    : settings.printerMargin;
+
+                const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+                const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+
+                const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
+                const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
+
+                let suggestedCols = 1;
+                let suggestedRows = 1;
+
+                if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
+                    suggestedCols = Math.round(width / pagePrintableWidthPx);
+                    suggestedRows = Math.round(height / pagePrintableHeightPx);
+                }
+
+                let newCols = Math.max(1, Math.min(10, suggestedCols));
+                let newRows = Math.max(1, Math.min(10, suggestedRows));
+                
+                if (newCols === 1 && newRows === 1) {
+                    newCols = 2;
+                    newRows = 2;
+                }
+
+                setSettings(prev => ({
+                    ...prev,
+                    gridCols: newCols,
+                    gridRows: newRows,
+                }));
+                
+                imageRef.current = image;
+                setImageInfo({ url, width, height });
+                setIsUploading(false);
+            };
+
+            const elapsedTime = Date.now() - startTime;
+            const minLoadingTime = 1500; // Keep spinner for a minimum time for better UX
+            const remainingTime = minLoadingTime - elapsedTime;
+
+            if (remainingTime > 0) {
+                setTimeout(finishProcessing, remainingTime);
             } else {
-                reject(new Error("FileReader did not return a result."));
+                finishProcessing();
             }
         };
-        reader.onerror = (error) => reject(error);
-        reader.readAsDataURL(file);
-      });
 
-      const img = await new Promise<HTMLImageElement>((resolve, reject) => {
-        const image = new Image();
-        image.onload = () => resolve(image);
-        image.onerror = () => reject(new Error(t('uploadErrorGeneral')));
+        image.onerror = () => {
+          setUploadError(t('uploadErrorGeneral'));
+          setIsUploading(false);
+          URL.revokeObjectURL(url);
+        };
+
         image.src = url;
-      });
-
-      await img.decode();
-
-      if (img.naturalWidth === 0 || img.naturalHeight === 0) {
-        throw new Error(t('uploadErrorDimensions'));
       }
 
-      const finishProcessing = () => {
-        // Automatically adjust grid based on image resolution for best quality
-        const marginInMm = settings.marginUnit === 'in'
-            ? settings.printerMargin * MM_PER_INCH
-            : settings.printerMargin;
+      worker.terminate();
+      URL.revokeObjectURL(workerUrl);
+    };
 
-        const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
-        const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
-
-        const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
-        const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
-
-        let suggestedCols = 1;
-        let suggestedRows = 1;
-
-        if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
-            suggestedCols = Math.round(img.naturalWidth / pagePrintableWidthPx);
-            suggestedRows = Math.round(img.naturalHeight / pagePrintableHeightPx);
-        }
-
-        let newCols = Math.max(1, Math.min(10, suggestedCols));
-        let newRows = Math.max(1, Math.min(10, suggestedRows));
-        
-        if (newCols === 1 && newRows === 1) {
-            newCols = 2;
-            newRows = 2;
-        }
-
-        setSettings(prev => ({
-            ...prev,
-            gridCols: newCols,
-            gridRows: newRows,
-        }));
-
-        imageRef.current = img;
-        setImageInfo({ url, width: img.naturalWidth, height: img.naturalHeight });
-        setIsUploading(false);
-      };
-      
-      const elapsedTime = Date.now() - startTime;
-      const minLoadingTime = 2000;
-      const remainingTime = minLoadingTime - elapsedTime;
-      
-      if (remainingTime > 0) {
-          setTimeout(finishProcessing, remainingTime);
-      } else {
-          finishProcessing();
-      }
-
-    } catch (error) {
-      console.error("Failed to upload and process image:", error);
-      setUploadError((error as Error).message || t('uploadErrorFallback'));
+    worker.onerror = (error) => {
+      console.error("Worker failed catastrophically:", error.message);
+      setUploadError(t('uploadErrorFallback'));
       setIsUploading(false);
-    }
+      worker.terminate();
+      URL.revokeObjectURL(workerUrl);
+    };
   };
 
 
@@ -664,14 +688,23 @@ function App() {
                     <InstallInstructions />
                   </>
                 ) : (
-                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-md">
-                     <h2 className="text-2xl font-bold border-b pb-4 mb-6">{t('previewTitle')}</h2>
-                     <div className="text-center py-12 px-6 border-2 border-slate-200 border-dashed rounded-lg">
-                        <LogoIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                        <h3 className="text-xl font-bold text-slate-700">{t('uploadPromptTitle')}</h3>
-                        <p className="text-slate-500 mt-2">{t('uploadPromptSubtitle')}</p>
-                     </div>
-                  </div>
+                   isUploading ? (
+                     <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-md min-h-[400px] flex items-center justify-center">
+                       <div className="text-center">
+                          <LogoIcon className="w-16 h-16 text-slate-300 mx-auto mb-4 animate-pulse" />
+                          <h3 className="text-xl font-bold text-slate-700">{t('uploadingMessage')}</h3>
+                          <p className="text-slate-500 mt-2">{t('uploadingSubtitle')}</p>
+                       </div>
+                    </div>
+                   ) : (
+                    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-md min-h-[400px] flex items-center justify-center border-2 border-dashed border-slate-300">
+                      <div className="text-center">
+                         <UploadIcon className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+                         <h3 className="text-xl font-bold text-slate-700">{t('uploadPromptTitle')}</h3>
+                         <p className="text-slate-500 mt-2">{t('uploadPromptSubtitle')}</p>
+                      </div>
+                    </div>
+                   )
                 )}
               </div>
             </div>

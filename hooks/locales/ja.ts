@@ -6,7 +6,7 @@ export default {
   "uploadFile": "画像をアップロード",
   "replaceImage": "画像を置換",
   "dragAndDrop": "またはドラッグ＆ドロップ",
-  "fileTypes": "PNG, JPG, GIF 最大10MB",
+  "fileTypes": "PNG, JPG, GIF",
   "step2Label": "ステップ2：グリッドレイアウト",
   "columnsLabel": "列",
   "rowsLabel": "行",

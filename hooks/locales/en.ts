@@ -6,7 +6,7 @@ export default {
   "uploadFile": "Upload an Image",
   "replaceImage": "Replace Image",
   "dragAndDrop": "or drag and drop",
-  "fileTypes": "PNG, JPG, GIF up to 10MB",
+  "fileTypes": "PNG, JPG, GIF",
   "step2Label": "Step 2: Grid Layout",
   "columnsLabel": "Columns",
   "rowsLabel": "Rows",
@@ -108,5 +108,5 @@ export default {
   "uploadErrorGeneral": "Image could not be loaded. It might be corrupted or in an unsupported format. Please try another file.",
   "uploadErrorDimensions": "Image loaded but has invalid dimensions. It might be corrupted. Please try another file.",
   "uploadErrorFallback": "An unexpected error occurred during upload. Please try again.",
-  "uploadRetryHint": "If the image doesn't load on the first try, please try uploading it again."
+  "uploadRetryHint": "If the image doesn't load at first, try again. Large images can sometimes fail due to browser memory limits; trying two or three times usually works."
 }
