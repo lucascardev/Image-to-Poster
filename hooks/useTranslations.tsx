@@ -4,8 +4,9 @@ import ptBRTranslations from './locales/pt-BR.ts';
 import esTranslations from './locales/es.ts';
 import zhTranslations from './locales/zh.ts';
 import jaTranslations from './locales/ja.ts';
+import deTranslations from './locales/de.ts';
 
-type Language = 'en' | 'pt-BR' | 'es' | 'zh' | 'ja';
+type Language = 'en' | 'pt-BR' | 'es' | 'zh' | 'ja' | 'de';
 
 interface TranslationsContextType {
   language: Language;
@@ -15,7 +16,7 @@ interface TranslationsContextType {
 
 const TranslationsContext = createContext<TranslationsContextType | undefined>(undefined);
 
-const availableLanguages: Language[] = ['en', 'pt-BR', 'es', 'zh', 'ja'];
+const availableLanguages: Language[] = ['en', 'pt-BR', 'es', 'zh', 'ja', 'de'];
 const defaultLanguage: Language = 'en';
 
 const translationsData: Record<Language, Record<string, string>> = {
@@ -24,6 +25,7 @@ const translationsData: Record<Language, Record<string, string>> = {
   'es': esTranslations,
   'zh': zhTranslations,
   'ja': jaTranslations,
+  'de': deTranslations,
 };
 
 export const TranslationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -38,6 +40,7 @@ export const TranslationsProvider: React.FC<{ children: React.ReactNode }> = ({ 
       if (browserLang.startsWith('es')) return 'es';
       if (browserLang.startsWith('ja')) return 'ja';
       if (browserLang.startsWith('zh')) return 'zh';
+      if (browserLang.startsWith('de')) return 'de';
     } catch (e) {
       // Fails in environments where localStorage or navigator is not available
     }
