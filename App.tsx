@@ -8,13 +8,12 @@ import Instructions from './components/Instructions';
 import ResolutionWarningDisplay from './components/ResolutionWarningDisplay';
 import DownloadPanel from './components/DownloadPanel';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import DonationModal from './components/DonationModal';
 import HowItWorks from './components/HowItWorks';
 import InstallInstructions from './components/InstallInstructions';
 import StatsWidget from './components/StatsWidget';
 import AdPlaceholder from './components/AdPlaceholder';
 import ThreeBackground from './components/ThreeBackground';
-import { LogoIcon, PixIcon, CloseIcon, ExpandIcon, ShareIcon, CheckCircleIcon, UploadIcon } from './components/Icons';
+import { LogoIcon, PayPalIcon, CloseIcon, ExpandIcon, ShareIcon, CheckCircleIcon, UploadIcon } from './components/Icons';
 import AdCountdownModal from './components/AdCountdownModal';
 import DonationCompleted from './components/DonationCompleted';
 import DonationCanceled from './components/DonationCanceled';
@@ -122,7 +121,6 @@ function App() {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState<boolean>(false);
   const [resolutionWarning, setResolutionWarning] = useState<ResolutionWarning | null>(null);
-  const [isDonationModalOpen, setIsDonationModalOpen] = useState(false);
   const [postersCreatedCount, setPostersCreatedCount] = useState(1247); // Start with a realistic number
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [fullPreviewSrc, setFullPreviewSrc] = useState<string | null>(null);
@@ -651,13 +649,15 @@ function App() {
                           )}
                         </button>
                         <LanguageSwitcher />
-                        <button 
-                            onClick={() => setIsDonationModalOpen(true)}
-                            className="hidden sm:inline-flex items-center gap-2 bg-green-100 text-green-800 font-bold text-sm py-2 px-3 rounded-md hover:bg-green-200 transition-colors"
+                        <a 
+                            href="https://www.paypal.com/donate/?hosted_button_id=G5XFE9CREP54U"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hidden sm:inline-flex items-center gap-2 bg-sky-100 text-sky-800 font-bold text-sm py-2 px-3 rounded-md hover:bg-sky-200 transition-colors"
                         >
-                            <PixIcon className="w-5 h-5" />
-                            {t('donateWithPix')}
-                        </button>
+                            <PayPalIcon className="w-5 h-5" />
+                            {t('donateWithPayPal')}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -726,7 +726,6 @@ function App() {
              <p>{t('footerText', { year: new Date().getFullYear() })}</p>
         </footer>
       </div>
-      <DonationModal isOpen={isDonationModalOpen} onClose={() => setIsDonationModalOpen(false)} />
       <FullscreenPreviewModal 
         isOpen={isFullscreenOpen} 
         onClose={handleCloseFullscreen} 
