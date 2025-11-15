@@ -23,6 +23,7 @@ import DonationCanceled from './components/DonationCanceled';
 import type { AppSettings, ImageInfo, ResolutionWarning } from './types';
 import { A4_WIDTH_MM, A4_HEIGHT_MM, MM_PER_INCH, RECOMMENDED_DPI } from './constants';
 import { useTranslations } from './hooks/useTranslations';
+import { APP_VERSION } from './version';
 
 const initialSettings: AppSettings = {
   gridCols: 3,
@@ -723,7 +724,7 @@ function App() {
             </div>
         </main>
         <footer className="bg-slate-800/90 text-slate-400 mt-24 py-10 text-center text-sm">
-             <p>{t('footerText', { year: new Date().getFullYear() })}</p>
+             <p>{t('footerText', { year: new Date().getFullYear() })} | v{APP_VERSION}</p>
         </footer>
       </div>
       <FullscreenPreviewModal 

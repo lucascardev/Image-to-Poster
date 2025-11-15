@@ -45,7 +45,7 @@ export default {
   "warningTitle": "Aviso de Baixa Resolução",
   "warningMessage": "Para uma impressão de boa qualidade de {cols}x{rows} páginas, sua imagem deve ter pelo menos <strong>{requiredWidth}px por {requiredHeight}px</strong>. Sua imagem tem <strong>{actualWidth}px por {actualHeight}px</strong>. O resultado pode parecer borrado ou pixelado quando impresso.",
   "advertisement": "Publicidade",
-  "footerText": "© {year} PrintMyPoster.art. Todos os direitos reservados.",
+  "footerText": "© {year} PrintMyPoster.art. Todos os direitos reservados",
   "installAppTitle": "Instale o App para Uso Offline",
   "installAppDescription": "Para uma melhor experiência, você pode instalar este aplicativo no seu dispositivo. Isso permite carregamento mais rápido e acesso offline.",
   "installStep1": "Abra o menu do seu navegador (geralmente três pontos ou linhas).",

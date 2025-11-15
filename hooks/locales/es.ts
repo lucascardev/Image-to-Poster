@@ -45,7 +45,7 @@ export default {
   "warningTitle": "Advertencia de Baja Resolución",
   "warningMessage": "Para una impresión de buena calidad de {cols}x{rows} páginas, tu imagen debe tener al menos <strong>{requiredWidth}px por {requiredHeight}px</strong>. Tu imagen tiene <strong>{actualWidth}px por {actualHeight}px</strong>. El resultado puede parecer borroso o pixelado al imprimir.",
   "advertisement": "Publicidad",
-  "footerText": "© {year} PrintMyPoster.art. Todos los derechos reservados.",
+  "footerText": "© {year} PrintMyPoster.art. Todos los derechos reservados",
   "installAppTitle": "Instala la App para Uso sin Conexión",
   "installAppDescription": "Para una mejor experiencia, puedes instalar esta aplicación en tu dispositivo. Esto permite una carga más rápida y acceso sin conexión.",
   "installStep1": "Abre el menú de tu navegador (generalmente tres puntos o líneas).",

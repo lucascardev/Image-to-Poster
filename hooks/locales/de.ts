@@ -45,7 +45,7 @@ export default {
   "warningTitle": "Warnung: Niedrige Auflösung",
   "warningMessage": "Für eine gute Druckqualität von {cols}x{rows} Seiten sollte Ihr Bild mindestens <strong>{requiredWidth}px mal {requiredHeight}px</strong> groß sein. Ihr Bild ist <strong>{actualWidth}px mal {actualHeight}px</strong>. Das Ergebnis könnte beim Drucken verschwommen oder verpixelt aussehen.",
   "advertisement": "Werbung",
-  "footerText": "© {year} PrintMyPoster.art. Alle Rechte vorbehalten.",
+  "footerText": "© {year} PrintMyPoster.art. Alle Rechte vorbehalten",
   "installAppTitle": "App für Offline-Nutzung installieren",
   "installAppDescription": "Für eine bessere Erfahrung können Sie diese Anwendung auf Ihrem Gerät installieren. Dies ermöglicht ein schnelleres Laden und Offline-Zugriff.",
   "installStep1": "Öffnen Sie das Menü Ihres Browsers (normalerweise drei Punkte oder Linien).",

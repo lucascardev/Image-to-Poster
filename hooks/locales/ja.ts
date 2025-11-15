@@ -45,7 +45,7 @@ export default {
   "warningTitle": "低解像度警告",
   "warningMessage": "{cols}x{rows}ページの高品質な印刷のためには、画像は少なくとも<strong>{requiredWidth}px x {requiredHeight}px</strong>である必要があります。あなたの画像は<strong>{actualWidth}px x {actualHeight}px</strong>です。印刷結果がぼやけたり、ピクセル化して見える可能性があります。",
   "advertisement": "広告",
-  "footerText": "© {year} PrintMyPoster.art. 無断転載を禁じます。",
+  "footerText": "© {year} PrintMyPoster.art. 無断転載を禁じます",
   "installAppTitle": "オフラインで使用するためにアプリをインストール",
   "installAppDescription": "より良い体験のために、このアプリケーションをデバイスにインストールできます。これにより、読み込みが速くなり、オフラインでアクセスできます。",
   "installStep1": "ブラウザのメニュー（通常は3つの点または線）を開きます。",

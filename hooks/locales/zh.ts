@@ -45,7 +45,7 @@ export default {
   "warningTitle": "低分辨率警告",
   "warningMessage": "为获得良好的 {cols}x{rows} 页打印质量，您的图像应至少为 <strong>{requiredWidth}px x {requiredHeight}px</strong>。您的图像为 <strong>{actualWidth}px x {actualHeight}px</strong>。打印结果可能会显得模糊或像素化。",
   "advertisement": "广告",
-  "footerText": "© {year} PrintMyPoster.art. 保留所有权利。",
+  "footerText": "© {year} PrintMyPoster.art. 保留所有权利",
   "installAppTitle": "安装应用以供离线使用",
   "installAppDescription": "为了更好的体验，您可以在设备上安装此应用程序。这可以加快加载速度并支持离线访问。",
   "installStep1": "打开浏览器的菜单（通常是三个点或三条线）。",
