@@ -108,5 +108,10 @@ export default {
   "uploadErrorGeneral": "No se pudo cargar la imagen. Podría estar corrupta o en un formato no compatible. Por favor, intente con otro archivo.",
   "uploadErrorDimensions": "La imagen se cargó pero tiene dimensiones no válidas. Podría estar corrupta. Por favor, intente con otro archivo.",
   "uploadErrorFallback": "Ocurrió un error inesperado durante la carga. Por favor, inténtelo de nuevo.",
-  "uploadRetryHint": "Si la imagen no se carga al primer intento, por favor, intente subirla de nuevo."
+  "uploadRetryHint": "Si la imagen no se carga al primer intento, por favor, intente subirla de nuevo.",
+  "donationCompletedTitle": "¡Gracias por tu Donación!",
+  "donationCompletedDesc": "Tu apoyo es muy apreciado y nos ayuda a mantener esta herramienta gratuita para todos. ¡Eres increíble!",
+  "donationCanceledTitle": "Donación Cancelada",
+  "donationCanceledDesc": "El proceso de donación fue cancelado. ¡No hay ningún problema! Puedes seguir utilizando todas las funciones del sitio de forma gratuita.",
+  "backToHomeButton": "Volver a la Página Principal"
 }

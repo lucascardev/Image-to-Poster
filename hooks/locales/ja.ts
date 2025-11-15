@@ -108,5 +108,10 @@ export default {
   "uploadErrorGeneral": "画像を読み込めませんでした。ファイルが破損しているか、サポートされていない形式の可能性があります。別のファイルをお試しください。",
   "uploadErrorDimensions": "画像は読み込まれましたが、寸法が無効です。ファイルが破損している可能性があります。別のファイルをお試しください。",
   "uploadErrorFallback": "アップロード中に予期せぬエラーが発生しました。もう一度お試しください。",
-  "uploadRetryHint": "画像が一度で読み込まれない場合は、もう一度アップロードしてみてください。"
+  "uploadRetryHint": "画像が一度で読み込まれない場合は、もう一度アップロードしてみてください。",
+  "donationCompletedTitle": "ご寄付ありがとうございます！",
+  "donationCompletedDesc": "皆様のご支援に心より感謝申し上げます。これにより、このツールを皆様に無料で提供し続けることができます。本当にありがとうございます！",
+  "donationCanceledTitle": "寄付がキャンセルされました",
+  "donationCanceledDesc": "寄付の手続きはキャンセルされました。問題ありません！引き続きサイトの全機能を無料でお使いいただけます。",
+  "backToHomeButton": "ホームページに戻る"
 }

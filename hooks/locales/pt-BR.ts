@@ -108,5 +108,10 @@ export default {
   "uploadErrorGeneral": "A imagem não pôde ser carregada. Pode estar corrompida ou em um formato não suportado. Por favor, tente outro arquivo.",
   "uploadErrorDimensions": "A imagem foi carregada, mas tem dimensões inválidas. Pode estar corrompida. Por favor, tente outro arquivo.",
   "uploadErrorFallback": "Ocorreu um erro inesperado durante o upload. Por favor, tente novamente.",
-  "uploadRetryHint": "Se a imagem não carregar de primeira, tente novamente. Imagens grandes podem falhar por limitações de memória do navegador; tentar duas ou três vezes geralmente resolve."
+  "uploadRetryHint": "Se a imagem não carregar de primeira, tente novamente. Imagens grandes podem falhar por limitações de memória do navegador; tentar duas ou três vezes geralmente resolve.",
+  "donationCompletedTitle": "Obrigado pela sua Doação!",
+  "donationCompletedDesc": "Seu apoio é muito apreciado e nos ajuda a manter esta ferramenta gratuita para todos. Você é incrível!",
+  "donationCanceledTitle": "Doação Cancelada",
+  "donationCanceledDesc": "O processo de doação foi cancelado. Não há problema algum! Você pode continuar a usar todas as funcionalidades do site gratuitamente.",
+  "backToHomeButton": "Voltar à Página Inicial"
 }

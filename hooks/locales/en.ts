@@ -108,5 +108,10 @@ export default {
   "uploadErrorGeneral": "Image could not be loaded. It might be corrupted or in an unsupported format. Please try another file.",
   "uploadErrorDimensions": "Image loaded but has invalid dimensions. It might be corrupted. Please try another file.",
   "uploadErrorFallback": "An unexpected error occurred during upload. Please try again.",
-  "uploadRetryHint": "If the image doesn't load at first, try again. Large images can sometimes fail due to browser memory limits; trying two or three times usually works."
+  "uploadRetryHint": "If the image doesn't load at first, try again. Large images can sometimes fail due to browser memory limits; trying two or three times usually works.",
+  "donationCompletedTitle": "Thank You for Your Donation!",
+  "donationCompletedDesc": "Your support is greatly appreciated and helps us keep this tool free for everyone. You are amazing!",
+  "donationCanceledTitle": "Donation Canceled",
+  "donationCanceledDesc": "The donation process was canceled. No problem at all! You can continue to use all features of the site for free.",
+  "backToHomeButton": "Back to Home Page"
 }

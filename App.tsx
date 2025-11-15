@@ -16,6 +16,9 @@ import AdPlaceholder from './components/AdPlaceholder';
 import ThreeBackground from './components/ThreeBackground';
 import { LogoIcon, PixIcon, CloseIcon, ExpandIcon, ShareIcon, CheckCircleIcon, UploadIcon } from './components/Icons';
 import AdCountdownModal from './components/AdCountdownModal';
+import DonationCompleted from './components/DonationCompleted';
+import DonationCanceled from './components/DonationCanceled';
+
 
 // Types and Constants
 import type { AppSettings, ImageInfo, ResolutionWarning } from './types';
@@ -101,6 +104,16 @@ const FullscreenPreviewModal: React.FC<FullscreenPreviewModalProps> = ({ isOpen,
 // --- End of embedded FullscreenPreviewModal ---
 
 function App() {
+  const { pathname } = window.location;
+
+  if (pathname === '/completed') {
+    return <DonationCompleted />;
+  }
+
+  if (pathname === '/cancel') {
+    return <DonationCanceled />;
+  }
+
   const { t } = useTranslations();
   const [settings, setSettings] = useState<AppSettings>(initialSettings);
   const [imageInfo, setImageInfo] = useState<ImageInfo | null>(null);

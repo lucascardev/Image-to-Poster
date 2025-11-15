@@ -108,5 +108,10 @@ export default {
   "uploadErrorGeneral": "Bild konnte nicht geladen werden. Es könnte beschädigt sein oder ein nicht unterstütztes Format haben. Bitte versuchen Sie eine andere Datei.",
   "uploadErrorDimensions": "Bild geladen, aber mit ungültigen Abmessungen. Es könnte beschädigt sein. Bitte versuchen Sie eine andere Datei.",
   "uploadErrorFallback": "Beim Hochladen ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es erneut.",
-  "uploadRetryHint": "Wenn das Bild beim ersten Mal nicht geladen wird, versuchen Sie es bitte erneut. Große Bilder können manchmal aufgrund von Browser-Speicherlimits fehlschlagen; zwei oder drei Versuche funktionieren normalerweise."
+  "uploadRetryHint": "Wenn das Bild beim ersten Mal nicht geladen wird, versuchen Sie es bitte erneut. Große Bilder können manchmal aufgrund von Browser-Speicherlimits fehlschlagen; zwei oder drei Versuche funktionieren normalerweise.",
+  "donationCompletedTitle": "Vielen Dank für Ihre Spende!",
+  "donationCompletedDesc": "Ihre Unterstützung wird sehr geschätzt und hilft uns, dieses Tool für alle kostenlos zu halten. Sie sind großartig!",
+  "donationCanceledTitle": "Spende abgebrochen",
+  "donationCanceledDesc": "Der Spendevorgang wurde abgebrochen. Kein Problem! Sie können weiterhin alle Funktionen der Seite kostenlos nutzen.",
+  "backToHomeButton": "Zurück zur Startseite"
 }
