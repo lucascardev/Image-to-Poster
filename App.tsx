@@ -104,13 +104,13 @@ const FullscreenPreviewModal: React.FC<FullscreenPreviewModalProps> = ({ isOpen,
 // --- End of embedded FullscreenPreviewModal ---
 
 function App() {
-  const { pathname } = window.location;
+  const { hash } = window.location;
 
-  if (pathname === '/completed') {
+  if (hash === '#/completed') {
     return <DonationCompleted />;
   }
 
-  if (pathname === '/cancel') {
+  if (hash === '#/cancel') {
     return <DonationCanceled />;
   }
 
