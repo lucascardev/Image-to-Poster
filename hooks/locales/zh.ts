@@ -1,6 +1,10 @@
 export default {
   "appTitle": "打印我的海报",
   "appNewSubtitle": "将任何图像变成巨型海报，并在家用普通打印机上打印。",
+  "metaTitle": "打印我的海报 - 创建用于打印的巨型海报",
+  "ogTitle": "打印我的海报 - 创建用于打印的巨型海报",
+  "ogDescription": "将任何图像变成巨型墙壁海报。将您的照片分割成多个A4页面，下载PDF，然后在家打印。",
+  "metaDescription": "将任何图像变成巨型海报。分割您的照片，下载PDF，然后在家打印。免费，在线，易于使用。立即创建您的海报！",
   "configTitle": "配置",
   "step1Label": "第1步：上传图片",
   "uploadFile": "上传图片",

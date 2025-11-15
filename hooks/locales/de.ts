@@ -1,6 +1,10 @@
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Verwandle jedes Bild in ein riesiges Poster und drucke es zu Hause auf deinem normalen Drucker.",
+  "metaTitle": "Print My Poster - Riesige Poster zum Drucken erstellen",
+  "ogTitle": "Print My Poster - Riesige Poster zum Drucken erstellen",
+  "ogDescription": "Verwandle jedes Bild in ein riesiges Wandposter. Teile dein Foto auf mehrere A4-Seiten auf, lade das PDF herunter und drucke es zu Hause.",
+  "metaDescription": "Verwandle jedes Bild in ein riesiges Poster. Teile dein Foto, lade das PDF herunter und drucke es zu Hause. Kostenlos, online und einfach zu bedienen. Erstelle jetzt deins!",
   "configTitle": "Konfiguration",
   "step1Label": "Schritt 1: Bild hochladen",
   "uploadFile": "Bild hochladen",

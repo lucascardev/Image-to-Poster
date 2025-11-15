@@ -1,6 +1,10 @@
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Turn any image into a giant poster and print it at home on your regular printer.",
+  "metaTitle": "Print My Poster - Create Giant Posters for Printing",
+  "ogTitle": "Print My Poster - Create Giant Posters for Printing",
+  "ogDescription": "Turn any image into a giant wall poster. Split your photo into multiple A4 pages, download the PDF, and print at home.",
+  "metaDescription": "Turn any image into a giant poster. Split your photo, download the PDF, and print it at home. Free, online, and easy to use. Create yours now!",
   "configTitle": "Configuration",
   "step1Label": "Step 1: Upload Image",
   "uploadFile": "Upload an Image",

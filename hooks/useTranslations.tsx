@@ -46,11 +46,7 @@ export const TranslationsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
     return defaultLanguage;
   });
-
-  useEffect(() => {
-    document.documentElement.lang = language;
-  }, [language]);
-
+  
   const setLanguage = (lang: Language) => {
     try {
         localStorage.setItem('language', lang);
@@ -72,6 +68,35 @@ export const TranslationsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
     return translation;
   }, [translations]);
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+    document.title = t('metaTitle');
+
+    const updateMetaTag = (name: string, content: string) => {
+      let tag = document.querySelector(`meta[name="${name}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('name', name);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    };
+
+    const updateOgTag = (property: string, content: string) => {
+      let tag = document.querySelector(`meta[property="${property}"]`);
+      if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute('property', property);
+        document.head.appendChild(tag);
+      }
+      tag.setAttribute('content', content);
+    };
+
+    updateMetaTag('description', t('metaDescription'));
+    updateOgTag('og:title', t('ogTitle'));
+    updateOgTag('og:description', t('ogDescription'));
+  }, [language, t]);
 
   const value = { language, setLanguage, t };
 

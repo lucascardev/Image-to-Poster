@@ -1,6 +1,10 @@
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Transforme qualquer imagem em um pôster gigante e imprima em casa na sua impressora comum.",
+  "metaTitle": "Print My Poster - Crie Pôsteres Gigantes para Impressão",
+  "ogTitle": "Print My Poster - Crie Pôsteres Gigantes para Impressão",
+  "ogDescription": "Transforme qualquer imagem em um pôster de parede gigante. Divida sua foto em várias páginas A4, baixe o PDF e imprima em casa.",
+  "metaDescription": "Transforme qualquer imagem em um pôster gigante. Divida sua foto, baixe o PDF e imprima em casa. Gratuito, online e fácil de usar. Crie o seu agora!",
   "configTitle": "Configuração",
   "step1Label": "Passo 1: Enviar Imagem",
   "uploadFile": "Enviar Imagem",
