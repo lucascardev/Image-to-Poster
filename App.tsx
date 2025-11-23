@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import jsPDF from 'jspdf';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Components
 import SettingsPanel from './components/SettingsPanel';
@@ -619,6 +620,7 @@ function App() {
 
   return (
     <>
+      <SpeedInsights />
       <ThreeBackground />
       <div className="relative min-h-screen font-sans">
         <header className="bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-200">
