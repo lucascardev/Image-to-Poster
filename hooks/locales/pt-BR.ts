@@ -1,3 +1,4 @@
+
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Transforme qualquer imagem em um pôster gigante e imprima em casa na sua impressora comum.",
@@ -59,6 +60,9 @@ export default {
   "recommendedToolTitle": "Ferramenta Recomendada: Cola em Fita",
   "recommendedToolDesc": "Para uma montagem precisa e limpa, a cola em fita proporciona uma união forte, sem a bagunça da cola líquida.",
   "recommendedToolTip": "Dica: Passe a fita na borda de uma página e junte com a próxima. Assim, você pode montar o banner inteiro antes de fixá-lo na parede.",
+  "recommendedPaperTitle": "Papel Recomendado: Papel Fotográfico Brilhante A4",
+  "recommendedPaperDesc": "Secagem rápida, alto brilho e alta resolução. Ideal para impressoras Jato de Tinta (HP, Epson, Canon, Lexmark).",
+  "recommendedPaperTip": "Dica: Evite exposição constante à luz UV/Solar e umidade para maior durabilidade.",
   "buyNowButton": "Comprar na Shopee",
   "howItWorksTitle": "Como Funciona em 5 Passos Simples",
   "howItWorksSubtitle": "De uma única imagem a uma decoração de parede gigante. Siga estes passos para criar seu pôster personalizado.",
@@ -113,4 +117,4 @@ export default {
   "donationCanceledTitle": "Doação Cancelada",
   "donationCanceledDesc": "O processo de doação foi cancelado. Não há problema algum! Você pode continuar a usar todas as funcionalidades do site gratuitamente.",
   "backToHomeButton": "Voltar à Página Inicial"
-}
+};

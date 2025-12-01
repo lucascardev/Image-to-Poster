@@ -1,3 +1,4 @@
+
 export default {
   "appTitle": "打印我的海报",
   "appNewSubtitle": "将任何图像变成巨型海报，并在家用普通打印机上打印。",
@@ -59,6 +60,9 @@ export default {
   "recommendedToolTitle": "推荐工具：胶带滚轮",
   "recommendedToolDesc": "为了精确、干净的拼接，胶带滚轮可以提供牢固的粘合，而不会像液体胶水那样弄脏。",
   "recommendedToolTip": "提示：在页面的边缘涂上胶带，然后与下一页连接。这样可以在贴到墙上之前将整个横幅组装起来。",
+  "recommendedPaperTitle": "推荐纸张：A4高光相纸",
+  "recommendedPaperDesc": "快干、高光、高分辨率。非常适合喷墨打印机（HP、Epson、Canon、Lexmark）。",
+  "recommendedPaperTip": "提示：避免持续暴露在紫外线/阳光和潮湿环境中，以获得更持久的耐用性。",
   "buyNowButton": "在Shopee上购买",
   "howItWorksTitle": "5个简单步骤",
   "howItWorksSubtitle": "从单张图片到巨大的墙壁装饰。按照这些步骤创建您的自定义海报。",
@@ -113,4 +117,4 @@ export default {
   "donationCanceledTitle": "捐赠已取消",
   "donationCanceledDesc": "捐赠过程已取消。没关系！您可以继续免费使用网站的所有功能。",
   "backToHomeButton": "返回主页"
-}
+};

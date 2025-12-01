@@ -1,3 +1,4 @@
+
 {
   "appTitle": "Poster Print Splitter",
   "appNewSubtitle": "Turn any image into a giant, multi-page poster.",
@@ -52,5 +53,8 @@
   "recommendedToolTitle": "Recommended Tool: Tape Runner",
   "recommendedToolDesc": "For a precise and clean assembly, a tape runner provides a strong bond without the mess of liquid glue.",
   "recommendedToolTip": "Tip: Apply the tape along the edge of one page and join it with the next. This allows you to assemble the entire banner before sticking it to the wall.",
+  "recommendedPaperTitle": "Recommended Paper: A4 Photo Paper",
+  "recommendedPaperDesc": "For maximum sharpness and vivid colors, we recommend 180g glossy photo paper.",
+  "recommendedPaperTip": "Tip: When printing, select 'Best Quality' and paper type 'Glossy/Photo'.",
   "buyNowButton": "Buy on Shopee"
 }

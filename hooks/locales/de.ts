@@ -1,3 +1,4 @@
+
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Verwandle jedes Bild in ein riesiges Poster und drucke es zu Hause auf deinem normalen Drucker.",
@@ -59,6 +60,9 @@ export default {
   "recommendedToolTitle": "Empfohlenes Werkzeug: Kleberoller",
   "recommendedToolDesc": "Für eine präzise und saubere Montage sorgt ein Kleberoller für eine starke Verbindung ohne das Durcheinander von Flüssigkleber.",
   "recommendedToolTip": "Tipp: Tragen Sie das Klebeband am Rand einer Seite auf und verbinden Sie es mit der nächsten. So können Sie das gesamte Banner zusammenbauen, bevor Sie es an die Wand kleben.",
+  "recommendedPaperTitle": "Empfohlenes Papier: A4 Hochglanz-Fotopapier",
+  "recommendedPaperDesc": "Schnelltrocknend, hochglänzend, hohe Auflösung. Perfekt für Tintenstrahldrucker (HP, Epson, Canon, Lexmark).",
+  "recommendedPaperTip": "Tipp: Vermeiden Sie ständige UV-/Sonnenlichteinstrahlung und Feuchtigkeit für eine längere Haltbarkeit.",
   "buyNowButton": "Bei Shopee kaufen",
   "howItWorksTitle": "So funktioniert's in 5 einfachen Schritten",
   "howItWorksSubtitle": "Von einem einzelnen Bild zu einer riesigen Wanddekoration. Befolgen Sie diese Schritte, um Ihr individuelles Poster zu erstellen.",
@@ -113,4 +117,4 @@ export default {
   "donationCanceledTitle": "Spende abgebrochen",
   "donationCanceledDesc": "Der Spendevorgang wurde abgebrochen. Kein Problem! Sie können weiterhin alle Funktionen der Seite kostenlos nutzen.",
   "backToHomeButton": "Zurück zur Startseite"
-}
+};

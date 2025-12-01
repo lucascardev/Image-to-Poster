@@ -1,8 +1,9 @@
+
 export default {
   "appTitle": "Imprime Mi Póster",
   "appNewSubtitle": "Convierte cualquier imagen en un póster gigante e imprímelo en casa con tu impresora normal.",
-  "metaTitle": "Print My Poster - Crea Pósteres Gigantes para Imprimir",
-  "ogTitle": "Print My Poster - Crea Pósteres Gigantes para Imprimir",
+  "metaTitle": "Imprime Mi Póster - Crea Pósteres Gigantes para Imprimir",
+  "ogTitle": "Imprime Mi Póster - Crea Pósteres Gigantes para Imprimir",
   "ogDescription": "Convierte cualquier imagen en un póster de pared gigante. Divide tu foto en varias páginas A4, descarga el PDF e imprímelo en casa.",
   "metaDescription": "Convierte cualquier imagen en un póster gigante. Divide tu foto, descarga el PDF e imprímelo en casa. Gratis, online y fácil de usar. ¡Crea el tuyo ahora!",
   "configTitle": "Configuración",
@@ -59,6 +60,9 @@ export default {
   "recommendedToolTitle": "Herramienta Recomendada: Cinta Adhesiva en Rollo",
   "recommendedToolDesc": "Para un montaje preciso y limpio, una cinta adhesiva en rollo proporciona una unión fuerte sin el desorden del pegamento líquido.",
   "recommendedToolTip": "Consejo: Aplica la cinta a lo largo del borde de una página y únelo con la siguiente. Esto te permite montar todo el póster antes de pegarlo en la pared.",
+  "recommendedPaperTitle": "Papel Recomendado: Papel Fotográfico Brillante A4",
+  "recommendedPaperDesc": "Secado rápido, alto brillo y alta resolución. Perfecto para impresoras de inyección de tinta (HP, Epson, Canon, Lexmark).",
+  "recommendedPaperTip": "Consejo: Evite la exposición constante a la luz UV/solar y la humedad para una mayor durabilidad.",
   "buyNowButton": "Comprar en Shopee",
   "howItWorksTitle": "Cómo Funciona en 5 Sencillos Pasos",
   "howItWorksSubtitle": "De una sola imagen a una enorme decoración de pared. Sigue estos pasos para crear tu póster personalizado.",
@@ -113,4 +117,4 @@ export default {
   "donationCanceledTitle": "Donación Cancelada",
   "donationCanceledDesc": "El proceso de donación fue cancelado. ¡No hay ningún problema! Puedes seguir utilizando todas las funciones del sitio de forma gratuita.",
   "backToHomeButton": "Volver a la Página Principal"
-}
+};

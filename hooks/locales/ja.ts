@@ -1,3 +1,4 @@
+
 export default {
   "appTitle": "ポスターを印刷",
   "appNewSubtitle": "どんな画像も巨大なポスターに変え、ご家庭のプリンターで印刷できます。",
@@ -59,6 +60,9 @@ export default {
   "recommendedToolTitle": "おすすめツール：テープのり",
   "recommendedToolDesc": "正確でクリーンな組み立てのために、テープのりは液体接着剤のような汚れなしで強力な接着を提供します。",
   "recommendedToolTip": "ヒント：1ページの端にテープを貼り、次のページと結合します。これにより、壁に貼る前にバナー全体を組み立てることができます。",
+  "recommendedPaperTitle": "推奨用紙：A4光沢写真用紙",
+  "recommendedPaperDesc": "速乾性、高光沢、高解像度。インクジェットプリンター（HP、Epson、Canon、Lexmark）に最適です。",
+  "recommendedPaperTip": "ヒント：耐久性を高めるため、紫外線/日光や湿気への常時露出を避けてください。",
   "buyNowButton": "Shopeeで購入",
   "howItWorksTitle": "5つの簡単なステップ",
   "howItWorksSubtitle": "一枚の画像から巨大な壁の装飾まで。これらのステップに従って、カスタムポスターを作成してください。",
@@ -113,4 +117,4 @@ export default {
   "donationCanceledTitle": "寄付がキャンセルされました",
   "donationCanceledDesc": "寄付の手続きはキャンセルされました。問題ありません！引き続きサイトの全機能を無料でお使いいただけます。",
   "backToHomeButton": "ホームページに戻る"
-}
+};

@@ -1,3 +1,5 @@
+
+
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Turn any image into a giant poster and print it at home on your regular printer.",
@@ -59,6 +61,9 @@ export default {
   "recommendedToolTitle": "Recommended Tool: Tape Runner",
   "recommendedToolDesc": "For a precise and clean assembly, a tape runner provides a strong bond without the mess of liquid glue.",
   "recommendedToolTip": "Tip: Apply the tape along the edge of one page and join it with the next. This allows you to assemble the entire banner before sticking it to the wall.",
+  "recommendedPaperTitle": "Recommended Paper: A4 Glossy Photo Paper",
+  "recommendedPaperDesc": "Quick dry, high gloss, high resolution. Perfect for Inkjet printers (HP, Epson, Canon, Lexmark).",
+  "recommendedPaperTip": "Tip: Avoid constant exposure to UV/Sunlight and humidity for greater durability.",
   "buyNowButton": "Buy on Shopee",
   "howItWorksTitle": "How It Works in 5 Easy Steps",
   "howItWorksSubtitle": "From a single image to a huge wall decoration. Follow these steps to create your custom poster.",

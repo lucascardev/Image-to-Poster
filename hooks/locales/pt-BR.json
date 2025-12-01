@@ -1,3 +1,4 @@
+
 {
   "appTitle": "Divisor de Pôster para Impressão",
   "appNewSubtitle": "Transforme qualquer imagem em um pôster gigante de várias páginas.",
@@ -52,5 +53,8 @@
   "recommendedToolTitle": "Ferramenta Recomendada: Cola em Fita",
   "recommendedToolDesc": "Para uma montagem precisa e limpa, a cola em fita proporciona uma união forte, sem a bagunça da cola líquida.",
   "recommendedToolTip": "Dica: Passe a fita na borda de uma página e junte com a próxima. Assim, você pode montar o banner inteiro antes de fixá-lo na parede.",
+  "recommendedPaperTitle": "Papel Recomendado: Papel Fotográfico A4",
+  "recommendedPaperDesc": "Para máxima nitidez e cores vivas, recomendamos papel fotográfico glossy 180g.",
+  "recommendedPaperTip": "Dica: Na hora de imprimir, selecione 'Melhor Qualidade' e tipo de papel 'Glossy/Fotográfico'.",
   "buyNowButton": "Comprar na Shopee"
 }

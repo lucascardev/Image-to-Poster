@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2024-07-27
+
+### Added
+- Added a "Recommended Materials" section to the installation instructions, featuring useful tools like a Tape Runner and high-quality Photo Paper to help users get the best results.
+- Updated translations for all supported languages (English, Portuguese, Spanish, German, Chinese, Japanese) to include descriptions for the recommended products.
+
+## [1.0.2] - 2024-07-27
+
+### Changed
+- Default crop mark style is now set to "Full Lines (dashed)" instead of "Corners" to make cutting easier for new users.
+- Optimized SEO keywords to better target specific printing terms (e.g., "imprimir imagem duplicada", "papel de parede") and improve multilingual reach.
+
+### Fixed
+- Added robust `try-catch` error handling across all core image processing functions (`generatePages`, `handleImageUpload`) to prevent application crashes during deep processing errors.
+
 ## [1.0.1] - 2024-07-27
 
 ### Added

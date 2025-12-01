@@ -30,7 +30,7 @@ const initialSettings: AppSettings = {
   gridRows: 2,
   printerMargin: 6,
   marginUnit: 'mm',
-  cropMarkType: 'corners',
+  cropMarkType: 'full',
   addOverlap: true,
 };
 
