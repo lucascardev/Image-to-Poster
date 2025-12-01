@@ -169,10 +169,17 @@ function App() {
   const [scrollState, setScrollState] = useState<'above' | 'inside' | 'below'>('above');
 
 
-  const imageRef = useRef<HTMLImageElement | null>(null);
-  // Important: Ref to hold the image object while it loads to prevent garbage collection on some browsers
-  const loadingImageRef = useRef<HTMLImageElement | null>(null);
+  const imageRef = useRef<HTMLImageElement | ImageBitmap | null>(null);
   
+  // Cleanup ImageBitmap on unmount
+  useEffect(() => {
+      return () => {
+          if (imageRef.current && 'close' in imageRef.current) {
+              imageRef.current.close();
+          }
+      };
+  }, []);
+
   // Effect to clean up object URLs on unmount or when image changes
   useEffect(() => {
     return () => {
@@ -196,14 +203,6 @@ function App() {
 
       const rect = previewSection.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      
-      // Determine if we are above, inside, or below the preview section
-      // We consider "inside" when the top of the preview section is near the top of the viewport
-      // or visible, and the bottom hasn't passed the top yet.
-      
-      // Fine-tuning thresholds:
-      // If the top of the preview is far down (> 60% viewport), we are essentially "above" looking at settings.
-      // If the bottom of the preview goes up past the middle of the viewport (< 40% viewport), we consider "below".
       
       if (rect.top > windowHeight * 0.6) {
         setScrollState('above');
@@ -252,13 +251,29 @@ function App() {
 
   const generatePages = useCallback(async () => {
     try {
-        if (!imageInfo || !imageRef.current || !imageRef.current.complete || imageRef.current.naturalWidth === 0) {
+        const img = imageRef.current;
+        if (!imageInfo || !img) {
             setPages([]);
             return;
         }
+
+        // Determine dimensions based on image type (HTMLImageElement or ImageBitmap)
+        const imgWidth = 'naturalWidth' in img ? img.naturalWidth : img.width;
+        const imgHeight = 'naturalHeight' in img ? img.naturalHeight : img.height;
+
+        if (imgWidth === 0 || imgHeight === 0) {
+             setPages([]);
+             return;
+        }
+
+        // Safety check for HTMLImageElement completion
+        if ('complete' in img && !img.complete) {
+             setPages([]);
+             return;
+        }
+
         setIsLoading(true);
 
-        const img = imageRef.current;
         const newPages: string[] = [];
 
         const marginInMm = settings.marginUnit === 'in'
@@ -280,7 +295,7 @@ function App() {
         const totalPrintableHeightPx = pagePrintableHeightPx * settings.gridRows;
 
         // Calculate scaled image dimensions to fit within the total grid, preserving aspect ratio
-        const imageRatio = img.naturalWidth / img.naturalHeight;
+        const imageRatio = imgWidth / imgHeight;
         const totalGridRatio = totalPrintableWidthPx / totalPrintableHeightPx;
 
         let scaledImgWidth, scaledImgHeight, gridOffsetX, gridOffsetY;
@@ -301,12 +316,12 @@ function App() {
         const requiredWidth = Math.round((pagePrintableWidthMm * settings.gridCols / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
         const requiredHeight = Math.round((pagePrintableHeightMm * settings.gridRows / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
 
-        if (img.naturalWidth < requiredWidth || img.naturalHeight < requiredHeight) {
+        if (imgWidth < requiredWidth || imgHeight < requiredHeight) {
             setResolutionWarning({
                 requiredWidth,
                 requiredHeight,
-                actualWidth: img.naturalWidth,
-                actualHeight: img.naturalHeight,
+                actualWidth: imgWidth,
+                actualHeight: imgHeight,
             });
         } else {
             setResolutionWarning(null);
@@ -369,7 +384,7 @@ function App() {
         
                 // If there's an actual image portion to draw
                 if (intersectW > 0 && intersectH > 0) {
-                    const scaleFactor = img.naturalWidth / scaledImgWidth;
+                    const scaleFactor = imgWidth / scaledImgWidth;
         
                     // Calculate source rect from original image
                     const sourceX = (intersectX - gridOffsetX) * scaleFactor;
@@ -526,133 +541,127 @@ function App() {
   const debouncedGeneratePages = useCallback(debounce(generatePages, 300), [generatePages]);
 
   useEffect(() => {
-    debouncedGeneratePages();
-  }, [settings, imageInfo, debouncedGeneratePages]);
+    // Only run debounce generation if not currently uploading/processing the initial image
+    if (!isUploading) {
+        debouncedGeneratePages();
+    }
+  }, [settings, imageInfo, debouncedGeneratePages]); 
 
-  const handleImageUpload = (file: File) => {
-    // Record start time to enforce minimum loading duration for UX
+  // Helper to load image via standard Image constructor
+  const loadImageFallback = (url: string): Promise<HTMLImageElement> => {
+      return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("Image load failed"));
+          img.src = url;
+      });
+  };
+
+  const handleImageUpload = async (file: File) => {
+    if (isUploading) return;
+
+    setIsUploading(true);
+    setUploadError(null);
+
     const startTime = Date.now();
-    const MIN_LOADING_TIME = 3000; // 3 seconds
+    const MIN_LOADING_TIME = 2000;
 
-    // Prevent infinite loading by adding a safety timeout
-    const safetyTimeout = setTimeout(() => {
-        if (loadingImageRef.current) {
-            console.warn("Image load timed out. Forcing error state.");
-            setUploadError(t('uploadErrorFallback'));
-            setIsUploading(false);
-            if (loadingImageRef.current.src.startsWith('blob:')) {
-                URL.revokeObjectURL(loadingImageRef.current.src);
-            }
-            loadingImageRef.current = null;
-        }
-    }, 15000); // 15 seconds max wait
-
-    try {
-        setIsUploading(true);
-        setUploadError(null);
-
-        if (!file.type.startsWith('image/')) {
-             setUploadError(t('uploadErrorGeneral'));
-             setIsUploading(false);
-             clearTimeout(safetyTimeout);
-             return;
-        }
-
-        const url = URL.createObjectURL(file);
-        const image = new Image();
-        
-        // Store reference to prevent garbage collection issues on some browsers/devices
-        loadingImageRef.current = image;
-
-        image.onload = () => {
-            clearTimeout(safetyTimeout);
-            
-            // Calculate how much time has passed
-            const elapsedTime = Date.now() - startTime;
-            const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
-
-            setTimeout(() => {
-                try {
-                    const width = image.naturalWidth;
-                    const height = image.naturalHeight;
-
-                    if (width === 0 || height === 0) {
-                        setUploadError(t('uploadErrorDimensions'));
-                        URL.revokeObjectURL(url);
-                        return;
-                    }
-
-                    const marginInMm = settings.marginUnit === 'in' 
-                        ? settings.printerMargin * MM_PER_INCH 
-                        : settings.printerMargin;
-
-                    const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
-                    const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
-
-                    const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
-                    const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
-
-                    let suggestedCols = 1;
-                    let suggestedRows = 1;
-
-                    if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
-                        suggestedCols = Math.round(width / pagePrintableWidthPx);
-                        suggestedRows = Math.round(height / pagePrintableHeightPx);
-                    }
-
-                    let newCols = Math.max(1, Math.min(10, suggestedCols));
-                    let newRows = Math.max(1, Math.min(10, suggestedRows));
-                    
-                    if (newCols === 1 && newRows === 1) {
-                        newCols = 2;
-                        newRows = 2;
-                    }
-
-                    setSettings(prev => ({
-                        ...prev,
-                        gridCols: newCols,
-                        gridRows: newRows,
-                    }));
-                    
-                    imageRef.current = image;
-                    setImageInfo({ url, width, height });
-
-                    // Auto-scroll to settings panel after successful upload
-                    setTimeout(() => {
-                        const settingsPanel = document.getElementById('settings-panel');
-                        if (settingsPanel) {
-                            settingsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }, 100);
-
-                } catch (err) {
-                    console.error("Error in image processing:", err);
-                    setUploadError(t('uploadErrorFallback'));
-                    URL.revokeObjectURL(url);
-                } finally {
-                    setIsUploading(false);
-                    loadingImageRef.current = null;
-                }
-            }, remainingTime);
-        };
-
-        image.onerror = () => {
-            clearTimeout(safetyTimeout);
-            console.error("Image loading failed");
+    if (!file.type.startsWith('image/')) {
             setUploadError(t('uploadErrorGeneral'));
             setIsUploading(false);
-            URL.revokeObjectURL(url);
-            loadingImageRef.current = null;
-        };
+            return;
+    }
 
-        image.src = url;
+    const url = URL.createObjectURL(file);
 
-    } catch (error) {
-        clearTimeout(safetyTimeout);
-        console.error("Error in handleImageUpload:", error);
+    try {
+        let loadedImage: HTMLImageElement | ImageBitmap;
+        
+        // Try createImageBitmap (modern, off-main-thread decoding, memory efficient)
+        if (typeof createImageBitmap === 'function') {
+            try {
+                loadedImage = await createImageBitmap(file);
+            } catch (bmpErr) {
+                console.warn("createImageBitmap failed, falling back to standard Image", bmpErr);
+                loadedImage = await loadImageFallback(url);
+            }
+        } else {
+            loadedImage = await loadImageFallback(url);
+        }
+
+        // Get dimensions based on type
+        const width = 'naturalWidth' in loadedImage ? loadedImage.naturalWidth : loadedImage.width;
+        const height = 'naturalHeight' in loadedImage ? loadedImage.naturalHeight : loadedImage.height;
+
+        if (width === 0 || height === 0) {
+            throw new Error("Invalid dimensions");
+        }
+
+        // Cleanup previous image if it was a bitmap to free memory
+        if (imageRef.current && 'close' in imageRef.current) {
+            imageRef.current.close();
+        }
+        
+        imageRef.current = loadedImage;
+
+        // Calculate smart defaults based on image aspect ratio
+        const marginInMm = settings.marginUnit === 'in' 
+            ? settings.printerMargin * MM_PER_INCH 
+            : settings.printerMargin;
+
+        const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+        const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+
+        const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
+        const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
+
+        let suggestedCols = 1;
+        let suggestedRows = 1;
+
+        if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
+            suggestedCols = Math.round(width / pagePrintableWidthPx);
+            suggestedRows = Math.round(height / pagePrintableHeightPx);
+        }
+
+        let newCols = Math.max(1, Math.min(10, suggestedCols));
+        let newRows = Math.max(1, Math.min(10, suggestedRows));
+        
+        if (newCols === 1 && newRows === 1) {
+            newCols = 2;
+            newRows = 2;
+        }
+
+        // Enforce minimum loading time for better UX
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
+        
+        if (remainingTime > 0) {
+            await new Promise(resolve => setTimeout(resolve, remainingTime));
+        }
+
+        setSettings(prev => ({
+            ...prev,
+            gridCols: newCols,
+            gridRows: newRows,
+        }));
+        
+        setImageInfo({ url, width, height });
+
+        // Auto-scroll
+        setTimeout(() => {
+            const settingsPanel = document.getElementById('settings-panel');
+            if (settingsPanel) {
+                settingsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
+
+    } catch (err) {
+        console.error("Error loading image:", err);
         setUploadError(t('uploadErrorFallback'));
+        // If failed, clean up the object URL we created
+        URL.revokeObjectURL(url);
+    } finally {
         setIsUploading(false);
-        loadingImageRef.current = null;
     }
   };
 
