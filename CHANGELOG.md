@@ -1,9 +1,22 @@
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] - 2024-07-27
+
+### Added
+- **Performance (Lazy Loading):** Significantly improved initial page load speed by implementing Lazy Loading for heavy components (Preview, Instructions, 3D Background).
+- **UI Animations:** Added smooth `fade-in` and `slide-up` animations for the settings panel and preview area to improve the user experience.
+- **Progressive Interface:** Configuration steps (2-5) are now hidden until an image is successfully uploaded, reducing cognitive load for new users.
+- **Smart Sticky Buttons:** Implemented responsive floating buttons. Mobile users get navigation arrows (Up/Down) to navigate the long scroll, while Desktop users get a persistent "Download" button for quick access.
+
+### Changed
+- **UX Polish:** Enforced a minimum loading state of 3 seconds during image processing to prevent UI flickering and provide better feedback.
+- **Visuals:** Updated the sticky action button to use a specific Download icon instead of a generic arrow.
 
 ## [1.0.3] - 2024-07-27
 

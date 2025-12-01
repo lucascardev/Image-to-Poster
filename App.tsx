@@ -1,23 +1,25 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+
+import React, { useState, useEffect, useCallback, useRef, Suspense, lazy } from 'react';
 import jsPDF from 'jspdf';
 
-// Components
+// Eagerly load essential UI components for LCP (Largest Contentful Paint)
 import SettingsPanel from './components/SettingsPanel';
-import PreviewArea from './components/PreviewArea';
-import Instructions from './components/Instructions';
-import ResolutionWarningDisplay from './components/ResolutionWarningDisplay';
-import DownloadPanel from './components/DownloadPanel';
+import { LogoIcon, PayPalIcon, CloseIcon, ShareIcon, CheckCircleIcon, UploadIcon, ChevronDownIcon, ChevronUpIcon, LoadingIcon, GridIcon, DownloadIcon } from './components/Icons';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import HowItWorks from './components/HowItWorks';
-import InstallInstructions from './components/InstallInstructions';
 import StatsWidget from './components/StatsWidget';
-import AdPlaceholder from './components/AdPlaceholder';
-import ThreeBackground from './components/ThreeBackground';
-import { LogoIcon, PayPalIcon, CloseIcon, ExpandIcon, ShareIcon, CheckCircleIcon, UploadIcon } from './components/Icons';
-import AdCountdownModal from './components/AdCountdownModal';
-import DonationCompleted from './components/DonationCompleted';
-import DonationCanceled from './components/DonationCanceled';
 
+// Lazy load heavy or secondary components
+const PreviewArea = lazy(() => import('./components/PreviewArea'));
+const Instructions = lazy(() => import('./components/Instructions'));
+const ResolutionWarningDisplay = lazy(() => import('./components/ResolutionWarningDisplay'));
+const DownloadPanel = lazy(() => import('./components/DownloadPanel'));
+const HowItWorks = lazy(() => import('./components/HowItWorks'));
+const InstallInstructions = lazy(() => import('./components/InstallInstructions'));
+const AdPlaceholder = lazy(() => import('./components/AdPlaceholder'));
+const ThreeBackground = lazy(() => import('./components/ThreeBackground'));
+const AdCountdownModal = lazy(() => import('./components/AdCountdownModal'));
+const DonationCompleted = lazy(() => import('./components/DonationCompleted'));
+const DonationCanceled = lazy(() => import('./components/DonationCanceled'));
 
 // Types and Constants
 import type { AppSettings, ImageInfo, ResolutionWarning } from './types';
@@ -92,7 +94,7 @@ const FullscreenPreviewModal: React.FC<FullscreenPreviewModalProps> = ({ isOpen,
   
   return (
     <div 
-      className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 animate-fade-in"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -121,15 +123,31 @@ const FullscreenPreviewModal: React.FC<FullscreenPreviewModalProps> = ({ isOpen,
 };
 // --- End of embedded FullscreenPreviewModal ---
 
+// Loading Spinner Component for Suspense Fallback
+const LoadingFallback = () => (
+  <div className="flex justify-center items-center p-12">
+    <LoadingIcon className="w-10 h-10 text-indigo-500 animate-spin" />
+  </div>
+);
+
 function App() {
   const { hash } = window.location;
 
+  // Lazy load donation pages based on hash
   if (hash === '#/completed') {
-    return <DonationCompleted />;
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-slate-50" />}>
+        <DonationCompleted />
+      </Suspense>
+    );
   }
 
   if (hash === '#/cancel') {
-    return <DonationCanceled />;
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-slate-50" />}>
+        <DonationCanceled />
+      </Suspense>
+    );
   }
 
   const { t } = useTranslations();
@@ -146,9 +164,14 @@ function App() {
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  
+  // State for sticky navigation logic
+  const [scrollState, setScrollState] = useState<'above' | 'inside' | 'below'>('above');
 
 
   const imageRef = useRef<HTMLImageElement | null>(null);
+  // Important: Ref to hold the image object while it loads to prevent garbage collection on some browsers
+  const loadingImageRef = useRef<HTMLImageElement | null>(null);
   
   // Effect to clean up object URLs on unmount or when image changes
   useEffect(() => {
@@ -163,6 +186,40 @@ function App() {
     };
   }, [imageInfo]);
 
+  // Scroll listener for sticky buttons
+  useEffect(() => {
+    if (!imageInfo) return;
+
+    const handleScroll = () => {
+      const previewSection = document.getElementById('preview-section');
+      if (!previewSection) return;
+
+      const rect = previewSection.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Determine if we are above, inside, or below the preview section
+      // We consider "inside" when the top of the preview section is near the top of the viewport
+      // or visible, and the bottom hasn't passed the top yet.
+      
+      // Fine-tuning thresholds:
+      // If the top of the preview is far down (> 60% viewport), we are essentially "above" looking at settings.
+      // If the bottom of the preview goes up past the middle of the viewport (< 40% viewport), we consider "below".
+      
+      if (rect.top > windowHeight * 0.6) {
+        setScrollState('above');
+      } else if (rect.bottom < windowHeight * 0.4) {
+        setScrollState('below');
+      } else {
+        setScrollState('inside');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initially
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [imageInfo, pages]); // Re-run if image or pages change as layout might shift
+
 
   const handleOpenFullscreen = () => {
     setIsFullscreenOpen(true);
@@ -170,6 +227,27 @@ function App() {
   
   const handleCloseFullscreen = () => {
     setIsFullscreenOpen(false);
+  };
+
+  const scrollToPreview = () => {
+    const previewSection = document.getElementById('preview-section');
+    if (previewSection) {
+        previewSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const scrollToSettings = () => {
+    const settingsPanel = document.getElementById('settings-panel');
+    if (settingsPanel) {
+        settingsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const scrollToDownload = () => {
+    const downloadSection = document.getElementById('download-section');
+    if (downloadSection) {
+        downloadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   };
 
   const generatePages = useCallback(async () => {
@@ -452,142 +530,129 @@ function App() {
   }, [settings, imageInfo, debouncedGeneratePages]);
 
   const handleImageUpload = (file: File) => {
+    // Record start time to enforce minimum loading duration for UX
+    const startTime = Date.now();
+    const MIN_LOADING_TIME = 3000; // 3 seconds
+
+    // Prevent infinite loading by adding a safety timeout
+    const safetyTimeout = setTimeout(() => {
+        if (loadingImageRef.current) {
+            console.warn("Image load timed out. Forcing error state.");
+            setUploadError(t('uploadErrorFallback'));
+            setIsUploading(false);
+            if (loadingImageRef.current.src.startsWith('blob:')) {
+                URL.revokeObjectURL(loadingImageRef.current.src);
+            }
+            loadingImageRef.current = null;
+        }
+    }, 15000); // 15 seconds max wait
+
     try {
         setIsUploading(true);
         setUploadError(null);
-        const startTime = Date.now();
 
-        // Web Worker to decode the image in a separate thread, preventing main thread crashes.
-        const workerCode = `
-          self.onmessage = async (e) => {
-            const file = e.data;
-            try {
-              const bitmap = await createImageBitmap(file);
-              self.postMessage({ status: 'success', width: bitmap.width, height: bitmap.height });
-              bitmap.close(); // Release memory in the worker
-            } catch (error) {
-              self.postMessage({ status: 'error', message: "Image could not be decoded. It may be too large or corrupted." });
-            }
-          };
-        `;
-        const blob = new Blob([workerCode], { type: 'application/javascript' });
-        const workerUrl = URL.createObjectURL(blob);
-        const worker = new Worker(workerUrl);
+        if (!file.type.startsWith('image/')) {
+             setUploadError(t('uploadErrorGeneral'));
+             setIsUploading(false);
+             clearTimeout(safetyTimeout);
+             return;
+        }
 
-        worker.postMessage(file);
+        const url = URL.createObjectURL(file);
+        const image = new Image();
+        
+        // Store reference to prevent garbage collection issues on some browsers/devices
+        loadingImageRef.current = image;
 
-        worker.onmessage = (event) => {
-          try {
-              const { status, width, height, message } = event.data;
+        image.onload = () => {
+            clearTimeout(safetyTimeout);
+            
+            // Calculate how much time has passed
+            const elapsedTime = Date.now() - startTime;
+            const remainingTime = Math.max(0, MIN_LOADING_TIME - elapsedTime);
 
-              if (status === 'error') {
-                console.error("Worker error:", message);
-                setUploadError(t('uploadErrorGeneral'));
-                setIsUploading(false);
-              } else {
-                // Worker successfully got dimensions. Now load image on main thread for canvas drawing.
-                const url = URL.createObjectURL(file);
-                const image = new Image();
+            setTimeout(() => {
+                try {
+                    const width = image.naturalWidth;
+                    const height = image.naturalHeight;
 
-                image.onload = () => {
-                    try {
-                        if (width === 0 || height === 0) {
-                            setUploadError(t('uploadErrorDimensions'));
-                            setIsUploading(false);
-                            URL.revokeObjectURL(url);
-                            return;
-                        }
-
-                        const finishProcessing = () => {
-                            try {
-                                const marginInMm = settings.marginUnit === 'in' 
-                                    ? settings.printerMargin * MM_PER_INCH 
-                                    : settings.printerMargin;
-
-                                const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
-                                const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
-
-                                const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
-                                const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
-
-                                let suggestedCols = 1;
-                                let suggestedRows = 1;
-
-                                if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
-                                    suggestedCols = Math.round(width / pagePrintableWidthPx);
-                                    suggestedRows = Math.round(height / pagePrintableHeightPx);
-                                }
-
-                                let newCols = Math.max(1, Math.min(10, suggestedCols));
-                                let newRows = Math.max(1, Math.min(10, suggestedRows));
-                                
-                                if (newCols === 1 && newRows === 1) {
-                                    newCols = 2;
-                                    newRows = 2;
-                                }
-
-                                setSettings(prev => ({
-                                    ...prev,
-                                    gridCols: newCols,
-                                    gridRows: newRows,
-                                }));
-                                
-                                imageRef.current = image;
-                                setImageInfo({ url, width, height });
-                                setIsUploading(false);
-                            } catch (err) {
-                                console.error("Error in finishProcessing:", err);
-                                setUploadError(t('uploadErrorFallback'));
-                                setIsUploading(false);
-                            }
-                        };
-
-                        const elapsedTime = Date.now() - startTime;
-                        const minLoadingTime = 1500; // Keep spinner for a minimum time for better UX
-                        const remainingTime = minLoadingTime - elapsedTime;
-
-                        if (remainingTime > 0) {
-                            setTimeout(finishProcessing, remainingTime);
-                        } else {
-                            finishProcessing();
-                        }
-                    } catch (err) {
-                        console.error("Error in image.onload:", err);
-                        setUploadError(t('uploadErrorFallback'));
-                        setIsUploading(false);
+                    if (width === 0 || height === 0) {
+                        setUploadError(t('uploadErrorDimensions'));
                         URL.revokeObjectURL(url);
+                        return;
                     }
-                };
 
-                image.onerror = () => {
-                  setUploadError(t('uploadErrorGeneral'));
-                  setIsUploading(false);
-                  URL.revokeObjectURL(url);
-                };
+                    const marginInMm = settings.marginUnit === 'in' 
+                        ? settings.printerMargin * MM_PER_INCH 
+                        : settings.printerMargin;
 
-                image.src = url;
-              }
+                    const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+                    const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
 
-              worker.terminate();
-              URL.revokeObjectURL(workerUrl);
-          } catch (error) {
-              console.error("Error in worker.onmessage:", error);
-              setUploadError(t('uploadErrorFallback'));
-              setIsUploading(false);
-          }
+                    const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
+                    const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
+
+                    let suggestedCols = 1;
+                    let suggestedRows = 1;
+
+                    if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
+                        suggestedCols = Math.round(width / pagePrintableWidthPx);
+                        suggestedRows = Math.round(height / pagePrintableHeightPx);
+                    }
+
+                    let newCols = Math.max(1, Math.min(10, suggestedCols));
+                    let newRows = Math.max(1, Math.min(10, suggestedRows));
+                    
+                    if (newCols === 1 && newRows === 1) {
+                        newCols = 2;
+                        newRows = 2;
+                    }
+
+                    setSettings(prev => ({
+                        ...prev,
+                        gridCols: newCols,
+                        gridRows: newRows,
+                    }));
+                    
+                    imageRef.current = image;
+                    setImageInfo({ url, width, height });
+
+                    // Auto-scroll to settings panel after successful upload
+                    setTimeout(() => {
+                        const settingsPanel = document.getElementById('settings-panel');
+                        if (settingsPanel) {
+                            settingsPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 100);
+
+                } catch (err) {
+                    console.error("Error in image processing:", err);
+                    setUploadError(t('uploadErrorFallback'));
+                    URL.revokeObjectURL(url);
+                } finally {
+                    setIsUploading(false);
+                    loadingImageRef.current = null;
+                }
+            }, remainingTime);
         };
 
-        worker.onerror = (error) => {
-          console.error("Worker failed catastrophically:", error.message);
-          setUploadError(t('uploadErrorFallback'));
-          setIsUploading(false);
-          worker.terminate();
-          URL.revokeObjectURL(workerUrl);
+        image.onerror = () => {
+            clearTimeout(safetyTimeout);
+            console.error("Image loading failed");
+            setUploadError(t('uploadErrorGeneral'));
+            setIsUploading(false);
+            URL.revokeObjectURL(url);
+            loadingImageRef.current = null;
         };
+
+        image.src = url;
+
     } catch (error) {
+        clearTimeout(safetyTimeout);
         console.error("Error in handleImageUpload:", error);
         setUploadError(t('uploadErrorFallback'));
         setIsUploading(false);
+        loadingImageRef.current = null;
     }
   };
 
@@ -698,7 +763,9 @@ function App() {
 
   return (
     <>
-      <ThreeBackground />
+      <Suspense fallback={null}>
+        <ThreeBackground />
+      </Suspense>
       <div className="relative min-h-screen font-sans">
         <header className="bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-200">
             <div className="container mx-auto px-4">
@@ -748,12 +815,14 @@ function App() {
              
             {!imageInfo && (
               <div className="mb-8">
-                <HowItWorks />
+                <Suspense fallback={<LoadingFallback />}>
+                    <HowItWorks />
+                </Suspense>
               </div>
             )}
             <div id="container-1b88d1385b49e0f8d92886dc4c59c255"></div>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-1" id="settings-panel">
                 <SettingsPanel 
                   settings={settings}
                   onSettingsChange={setSettings}
@@ -763,28 +832,48 @@ function App() {
                   uploadError={uploadError}
                 />
               </div>
-              <div className="lg:col-span-2 space-y-8">
+              <div className="lg:col-span-2 space-y-8" id="preview-section">
                 {resolutionWarning && (
-                  <ResolutionWarningDisplay
-                    warning={resolutionWarning}
-                    cols={settings.gridCols}
-                    rows={settings.gridRows}
-                  />
+                  <Suspense fallback={null}>
+                    <ResolutionWarningDisplay
+                      warning={resolutionWarning}
+                      cols={settings.gridCols}
+                      rows={settings.gridRows}
+                    />
+                  </Suspense>
                 )}
 
-                {pages.length > 0 ? (
-                  <>
-                    <PreviewArea pages={pages} isLoading={isLoading} settings={settings} onOpenFullscreen={handleOpenFullscreen} />
-                    <AdPlaceholder type="sevenkbet" />
-                    <DownloadPanel onDownload={handleDownloadClick} disabled={isGeneratingPdf || isLoading || pages.length === 0} isGenerating={isGeneratingPdf} />
-                    <Instructions settings={settings} />
-                    <InstallInstructions />
-                  </>
+                {imageInfo ? (
+                  /* Animated container for content that appears after upload */
+                  <div className="space-y-8 animate-slide-up opacity-0 fill-mode-forwards" style={{ animationDelay: '200ms' }}>
+                    <Suspense fallback={<LoadingFallback />}>
+                      <PreviewArea pages={pages} isLoading={isLoading} settings={settings} onOpenFullscreen={handleOpenFullscreen} />
+                    </Suspense>
+                    
+                    <Suspense fallback={null}>
+                        <AdPlaceholder type="sevenkbet" />
+                    </Suspense>
+
+                    {/* Wrapper with ID for download scroll targeting */}
+                    <div id="download-section">
+                        <Suspense fallback={<LoadingFallback />}>
+                            <DownloadPanel onDownload={handleDownloadClick} disabled={isGeneratingPdf || isLoading || pages.length === 0} isGenerating={isGeneratingPdf} />
+                        </Suspense>
+                    </div>
+
+                    <Suspense fallback={<LoadingFallback />}>
+                        <Instructions settings={settings} />
+                    </Suspense>
+
+                    <Suspense fallback={<LoadingFallback />}>
+                        <InstallInstructions />
+                    </Suspense>
+                  </div>
                 ) : (
                    isUploading ? (
                      <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-md min-h-[400px] flex items-center justify-center">
                        <div className="text-center">
-                          <LogoIcon className="w-16 h-16 text-slate-300 mx-auto mb-4 animate-pulse" />
+                          <LoadingIcon className="w-16 h-16 text-indigo-500 mx-auto mb-4 animate-spin" />
                           <h3 className="text-xl font-bold text-slate-700">{t('uploadingMessage')}</h3>
                           <p className="text-slate-500 mt-2">{t('uploadingSubtitle')}</p>
                        </div>
@@ -806,16 +895,73 @@ function App() {
              <p>{t('footerText', { year: new Date().getFullYear() })} | v{APP_VERSION}</p>
         </footer>
       </div>
+      
+      {/* Sticky Navigation Buttons */}
+      {imageInfo && (
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+            {/* Case 1: Above Preview - Mobile Only (Hidden on Large screens) */}
+            {scrollState === 'above' && (
+                <button
+                    onClick={scrollToPreview}
+                    className="lg:hidden bg-indigo-600 text-white p-4 rounded-full shadow-xl hover:bg-indigo-700 transition-all transform hover:scale-105 flex items-center gap-2 animate-fade-in"
+                    aria-label={t('previewTitle')}
+                >
+                    <span className="font-bold hidden sm:inline">{t('previewTitle')}</span>
+                    <ChevronDownIcon className="w-6 h-6" />
+                </button>
+            )}
+
+            {/* Case 2: Inside Preview */}
+            {scrollState === 'inside' && (
+                <>
+                    {/* Settings Button - Mobile Only (Hidden on Large screens where settings are sticky on left) */}
+                    <button
+                        onClick={scrollToSettings}
+                        className="lg:hidden bg-white text-slate-700 p-3 rounded-full shadow-lg border border-slate-200 hover:bg-slate-50 transition-all transform hover:scale-105 animate-fade-in"
+                        aria-label={t('configTitle')}
+                        title={t('configTitle')}
+                    >
+                        <GridIcon className="w-6 h-6 text-indigo-600" />
+                    </button>
+                    
+                    {/* Download Button - Visible on both Mobile and Desktop with Download Icon */}
+                    <button
+                        onClick={scrollToDownload}
+                        className="bg-indigo-600 text-white p-4 rounded-full shadow-xl hover:bg-indigo-700 transition-all transform hover:scale-105 animate-fade-in"
+                        aria-label={t('downloadPdfButton')}
+                        title={t('downloadPdfButton')}
+                    >
+                        <DownloadIcon className="w-6 h-6" />
+                    </button>
+                </>
+            )}
+
+            {/* Case 3: Below Preview - Mobile Only (Hidden on Large screens) */}
+            {scrollState === 'below' && (
+                <button
+                    onClick={scrollToPreview}
+                    className="lg:hidden bg-indigo-600 text-white p-4 rounded-full shadow-xl hover:bg-indigo-700 transition-all transform hover:scale-105 flex items-center gap-2 animate-fade-in"
+                    aria-label={t('previewTitle')}
+                >
+                    <span className="font-bold hidden sm:inline">{t('previewTitle')}</span>
+                    <ChevronUpIcon className="w-6 h-6" />
+                </button>
+            )}
+        </div>
+      )}
+
       <FullscreenPreviewModal 
         isOpen={isFullscreenOpen} 
         onClose={handleCloseFullscreen} 
         src={fullPreviewSrc} 
       />
-      <AdCountdownModal
-        isOpen={isAdModalOpen}
-        onClose={() => setIsAdModalOpen(false)}
-        onDownload={generateAndSavePdf}
-      />
+      <Suspense fallback={null}>
+        <AdCountdownModal
+            isOpen={isAdModalOpen}
+            onClose={() => setIsAdModalOpen(false)}
+            onDownload={generateAndSavePdf}
+        />
+      </Suspense>
     </>
   );
 }
