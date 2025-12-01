@@ -116,5 +116,11 @@ export default {
   "donationCompletedDesc": "Ihre Unterstützung wird sehr geschätzt und hilft uns, dieses Tool für alle kostenlos zu halten. Sie sind großartig!",
   "donationCanceledTitle": "Spende abgebrochen",
   "donationCanceledDesc": "Der Spendevorgang wurde abgebrochen. Kein Problem! Sie können weiterhin alle Funktionen der Seite kostenlos nutzen.",
-  "backToHomeButton": "Zurück zur Startseite"
+  "backToHomeButton": "Zurück zur Startseite",
+  "generateImageButton": "Mit KI erstellen",
+  "generatorTitle": "Mit Google Gemini erstellen",
+  "generatorInstruction": "Nutzen Sie die Kraft der Google Gemini KI, um einzigartige, hochauflösende Bilder für Ihr Poster zu erstellen.",
+  "openGeminiButton": "Gemini Chat öffnen",
+  "tipLabel": "Nächster Schritt",
+  "generatorSubInstruction": "Nachdem Sie Ihr Bild in Gemini erstellt haben, speichern Sie es auf Ihrem Gerät und laden Sie es hier hoch."
 };

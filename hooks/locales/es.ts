@@ -116,5 +116,11 @@ export default {
   "donationCompletedDesc": "Tu apoyo es muy apreciado y nos ayuda a mantener esta herramienta gratuita para todos. ¡Eres increíble!",
   "donationCanceledTitle": "Donación Cancelada",
   "donationCanceledDesc": "El proceso de donación fue cancelado. ¡No hay ningún problema! Puedes seguir utilizando todas las funciones del sitio de forma gratuita.",
-  "backToHomeButton": "Volver a la Página Principal"
+  "backToHomeButton": "Volver a la Página Principal",
+  "generateImageButton": "Crear con IA",
+  "generatorTitle": "Crear con Google Gemini",
+  "generatorInstruction": "Usa el poder de la IA de Google Gemini para crear imágenes únicas y de alta resolución para tu póster.",
+  "openGeminiButton": "Abrir Chat de Gemini",
+  "tipLabel": "Siguiente Paso",
+  "generatorSubInstruction": "Después de generar tu imagen en Gemini, guárdala en tu dispositivo y súbela aquí."
 };

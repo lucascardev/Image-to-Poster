@@ -116,5 +116,11 @@ export default {
   "donationCompletedDesc": "皆様のご支援に心より感謝申し上げます。これにより、このツールを皆様に無料で提供し続けることができます。本当にありがとうございます！",
   "donationCanceledTitle": "寄付がキャンセルされました",
   "donationCanceledDesc": "寄付の手続きはキャンセルされました。問題ありません！引き続きサイトの全機能を無料でお使いいただけます。",
-  "backToHomeButton": "ホームページに戻る"
+  "backToHomeButton": "ホームページに戻る",
+  "generateImageButton": "AIで作成",
+  "generatorTitle": "Google Geminiで作成",
+  "generatorInstruction": "Google Gemini AIの力を活用して、ポスター用のユニークで高解像度な画像を作成しましょう。",
+  "openGeminiButton": "Geminiチャットを開く",
+  "tipLabel": "次のステップ",
+  "generatorSubInstruction": "Geminiで画像を生成した後、デバイスに保存してここにアップロードしてください。"
 };
