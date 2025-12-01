@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import jsPDF from 'jspdf';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Components
 import SettingsPanel from './components/SettingsPanel';
@@ -41,10 +40,20 @@ function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
 
   return (...args: Parameters<F>): Promise<ReturnType<F>> =>
     new Promise(resolve => {
-      if (timeout) {
-        clearTimeout(timeout);
+      try {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(() => {
+            try {
+                resolve(func(...args));
+            } catch (error) {
+                console.error("Error in debounced function:", error);
+            }
+        }, waitFor);
+      } catch (error) {
+          console.error("Error setting up debounce:", error);
       }
-      timeout = setTimeout(() => resolve(func(...args)), waitFor);
     });
 }
 
@@ -59,16 +68,24 @@ const FullscreenPreviewModal: React.FC<FullscreenPreviewModalProps> = ({ isOpen,
   const { t } = useTranslations();
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Escape') onClose();
+    try {
+        if (e.key === 'Escape') onClose();
+    } catch (error) {
+        console.error("Error in handleKeyDown:", error);
+    }
   }, [onClose]);
 
   useEffect(() => {
-    if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
+    try {
+        if (isOpen) {
+          window.addEventListener('keydown', handleKeyDown);
+        }
+        return () => {
+          window.removeEventListener('keydown', handleKeyDown);
+        };
+    } catch (error) {
+        console.error("Error in useEffect (FullscreenPreviewModal):", error);
     }
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
   }, [isOpen, handleKeyDown]);
 
   if (!isOpen || !src) return null;
@@ -136,8 +153,12 @@ function App() {
   // Effect to clean up object URLs on unmount or when image changes
   useEffect(() => {
     return () => {
-      if (imageInfo && imageInfo.url.startsWith('blob:')) {
-        URL.revokeObjectURL(imageInfo.url);
+      try {
+          if (imageInfo && imageInfo.url.startsWith('blob:')) {
+            URL.revokeObjectURL(imageInfo.url);
+          }
+      } catch (error) {
+          console.error("Error cleaning up object URL:", error);
       }
     };
   }, [imageInfo]);
@@ -152,258 +173,272 @@ function App() {
   };
 
   const generatePages = useCallback(async () => {
-    if (!imageInfo || !imageRef.current || !imageRef.current.complete || imageRef.current.naturalWidth === 0) {
-        setPages([]);
-        return;
-    }
-    setIsLoading(true);
-
-    const img = imageRef.current;
-    const newPages: string[] = [];
-
-    const marginInMm = settings.marginUnit === 'in'
-        ? settings.printerMargin * MM_PER_INCH
-        : settings.printerMargin;
-
-    const overlapWidthMm = settings.addOverlap ? Math.min(marginInMm, 10) : 0;
-
-    const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
-    const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
-
-    // Convert dimensions to pixels for canvas operations
-    const mmToPx = (mm: number) => (mm / MM_PER_INCH) * RECOMMENDED_DPI;
-
-    const pagePrintableWidthPx = mmToPx(pagePrintableWidthMm);
-    const pagePrintableHeightPx = mmToPx(pagePrintableHeightMm);
-
-    const totalPrintableWidthPx = pagePrintableWidthPx * settings.gridCols;
-    const totalPrintableHeightPx = pagePrintableHeightPx * settings.gridRows;
-
-    // Calculate scaled image dimensions to fit within the total grid, preserving aspect ratio
-    const imageRatio = img.naturalWidth / img.naturalHeight;
-    const totalGridRatio = totalPrintableWidthPx / totalPrintableHeightPx;
-
-    let scaledImgWidth, scaledImgHeight, gridOffsetX, gridOffsetY;
-
-    if (imageRatio > totalGridRatio) { // Pillarbox
-        scaledImgWidth = totalPrintableWidthPx;
-        scaledImgHeight = scaledImgWidth / imageRatio;
-        gridOffsetX = 0;
-        gridOffsetY = (totalPrintableHeightPx - scaledImgHeight) / 2;
-    } else { // Letterbox
-        scaledImgHeight = totalPrintableHeightPx;
-        scaledImgWidth = scaledImgHeight * imageRatio;
-        gridOffsetY = 0;
-        gridOffsetX = (totalPrintableWidthPx - scaledImgWidth) / 2;
-    }
-
-    // Resolution warning logic, threshold lowered by half per user request
-    const requiredWidth = Math.round((pagePrintableWidthMm * settings.gridCols / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
-    const requiredHeight = Math.round((pagePrintableHeightMm * settings.gridRows / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
-
-    if (img.naturalWidth < requiredWidth || img.naturalHeight < requiredHeight) {
-        setResolutionWarning({
-            requiredWidth,
-            requiredHeight,
-            actualWidth: img.naturalWidth,
-            actualHeight: img.naturalHeight,
-        });
-    } else {
-        setResolutionWarning(null);
-    }
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-        setIsLoading(false);
-        return;
-    }
-
-    canvas.width = mmToPx(A4_WIDTH_MM);
-    canvas.height = mmToPx(A4_HEIGHT_MM);
-
-    const marginPx = mmToPx(marginInMm);
-    const overlapPx = mmToPx(overlapWidthMm);
-
-    const tileWidthPx = pagePrintableWidthPx;
-    const tileHeightPx = pagePrintableHeightPx;
-
-    // Create a pattern for the stripes only once
-    const patternCanvas = document.createElement('canvas');
-    const patternCtx = patternCanvas.getContext('2d');
-    let stripePattern: CanvasPattern | null = null;
-    if (patternCtx) {
-        const stripeWidth = mmToPx(2);
-        patternCanvas.width = stripeWidth * 2;
-        patternCanvas.height = stripeWidth * 2;
-        patternCtx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // blue-500, 50% opacity
-        patternCtx.lineWidth = mmToPx(0.5);
-        patternCtx.beginPath();
-        patternCtx.moveTo(0, stripeWidth * 2);
-        patternCtx.lineTo(stripeWidth * 2, 0);
-        patternCtx.stroke();
-        stripePattern = ctx.createPattern(patternCanvas, 'repeat');
-    }
-
-    for (let row = 0; row < settings.gridRows; row++) {
-        for (let col = 0; col < settings.gridCols; col++) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const hasRightTab = settings.addOverlap && col < settings.gridCols - 1;
-            const hasBottomTab = settings.addOverlap && row < settings.gridRows - 1;
-            
-            // Calculate this tile's area in the overall grid, including overlap
-            const tileGridX = col * tileWidthPx;
-            const tileGridY = row * tileHeightPx;
-            const tileGridW = tileWidthPx + (hasRightTab ? overlapPx : 0);
-            const tileGridH = tileHeightPx + (hasBottomTab ? overlapPx : 0);
-    
-            // Find the intersection of this tile with the scaled image area
-            const intersectX = Math.max(tileGridX, gridOffsetX);
-            const intersectY = Math.max(tileGridY, gridOffsetY);
-    
-            const intersectW = Math.min(tileGridX + tileGridW, gridOffsetX + scaledImgWidth) - intersectX;
-            const intersectH = Math.min(tileGridY + tileGridH, gridOffsetY + scaledImgHeight) - intersectY;
-    
-            // If there's an actual image portion to draw
-            if (intersectW > 0 && intersectH > 0) {
-                const scaleFactor = img.naturalWidth / scaledImgWidth;
-    
-                // Calculate source rect from original image
-                const sourceX = (intersectX - gridOffsetX) * scaleFactor;
-                const sourceY = (intersectY - gridOffsetY) * scaleFactor;
-                const sourceW = intersectW * scaleFactor;
-                const sourceH = intersectH * scaleFactor;
-                
-                // Calculate destination rect on the current page canvas
-                const destX = (intersectX - tileGridX) + marginPx;
-                const destY = (intersectY - tileGridY) + marginPx;
-                const destW = intersectW;
-                const destH = intersectH;
-    
-                ctx.drawImage(
-                    img,
-                    sourceX, sourceY, sourceW, sourceH,
-                    destX, destY, destW, destH
-                );
-            }
-
-            // Add glue tab visualization (stripes)
-            if (settings.addOverlap && stripePattern) {
-                ctx.save();
-                ctx.fillStyle = stripePattern;
-                if (hasRightTab) {
-                    ctx.fillRect(marginPx + tileWidthPx, marginPx, overlapPx, tileHeightPx);
-                }
-                if (hasBottomTab) {
-                    ctx.fillRect(marginPx, marginPx + tileHeightPx, tileWidthPx, overlapPx);
-                }
-                if (hasRightTab && hasBottomTab) {
-                    ctx.fillRect(marginPx + tileWidthPx, marginPx + tileHeightPx, overlapPx, overlapPx);
-                }
-                ctx.restore();
-            }
-
-            // Add crop marks based on assembly logic
-            if (settings.cropMarkType !== 'none') {
-                ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; // red-500
-                ctx.lineWidth = 1;
-                ctx.setLineDash([mmToPx(2), mmToPx(2)]);
-                const lineLength = marginPx * 0.75;
-                const rightEdge = marginPx + tileWidthPx;
-                const bottomEdge = marginPx + tileHeightPx;
-
-                // Only draw crop marks for interior edges that need cutting: top and left.
-                const drawTop = row > 0;
-                const drawLeft = col > 0;
-
-                ctx.beginPath();
-                
-                if (settings.cropMarkType === 'full') {
-                    // Dashed line across the top margin area to be cut
-                    if (drawTop) { 
-                        ctx.moveTo(0, marginPx); 
-                        ctx.lineTo(canvas.width, marginPx); 
-                    }
-                    // Dashed line down the left margin area to be cut
-                    if (drawLeft) { 
-                        ctx.moveTo(marginPx, 0); 
-                        ctx.lineTo(marginPx, canvas.height); 
-                    }
-                } else { // corners
-                    // Top edge marks (for cutting the top margin)
-                    if (drawTop) {
-                        ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, lineLength);         // Top-left corner (vertical part)
-                        ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, lineLength);       // Top-right corner (vertical part)
-                    }
-                    // Left edge marks (for cutting the left margin)
-                    if (drawLeft) {
-                        ctx.moveTo(0, marginPx); ctx.lineTo(lineLength, marginPx);         // Top-left corner (horizontal part)
-                        ctx.moveTo(0, bottomEdge); ctx.lineTo(lineLength, bottomEdge);     // Bottom-left corner (horizontal part)
-                    }
-                }
-                ctx.stroke();
-            }
-            newPages.push(canvas.toDataURL('image/jpeg', 0.95));
+    try {
+        if (!imageInfo || !imageRef.current || !imageRef.current.complete || imageRef.current.naturalWidth === 0) {
+            setPages([]);
+            return;
         }
+        setIsLoading(true);
+
+        const img = imageRef.current;
+        const newPages: string[] = [];
+
+        const marginInMm = settings.marginUnit === 'in'
+            ? settings.printerMargin * MM_PER_INCH
+            : settings.printerMargin;
+
+        const overlapWidthMm = settings.addOverlap ? Math.min(marginInMm, 10) : 0;
+
+        const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+        const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+
+        // Convert dimensions to pixels for canvas operations
+        const mmToPx = (mm: number) => (mm / MM_PER_INCH) * RECOMMENDED_DPI;
+
+        const pagePrintableWidthPx = mmToPx(pagePrintableWidthMm);
+        const pagePrintableHeightPx = mmToPx(pagePrintableHeightMm);
+
+        const totalPrintableWidthPx = pagePrintableWidthPx * settings.gridCols;
+        const totalPrintableHeightPx = pagePrintableHeightPx * settings.gridRows;
+
+        // Calculate scaled image dimensions to fit within the total grid, preserving aspect ratio
+        const imageRatio = img.naturalWidth / img.naturalHeight;
+        const totalGridRatio = totalPrintableWidthPx / totalPrintableHeightPx;
+
+        let scaledImgWidth, scaledImgHeight, gridOffsetX, gridOffsetY;
+
+        if (imageRatio > totalGridRatio) { // Pillarbox
+            scaledImgWidth = totalPrintableWidthPx;
+            scaledImgHeight = scaledImgWidth / imageRatio;
+            gridOffsetX = 0;
+            gridOffsetY = (totalPrintableHeightPx - scaledImgHeight) / 2;
+        } else { // Letterbox
+            scaledImgHeight = totalPrintableHeightPx;
+            scaledImgWidth = scaledImgHeight * imageRatio;
+            gridOffsetY = 0;
+            gridOffsetX = (totalPrintableWidthPx - scaledImgWidth) / 2;
+        }
+
+        // Resolution warning logic, threshold lowered by half per user request
+        const requiredWidth = Math.round((pagePrintableWidthMm * settings.gridCols / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
+        const requiredHeight = Math.round((pagePrintableHeightMm * settings.gridRows / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
+
+        if (img.naturalWidth < requiredWidth || img.naturalHeight < requiredHeight) {
+            setResolutionWarning({
+                requiredWidth,
+                requiredHeight,
+                actualWidth: img.naturalWidth,
+                actualHeight: img.naturalHeight,
+            });
+        } else {
+            setResolutionWarning(null);
+        }
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+            setIsLoading(false);
+            return;
+        }
+
+        canvas.width = mmToPx(A4_WIDTH_MM);
+        canvas.height = mmToPx(A4_HEIGHT_MM);
+
+        const marginPx = mmToPx(marginInMm);
+        const overlapPx = mmToPx(overlapWidthMm);
+
+        const tileWidthPx = pagePrintableWidthPx;
+        const tileHeightPx = pagePrintableHeightPx;
+
+        // Create a pattern for the stripes only once
+        const patternCanvas = document.createElement('canvas');
+        const patternCtx = patternCanvas.getContext('2d');
+        let stripePattern: CanvasPattern | null = null;
+        if (patternCtx) {
+            const stripeWidth = mmToPx(2);
+            patternCanvas.width = stripeWidth * 2;
+            patternCanvas.height = stripeWidth * 2;
+            patternCtx.strokeStyle = 'rgba(59, 130, 246, 0.5)'; // blue-500, 50% opacity
+            patternCtx.lineWidth = mmToPx(0.5);
+            patternCtx.beginPath();
+            patternCtx.moveTo(0, stripeWidth * 2);
+            patternCtx.lineTo(stripeWidth * 2, 0);
+            patternCtx.stroke();
+            stripePattern = ctx.createPattern(patternCanvas, 'repeat');
+        }
+
+        for (let row = 0; row < settings.gridRows; row++) {
+            for (let col = 0; col < settings.gridCols; col++) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const hasRightTab = settings.addOverlap && col < settings.gridCols - 1;
+                const hasBottomTab = settings.addOverlap && row < settings.gridRows - 1;
+                
+                // Calculate this tile's area in the overall grid, including overlap
+                const tileGridX = col * tileWidthPx;
+                const tileGridY = row * tileHeightPx;
+                const tileGridW = tileWidthPx + (hasRightTab ? overlapPx : 0);
+                const tileGridH = tileHeightPx + (hasBottomTab ? overlapPx : 0);
+        
+                // Find the intersection of this tile with the scaled image area
+                const intersectX = Math.max(tileGridX, gridOffsetX);
+                const intersectY = Math.max(tileGridY, gridOffsetY);
+        
+                const intersectW = Math.min(tileGridX + tileGridW, gridOffsetX + scaledImgWidth) - intersectX;
+                const intersectH = Math.min(tileGridY + tileGridH, gridOffsetY + scaledImgHeight) - intersectY;
+        
+                // If there's an actual image portion to draw
+                if (intersectW > 0 && intersectH > 0) {
+                    const scaleFactor = img.naturalWidth / scaledImgWidth;
+        
+                    // Calculate source rect from original image
+                    const sourceX = (intersectX - gridOffsetX) * scaleFactor;
+                    const sourceY = (intersectY - gridOffsetY) * scaleFactor;
+                    const sourceW = intersectW * scaleFactor;
+                    const sourceH = intersectH * scaleFactor;
+                    
+                    // Calculate destination rect on the current page canvas
+                    const destX = (intersectX - tileGridX) + marginPx;
+                    const destY = (intersectY - tileGridY) + marginPx;
+                    const destW = intersectW;
+                    const destH = intersectH;
+        
+                    ctx.drawImage(
+                        img,
+                        sourceX, sourceY, sourceW, sourceH,
+                        destX, destY, destW, destH
+                    );
+                }
+
+                // Add glue tab visualization (stripes)
+                if (settings.addOverlap && stripePattern) {
+                    ctx.save();
+                    ctx.fillStyle = stripePattern;
+                    if (hasRightTab) {
+                        ctx.fillRect(marginPx + tileWidthPx, marginPx, overlapPx, tileHeightPx);
+                    }
+                    if (hasBottomTab) {
+                        ctx.fillRect(marginPx, marginPx + tileHeightPx, tileWidthPx, overlapPx);
+                    }
+                    if (hasRightTab && hasBottomTab) {
+                        ctx.fillRect(marginPx + tileWidthPx, marginPx + tileHeightPx, overlapPx, overlapPx);
+                    }
+                    ctx.restore();
+                }
+
+                // Add crop marks based on assembly logic
+                if (settings.cropMarkType !== 'none') {
+                    ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)'; // red-500
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([mmToPx(2), mmToPx(2)]);
+                    const lineLength = marginPx * 0.75;
+                    const rightEdge = marginPx + tileWidthPx;
+                    const bottomEdge = marginPx + tileHeightPx;
+
+                    // Only draw crop marks for interior edges that need cutting: top and left.
+                    const drawTop = row > 0;
+                    const drawLeft = col > 0;
+
+                    ctx.beginPath();
+                    
+                    if (settings.cropMarkType === 'full') {
+                        // Dashed line across the top margin area to be cut
+                        if (drawTop) { 
+                            ctx.moveTo(0, marginPx); 
+                            ctx.lineTo(canvas.width, marginPx); 
+                        }
+                        // Dashed line down the left margin area to be cut
+                        if (drawLeft) { 
+                            ctx.moveTo(marginPx, 0); 
+                            ctx.lineTo(marginPx, canvas.height); 
+                        }
+                    } else { // corners
+                        // Top edge marks (for cutting the top margin)
+                        if (drawTop) {
+                            ctx.moveTo(marginPx, 0); ctx.lineTo(marginPx, lineLength);         // Top-left corner (vertical part)
+                            ctx.moveTo(rightEdge, 0); ctx.lineTo(rightEdge, lineLength);       // Top-right corner (vertical part)
+                        }
+                        // Left edge marks (for cutting the left margin)
+                        if (drawLeft) {
+                            ctx.moveTo(0, marginPx); ctx.lineTo(lineLength, marginPx);         // Top-left corner (horizontal part)
+                            ctx.moveTo(0, bottomEdge); ctx.lineTo(lineLength, bottomEdge);     // Bottom-left corner (horizontal part)
+                        }
+                    }
+                    ctx.stroke();
+                }
+                newPages.push(canvas.toDataURL('image/jpeg', 0.95));
+            }
+        }
+        setPages(newPages);
+        setIsLoading(false);
+    } catch (error) {
+        console.error("Error in generatePages:", error);
+        setIsLoading(false);
     }
-    setPages(newPages);
-    setIsLoading(false);
 }, [imageInfo, settings]);
   
   const generateFullPreview = useCallback(async (pageSources: string[]): Promise<string | null> => {
-    if (pageSources.length === 0 || !settings) return null;
+    try {
+        if (pageSources.length === 0 || !settings) return null;
 
-    const { gridCols, gridRows } = settings;
-    
-    // Load the first image to determine dimensions.
-    const firstPageImg = new Image();
-    firstPageImg.src = pageSources[0];
-    await new Promise(resolve => { firstPageImg.onload = resolve; });
+        const { gridCols, gridRows } = settings;
+        
+        // Load the first image to determine dimensions.
+        const firstPageImg = new Image();
+        firstPageImg.src = pageSources[0];
+        await new Promise(resolve => { firstPageImg.onload = resolve; });
 
-    const { naturalWidth: pageW, naturalHeight: pageH } = firstPageImg;
+        const { naturalWidth: pageW, naturalHeight: pageH } = firstPageImg;
 
-    if (pageW === 0 || pageH === 0) return null;
+        if (pageW === 0 || pageH === 0) return null;
 
-    const canvas = document.createElement('canvas');
-    canvas.width = pageW * gridCols;
-    canvas.height = pageH * gridRows;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
+        const canvas = document.createElement('canvas');
+        canvas.width = pageW * gridCols;
+        canvas.height = pageH * gridRows;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return null;
 
-    // Asynchronously load all page images
-    const imagePromises = pageSources.map(src => {
-        const img = new Image();
-        img.src = src;
-        return new Promise<HTMLImageElement>(resolve => { img.onload = () => resolve(img); });
-    });
-    
-    const loadedImages = await Promise.all(imagePromises);
+        // Asynchronously load all page images
+        const imagePromises = pageSources.map(src => {
+            const img = new Image();
+            img.src = src;
+            return new Promise<HTMLImageElement>(resolve => { img.onload = () => resolve(img); });
+        });
+        
+        const loadedImages = await Promise.all(imagePromises);
 
-    // Draw images onto the canvas grid
-    let imageIndex = 0;
-    for (let row = 0; row < gridRows; row++) {
-        for (let col = 0; col < gridCols; col++) {
-            if (loadedImages[imageIndex]) {
-                ctx.drawImage(loadedImages[imageIndex], col * pageW, row * pageH, pageW, pageH);
+        // Draw images onto the canvas grid
+        let imageIndex = 0;
+        for (let row = 0; row < gridRows; row++) {
+            for (let col = 0; col < gridCols; col++) {
+                if (loadedImages[imageIndex]) {
+                    ctx.drawImage(loadedImages[imageIndex], col * pageW, row * pageH, pageW, pageH);
+                }
+                imageIndex++;
             }
-            imageIndex++;
         }
-    }
 
-    return canvas.toDataURL('image/jpeg', 0.95);
+        return canvas.toDataURL('image/jpeg', 0.95);
+    } catch (error) {
+        console.error("Error in generateFullPreview:", error);
+        return null;
+    }
   }, [settings]);
 
   // Effect to generate the full preview whenever the pages or grid changes
   useEffect(() => {
     const createPreview = async () => {
-        if (pages.length > 0) {
-            const src = await generateFullPreview(pages);
-            setFullPreviewSrc(src);
-        } else {
-            setFullPreviewSrc(null);
+        try {
+            if (pages.length > 0) {
+                const src = await generateFullPreview(pages);
+                setFullPreviewSrc(src);
+            } else {
+                setFullPreviewSrc(null);
+            }
+        } catch (error) {
+            console.error("Error creating preview in useEffect:", error);
         }
     };
     createPreview();
@@ -417,168 +452,203 @@ function App() {
   }, [settings, imageInfo, debouncedGeneratePages]);
 
   const handleImageUpload = (file: File) => {
-    setIsUploading(true);
-    setUploadError(null);
-    const startTime = Date.now();
+    try {
+        setIsUploading(true);
+        setUploadError(null);
+        const startTime = Date.now();
 
-    // Web Worker to decode the image in a separate thread, preventing main thread crashes.
-    const workerCode = `
-      self.onmessage = async (e) => {
-        const file = e.data;
-        try {
-          const bitmap = await createImageBitmap(file);
-          self.postMessage({ status: 'success', width: bitmap.width, height: bitmap.height });
-          bitmap.close(); // Release memory in the worker
-        } catch (error) {
-          self.postMessage({ status: 'error', message: "Image could not be decoded. It may be too large or corrupted." });
-        }
-      };
-    `;
-    const blob = new Blob([workerCode], { type: 'application/javascript' });
-    const workerUrl = URL.createObjectURL(blob);
-    const worker = new Worker(workerUrl);
-
-    worker.postMessage(file);
-
-    worker.onmessage = (event) => {
-      const { status, width, height, message } = event.data;
-
-      if (status === 'error') {
-        console.error("Worker error:", message);
-        setUploadError(t('uploadErrorGeneral'));
-        setIsUploading(false);
-      } else {
-        // Worker successfully got dimensions. Now load image on main thread for canvas drawing.
-        const url = URL.createObjectURL(file);
-        const image = new Image();
-
-        image.onload = () => {
-            if (width === 0 || height === 0) {
-                setUploadError(t('uploadErrorDimensions'));
-                setIsUploading(false);
-                URL.revokeObjectURL(url);
-                return;
+        // Web Worker to decode the image in a separate thread, preventing main thread crashes.
+        const workerCode = `
+          self.onmessage = async (e) => {
+            const file = e.data;
+            try {
+              const bitmap = await createImageBitmap(file);
+              self.postMessage({ status: 'success', width: bitmap.width, height: bitmap.height });
+              bitmap.close(); // Release memory in the worker
+            } catch (error) {
+              self.postMessage({ status: 'error', message: "Image could not be decoded. It may be too large or corrupted." });
             }
+          };
+        `;
+        const blob = new Blob([workerCode], { type: 'application/javascript' });
+        const workerUrl = URL.createObjectURL(blob);
+        const worker = new Worker(workerUrl);
 
-            const finishProcessing = () => {
-                const marginInMm = settings.marginUnit === 'in' 
-                    ? settings.printerMargin * MM_PER_INCH 
-                    : settings.printerMargin;
+        worker.postMessage(file);
 
-                const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
-                const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+        worker.onmessage = (event) => {
+          try {
+              const { status, width, height, message } = event.data;
 
-                const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
-                const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
-
-                let suggestedCols = 1;
-                let suggestedRows = 1;
-
-                if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
-                    suggestedCols = Math.round(width / pagePrintableWidthPx);
-                    suggestedRows = Math.round(height / pagePrintableHeightPx);
-                }
-
-                let newCols = Math.max(1, Math.min(10, suggestedCols));
-                let newRows = Math.max(1, Math.min(10, suggestedRows));
-                
-                if (newCols === 1 && newRows === 1) {
-                    newCols = 2;
-                    newRows = 2;
-                }
-
-                setSettings(prev => ({
-                    ...prev,
-                    gridCols: newCols,
-                    gridRows: newRows,
-                }));
-                
-                imageRef.current = image;
-                setImageInfo({ url, width, height });
+              if (status === 'error') {
+                console.error("Worker error:", message);
+                setUploadError(t('uploadErrorGeneral'));
                 setIsUploading(false);
-            };
+              } else {
+                // Worker successfully got dimensions. Now load image on main thread for canvas drawing.
+                const url = URL.createObjectURL(file);
+                const image = new Image();
 
-            const elapsedTime = Date.now() - startTime;
-            const minLoadingTime = 1500; // Keep spinner for a minimum time for better UX
-            const remainingTime = minLoadingTime - elapsedTime;
+                image.onload = () => {
+                    try {
+                        if (width === 0 || height === 0) {
+                            setUploadError(t('uploadErrorDimensions'));
+                            setIsUploading(false);
+                            URL.revokeObjectURL(url);
+                            return;
+                        }
 
-            if (remainingTime > 0) {
-                setTimeout(finishProcessing, remainingTime);
-            } else {
-                finishProcessing();
-            }
+                        const finishProcessing = () => {
+                            try {
+                                const marginInMm = settings.marginUnit === 'in' 
+                                    ? settings.printerMargin * MM_PER_INCH 
+                                    : settings.printerMargin;
+
+                                const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
+                                const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
+
+                                const pagePrintableWidthPx = (pagePrintableWidthMm / MM_PER_INCH) * RECOMMENDED_DPI;
+                                const pagePrintableHeightPx = (pagePrintableHeightMm / MM_PER_INCH) * RECOMMENDED_DPI;
+
+                                let suggestedCols = 1;
+                                let suggestedRows = 1;
+
+                                if (pagePrintableWidthPx > 0 && pagePrintableHeightPx > 0) {
+                                    suggestedCols = Math.round(width / pagePrintableWidthPx);
+                                    suggestedRows = Math.round(height / pagePrintableHeightPx);
+                                }
+
+                                let newCols = Math.max(1, Math.min(10, suggestedCols));
+                                let newRows = Math.max(1, Math.min(10, suggestedRows));
+                                
+                                if (newCols === 1 && newRows === 1) {
+                                    newCols = 2;
+                                    newRows = 2;
+                                }
+
+                                setSettings(prev => ({
+                                    ...prev,
+                                    gridCols: newCols,
+                                    gridRows: newRows,
+                                }));
+                                
+                                imageRef.current = image;
+                                setImageInfo({ url, width, height });
+                                setIsUploading(false);
+                            } catch (err) {
+                                console.error("Error in finishProcessing:", err);
+                                setUploadError(t('uploadErrorFallback'));
+                                setIsUploading(false);
+                            }
+                        };
+
+                        const elapsedTime = Date.now() - startTime;
+                        const minLoadingTime = 1500; // Keep spinner for a minimum time for better UX
+                        const remainingTime = minLoadingTime - elapsedTime;
+
+                        if (remainingTime > 0) {
+                            setTimeout(finishProcessing, remainingTime);
+                        } else {
+                            finishProcessing();
+                        }
+                    } catch (err) {
+                        console.error("Error in image.onload:", err);
+                        setUploadError(t('uploadErrorFallback'));
+                        setIsUploading(false);
+                        URL.revokeObjectURL(url);
+                    }
+                };
+
+                image.onerror = () => {
+                  setUploadError(t('uploadErrorGeneral'));
+                  setIsUploading(false);
+                  URL.revokeObjectURL(url);
+                };
+
+                image.src = url;
+              }
+
+              worker.terminate();
+              URL.revokeObjectURL(workerUrl);
+          } catch (error) {
+              console.error("Error in worker.onmessage:", error);
+              setUploadError(t('uploadErrorFallback'));
+              setIsUploading(false);
+          }
         };
 
-        image.onerror = () => {
-          setUploadError(t('uploadErrorGeneral'));
+        worker.onerror = (error) => {
+          console.error("Worker failed catastrophically:", error.message);
+          setUploadError(t('uploadErrorFallback'));
           setIsUploading(false);
-          URL.revokeObjectURL(url);
+          worker.terminate();
+          URL.revokeObjectURL(workerUrl);
         };
-
-        image.src = url;
-      }
-
-      worker.terminate();
-      URL.revokeObjectURL(workerUrl);
-    };
-
-    worker.onerror = (error) => {
-      console.error("Worker failed catastrophically:", error.message);
-      setUploadError(t('uploadErrorFallback'));
-      setIsUploading(false);
-      worker.terminate();
-      URL.revokeObjectURL(workerUrl);
-    };
+    } catch (error) {
+        console.error("Error in handleImageUpload:", error);
+        setUploadError(t('uploadErrorFallback'));
+        setIsUploading(false);
+    }
   };
 
 
   const generateAndSavePdf = async () => {
-    if (pages.length === 0) return;
-    setIsGeneratingPdf(true);
-    setPostersCreatedCount(c => c + 1);
+    try {
+        if (pages.length === 0) return;
+        setIsGeneratingPdf(true);
+        setPostersCreatedCount(c => c + 1);
 
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-    });
-    
-    const smallBrandingText = "printmyposter.art";
-    const largeBrandingText = t('brandingText');
-
-    for (let i = 0; i < pages.length; i++) {
-      if (i > 0) {
-        pdf.addPage();
-      }
-      pdf.addImage(pages[i], 'JPEG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
-
-      // Add small branding to the bottom margin of every page
-      pdf.setFontSize(6);
-      pdf.setTextColor(150, 150, 150); // Light gray
-      const textDimensionsSmall = pdf.getTextDimensions(smallBrandingText);
-      const textXSmall = (A4_WIDTH_MM - textDimensionsSmall.w) / 2; // Centered
-      const textYSmall = A4_HEIGHT_MM - 2; // Position 2mm from the bottom
-      pdf.text(smallBrandingText, textXSmall, textYSmall);
-    }
-    
-    // Add larger branding mark to the last page
-    if (pages.length > 0) {
-        pdf.setPage(pages.length);
-
-        pdf.setFontSize(10);
-        pdf.setTextColor(128, 128, 128); // Medium gray
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
+        });
         
-        const textDimensionsLarge = pdf.getTextDimensions(largeBrandingText);
-        const textXLarge = (A4_WIDTH_MM - textDimensionsLarge.w) / 2; // Centered
-        const textYLarge = A4_HEIGHT_MM - 6; // Position 6mm from the bottom, above the small one
-        
-        pdf.text(largeBrandingText, textXLarge, textYLarge);
-    }
+        const smallBrandingText = "printmyposter.art";
+        const largeBrandingText = t('brandingText');
 
-    setTimeout(() => {
-      pdf.save('print-my-poster.pdf');
-      setIsGeneratingPdf(false);
-    }, 100);
+        for (let i = 0; i < pages.length; i++) {
+          if (i > 0) {
+            pdf.addPage();
+          }
+          pdf.addImage(pages[i], 'JPEG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+
+          // Add small branding to the bottom margin of every page
+          pdf.setFontSize(6);
+          pdf.setTextColor(150, 150, 150); // Light gray
+          const textDimensionsSmall = pdf.getTextDimensions(smallBrandingText);
+          const textXSmall = (A4_WIDTH_MM - textDimensionsSmall.w) / 2; // Centered
+          const textYSmall = A4_HEIGHT_MM - 2; // Position 2mm from the bottom
+          pdf.text(smallBrandingText, textXSmall, textYSmall);
+        }
+        
+        // Add larger branding mark to the last page
+        if (pages.length > 0) {
+            pdf.setPage(pages.length);
+
+            pdf.setFontSize(10);
+            pdf.setTextColor(128, 128, 128); // Medium gray
+            
+            const textDimensionsLarge = pdf.getTextDimensions(largeBrandingText);
+            const textXLarge = (A4_WIDTH_MM - textDimensionsLarge.w) / 2; // Centered
+            const textYLarge = A4_HEIGHT_MM - 6; // Position 6mm from the bottom, above the small one
+            
+            pdf.text(largeBrandingText, textXLarge, textYLarge);
+        }
+
+        setTimeout(() => {
+          try {
+              pdf.save('print-my-poster.pdf');
+              setIsGeneratingPdf(false);
+          } catch (e) {
+              console.error("Error saving PDF:", e);
+              setIsGeneratingPdf(false);
+          }
+        }, 100);
+    } catch (error) {
+        console.error("Error in generateAndSavePdf:", error);
+        setIsGeneratingPdf(false);
+    }
   };
   
   const handleDownloadClick = () => {
@@ -586,41 +656,48 @@ function App() {
   };
 
   const handleShare = async () => {
-    const shareData = {
-      title: t('shareTitle'),
-      text: t('shareText'),
-      url: 'https://www.printmyposter.art/',
-    };
+    try {
+        const shareData = {
+          title: t('shareTitle'),
+          text: t('shareText'),
+          url: 'https://www.printmyposter.art/',
+        };
 
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (error) {
-        console.error('Error sharing:', error);
-      }
-    } else {
-      try {
-        await navigator.clipboard.writeText(shareData.url);
-        setShareCopied(true);
-        setTimeout(() => setShareCopied(false), 2000);
-      } catch (error) {
-        console.error('Error copying to clipboard:', error);
-        alert('Could not copy link to clipboard.');
-      }
+        if (navigator.share) {
+          try {
+            await navigator.share(shareData);
+          } catch (error) {
+            console.error('Error sharing:', error);
+          }
+        } else {
+          try {
+            await navigator.clipboard.writeText(shareData.url);
+            setShareCopied(true);
+            setTimeout(() => setShareCopied(false), 2000);
+          } catch (error) {
+            console.error('Error copying to clipboard:', error);
+            alert('Could not copy link to clipboard.');
+          }
+        }
+    } catch (error) {
+        console.error("Error in handleShare:", error);
     }
   };
 
   // Fake poster count increment
   useEffect(() => {
     const interval = setInterval(() => {
-      setPostersCreatedCount(c => c + Math.floor(Math.random() * 3) + 1);
+      try {
+          setPostersCreatedCount(c => c + Math.floor(Math.random() * 3) + 1);
+      } catch (e) {
+          console.error("Error in poster count interval:", e);
+      }
     }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <>
-      <SpeedInsights />
       <ThreeBackground />
       <div className="relative min-h-screen font-sans">
         <header className="bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-200">
