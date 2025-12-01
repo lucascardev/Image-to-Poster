@@ -46,7 +46,7 @@ export default {
   "step2Desc": "Use as <strong>linhas vermelhas tracejadas</strong> como guias de corte. Apare cuidadosamente ao longo delas para remover as margens não impressas. Isso garante que as partes do seu pôster se alinharão perfeitamente.",
   "step3Title": "Montar o Pôster",
   "step3Desc": "Disponha as páginas na ordem correta e cole-as com fita adesiva pela parte de trás.",
-  "step3DescOverlap": "Uma parte da imagem se repete nas páginas adjacentes para servir como <strong>guía de alinhamento</strong>. A <strong>área com listras azuis</strong> indica onde aplicar cola ou fita. Cole esta aba no verso da página seguinte, alinhando as imagens.",
+  "step3DescOverlap": "Uma parte da imagem se repete nas páginas adjacentes para servir como <strong>guia de alinhamento</strong>. A <strong>área com listras azuis</strong> indica onde aplicar cola ou fita. Cole esta aba no verso da página seguinte, alinhando as imagens.",
   "warningTitle": "Aviso de Baixa Resolução",
   "warningMessage": "Para uma impressão de boa qualidade de {cols}x{rows} páginas, sua imagem deve ter pelo menos <strong>{requiredWidth}px por {requiredHeight}px</strong>. Sua imagem tem <strong>{actualWidth}px por {actualHeight}px</strong>. O resultado pode parecer borrado ou pixelado quando impresso.",
   "advertisement": "Publicidade",
@@ -75,7 +75,7 @@ export default {
   "tutorialStep4Title": "4. Baixe o PDF",
   "tutorialStep4Desc": "Nossa ferramenta divide instantaneamente sua imagem em várias páginas A4 em um único arquivo PDF.",
   "tutorialStep5Title": "5. Imprima e Monte",
-  "tutorialStep5Desc": "Imprime o PDF em escala de 100%, corte as bordas usando as guias e monte seu pôster gigante.",
+  "tutorialStep5Desc": "Imprima o PDF em escala de 100%, corte as bordas usando as guias e monte seu pôster gigante.",
   "brandingLine1": "Criado com {appName}",
   "brandingLine2": "https://www.printmyposter.art/",
   "honeygainTitle": "Ganhe renda passiva com a Honeygain",
@@ -116,11 +116,5 @@ export default {
   "donationCompletedDesc": "Seu apoio é muito apreciado e nos ajuda a manter esta ferramenta gratuita para todos. Você é incrível!",
   "donationCanceledTitle": "Doação Cancelada",
   "donationCanceledDesc": "O processo de doação foi cancelado. Não há problema algum! Você pode continuar a usar todas as funcionalidades do site gratuitamente.",
-  "backToHomeButton": "Voltar à Página Inicial",
-  "generateImageButton": "Criar com IA",
-  "generatorTitle": "Criar com Google Gemini",
-  "generatorInstruction": "Use o poder da IA do Google Gemini para criar imagens únicas e em alta resolução para seu pôster.",
-  "openGeminiButton": "Abrir Chat Gemini",
-  "tipLabel": "Próximo Passo",
-  "generatorSubInstruction": "Após gerar sua imagem no Gemini, salve-a em seu dispositivo e faça o upload aqui."
+  "backToHomeButton": "Voltar à Página Inicial"
 };

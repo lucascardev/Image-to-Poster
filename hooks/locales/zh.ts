@@ -116,11 +116,5 @@ export default {
   "donationCompletedDesc": "非常感谢您的支持，这有助于我们让这个工具对所有人免费。您太棒了！",
   "donationCanceledTitle": "捐赠已取消",
   "donationCanceledDesc": "捐赠过程已取消。没关系！您可以继续免费使用网站的所有功能。",
-  "backToHomeButton": "返回主页",
-  "generateImageButton": "用 AI 创建",
-  "generatorTitle": "用 Google Gemini 创建",
-  "generatorInstruction": "利用 Google Gemini AI 的强大功能，为您的海报创建独特的高分辨率图像。",
-  "openGeminiButton": "打开 Gemini 聊天",
-  "tipLabel": "下一步",
-  "generatorSubInstruction": "在 Gemini 上生成图像后，将其保存到您的设备并在此处上传。"
+  "backToHomeButton": "返回主页"
 };

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import type { AppSettings, CropMarkType } from '../types';
-import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon, LoadingIcon, WarningIcon, SparklesIcon } from './Icons';
+import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon, LoadingIcon, WarningIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
 import AdPlaceholder from './AdPlaceholder';
 import ModernSlider from './ModernSlider';
@@ -11,7 +11,6 @@ interface SettingsPanelProps {
   settings: AppSettings;
   onSettingsChange: (settings: AppSettings) => void;
   onImageUpload: (file: File) => void;
-  onOpenGenerator: () => void;
   hasImage: boolean;
   isUploading: boolean;
   uploadError: string | null;
@@ -43,7 +42,7 @@ const RadioPill: React.FC<{
   );
 };
 
-const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange, onImageUpload, onOpenGenerator, hasImage, isUploading, uploadError }) => {
+const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange, onImageUpload, hasImage, isUploading, uploadError }) => {
   const { t } = useTranslations();
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,21 +131,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
             </>
           )}
         </div>
-        
-        <div className="mt-4 flex items-center justify-center w-full">
-            <div className="border-t border-slate-200 flex-grow"></div>
-            <span className="mx-4 text-slate-400 text-sm">OR</span>
-            <div className="border-t border-slate-200 flex-grow"></div>
-        </div>
-
-        <button
-            onClick={onOpenGenerator}
-            className="mt-4 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all shadow-md"
-        >
-            <SparklesIcon className="w-5 h-5" />
-            {t('generateImageButton')}
-        </button>
-
         {uploadError && (
             <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-700 flex items-start gap-2">
               <WarningIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
