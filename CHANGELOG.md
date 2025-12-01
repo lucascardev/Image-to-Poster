@@ -6,11 +6,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1] - 2024-07-27
-
-### Fixed
-- **Image Loading Stability:** Fixed critical issue where uploading high-resolution images or using specific mobile devices would cause the app to freeze or load indefinitely. Migrated to `createImageBitmap` API for efficient, off-main-thread image decoding and better memory management.
-
 ## [1.1.0] - 2024-07-27
 
 ### Added
