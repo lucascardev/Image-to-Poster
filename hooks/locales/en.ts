@@ -1,5 +1,4 @@
 
-
 export default {
   "appTitle": "Print My Poster",
   "appNewSubtitle": "Turn any image into a giant poster and print it at home on your regular printer.",
@@ -117,5 +116,11 @@ export default {
   "donationCompletedDesc": "Your support is greatly appreciated and helps us keep this tool free for everyone. You are amazing!",
   "donationCanceledTitle": "Donation Canceled",
   "donationCanceledDesc": "The donation process was canceled. No problem at all! You can continue to use all features of the site for free.",
-  "backToHomeButton": "Back to Home Page"
-}
+  "backToHomeButton": "Back to Home Page",
+  "generateImageButton": "Create with AI",
+  "generatorTitle": "Create with Google Gemini",
+  "generatorInstruction": "Use the power of Google Gemini AI to create unique, high-resolution images for your poster.",
+  "openGeminiButton": "Open Gemini Chat",
+  "tipLabel": "Next Step",
+  "generatorSubInstruction": "After generating your image on Gemini, save it to your device and upload it here."
+};

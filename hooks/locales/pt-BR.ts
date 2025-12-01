@@ -75,7 +75,7 @@ export default {
   "tutorialStep4Title": "4. Baixe o PDF",
   "tutorialStep4Desc": "Nossa ferramenta divide instantaneamente sua imagem em várias páginas A4 em um único arquivo PDF.",
   "tutorialStep5Title": "5. Imprima e Monte",
-  "tutorialStep5Desc": "Imprima o PDF em escala de 100%, corte as bordas usando as guias e monte seu pôster gigante.",
+  "tutorialStep5Desc": "Imprime o PDF em escala de 100%, corte as bordas usando as guias e monte seu pôster gigante.",
   "brandingLine1": "Criado com {appName}",
   "brandingLine2": "https://www.printmyposter.art/",
   "honeygainTitle": "Ganhe renda passiva com a Honeygain",
@@ -116,5 +116,11 @@ export default {
   "donationCompletedDesc": "Seu apoio é muito apreciado e nos ajuda a manter esta ferramenta gratuita para todos. Você é incrível!",
   "donationCanceledTitle": "Doação Cancelada",
   "donationCanceledDesc": "O processo de doação foi cancelado. Não há problema algum! Você pode continuar a usar todas as funcionalidades do site gratuitamente.",
-  "backToHomeButton": "Voltar à Página Inicial"
+  "backToHomeButton": "Voltar à Página Inicial",
+  "generateImageButton": "Criar com IA",
+  "generatorTitle": "Criar com Google Gemini",
+  "generatorInstruction": "Use o poder da IA do Google Gemini para criar imagens únicas e em alta resolução para seu pôster.",
+  "openGeminiButton": "Abrir Chat Gemini",
+  "tipLabel": "Próximo Passo",
+  "generatorSubInstruction": "Após gerar sua imagem no Gemini, salve-a em seu dispositivo e faça o upload aqui."
 };
