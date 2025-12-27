@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { AppSettings, CropMarkType } from '../types';
 import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon, LoadingIcon, WarningIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
@@ -42,16 +42,31 @@ const RadioPill: React.FC<{
   );
 };
 
+import { logger } from './DebugConsole';
+
+// ... (existing imports)
+
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChange, onImageUpload, hasImage, isUploading, uploadError }) => {
   const { t } = useTranslations();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    logger.log("SettingsPanel MOUNTED");
+    return () => logger.log("SettingsPanel UNMOUNTED");
+  }, []);
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // FORCE ALERT - Bypass console if needed, but sticking to logger first
+    logger.log("Input onChange fired.");
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      logger.log(`File selected: ${file.name}`);
       onImageUpload(file);
-      // Reset the input value so the same file can be selected again if needed (e.g. if upload fails)
-      e.target.value = '';
+    } else {
+      logger.warn("Input onChange fired but no files found.");
     }
+    // Always clear value to allow re-selection
+    e.target.value = '';
   };
 
   const handleSettingChange = <K extends keyof AppSettings,>(key: K, value: AppSettings[K]) => {
@@ -110,33 +125,60 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
     <div className="bg-white p-6 rounded-lg shadow-md sticky top-24">
       <h2 className="text-2xl font-bold mb-6 border-b pb-4">{t('configTitle')}</h2>
       
+      {/* NUCLEAR DEBUG INPUT - RESTORED BY REQUEST */}
+      <div className="mb-4 p-4 bg-red-100 border-2 border-red-500 rounded text-red-900">
+        <p className="font-bold mb-2">🚨 {t('selectImageTitle')} 🚨</p>
+        <p className="text-sm mb-2">{t('selectImageDesc')}</p>
+        <input 
+            type="file" 
+            onChange={handleFileChange}
+            className="block w-full text-sm text-slate-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-full file:border-0
+              file:text-sm file:font-semibold
+              file:bg-violet-50 file:text-violet-700
+              hover:file:bg-violet-100
+            "
+        />
+      </div>
+
       <InputGroup label={t('step1Label')} icon={<UploadIcon className="w-6 h-6 text-indigo-500" />}>
-        <div className="mt-1 flex flex-col items-center justify-center px-6 pt-8 pb-8 border-2 border-slate-300 border-dashed rounded-md text-center">
+        <div className="mt-1 flex flex-col items-center justify-center pt-6 pb-6 border-2 border-slate-300 border-dashed rounded-md text-center bg-slate-50 hover:bg-slate-100 transition-colors">
+          
           {isUploading ? (
             <>
               <LoadingIcon className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
               <p className="text-lg font-semibold text-slate-700">{t('uploadingMessage')}</p>
-              <p className="mt-1 text-sm text-slate-500">{t('uploadingSubtitle')}</p>
             </>
           ) : (
             <>
-              <UploadIcon className="w-10 h-10 text-slate-400 mb-4" />
-              <label htmlFor="file-upload" className="relative cursor-pointer bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 transition-colors">
-                <span>{hasImage ? t('replaceImage') : t('uploadFile')}</span>
-                <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept="image/*" disabled={isUploading} />
-              </label>
-              <p className="mt-2 text-sm text-slate-600">{t('dragAndDrop')}</p>
-              <p className="mt-1 text-xs text-slate-500">{t('fileTypes')}</p>
+    
+              {/* NATIVE INPUT - EXACT COPY of the red one */}
+              <input 
+                  type="file" 
+                  disabled
+                  onChange={handleFileChange}
+                  className="block w-full text-sm text-slate-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-violet-50 file:text-violet-700
+                    hover:file:bg-violet-100
+                    cursor-pointer mx-auto hidden
+                  "
+              />
+              <p className="mt-4 text-xs text-slate-500">{t('fileTypes')}</p>
               <p className="mt-1 text-xs text-slate-500">{t('uploadRetryHint')}</p>
             </>
           )}
+          
+          {uploadError && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-700 flex items-start gap-2">
+                <WarningIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <span>{uploadError}</span>
+              </div>
+          )}
         </div>
-        {uploadError && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-700 flex items-start gap-2">
-              <WarningIcon className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
-              <span>{uploadError}</span>
-            </div>
-        )}
       </InputGroup>
 
       {/* Conditionally render settings only when an image is uploaded */}

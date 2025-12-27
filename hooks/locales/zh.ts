@@ -9,6 +9,8 @@ export default {
   "configTitle": "配置",
   "step1Label": "第1步：上传图片",
   "uploadFile": "上传图片",
+  "selectImageTitle": "选择图片",
+  "selectImageDesc": "选择您想要转换为海报的图片。",
   "replaceImage": "替换图片",
   "dragAndDrop": "或拖放文件",
   "fileTypes": "PNG, JPG, GIF",

@@ -9,6 +9,8 @@ export default {
   "configTitle": "設定",
   "step1Label": "ステップ1：画像をアップロード",
   "uploadFile": "画像をアップロード",
+  "selectImageTitle": "画像を選択",
+  "selectImageDesc": "ポスターに変換したい画像を選択してください。",
   "replaceImage": "画像を置換",
   "dragAndDrop": "またはドラッグ＆ドロップ",
   "fileTypes": "PNG, JPG, GIF",

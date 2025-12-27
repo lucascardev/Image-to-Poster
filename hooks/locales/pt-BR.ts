@@ -9,6 +9,8 @@ export default {
   "configTitle": "Configuração",
   "step1Label": "Passo 1: Enviar Imagem",
   "uploadFile": "Enviar Imagem",
+  "selectImageTitle": "Escolha a imagem",
+  "selectImageDesc": "Selecione a imagem que você deseja transformar em um pôster.",
   "replaceImage": "Trocar Imagem",
   "dragAndDrop": "ou arraste e solte",
   "fileTypes": "PNG, JPG, GIF",

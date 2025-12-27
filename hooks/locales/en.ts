@@ -10,6 +10,8 @@ export default {
   "configTitle": "Configuration",
   "step1Label": "Step 1: Upload Image",
   "uploadFile": "Upload an Image",
+  "selectImageTitle": "Choose the image",
+  "selectImageDesc": "Select the image you want to convert to a poster.",
   "replaceImage": "Replace Image",
   "dragAndDrop": "or drag and drop",
   "fileTypes": "PNG, JPG, GIF",

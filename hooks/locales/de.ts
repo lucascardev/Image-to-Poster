@@ -9,6 +9,8 @@ export default {
   "configTitle": "Konfiguration",
   "step1Label": "Schritt 1: Bild hochladen",
   "uploadFile": "Bild hochladen",
+  "selectImageTitle": "Wählen Sie das Bild",
+  "selectImageDesc": "Wählen Sie das Bild aus, das Sie in ein Poster umwandeln möchten.",
   "replaceImage": "Bild ersetzen",
   "dragAndDrop": "oder per Drag & Drop",
   "fileTypes": "PNG, JPG, GIF",
