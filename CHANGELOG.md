@@ -6,6 +6,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.1.1] - 2025-12-27
+
+### Fixed
+- **Critical Image Upload Fix:** Resolved a persistent "silent error" on mobile devices by reverting to a robust, native file input structure.
+- **Input Reliability:** Restored the "Red Box" input style (now verified as the most reliable method across browsers) while maintaining a clean user interface text.
+
+### Added
+- **Multilingual Upload UI:** Added complete translation support for the upload buttons and prompts across all languages (English, Portuguese, Spanish, German, Japanese, Chinese).
+- **Upload Race Protection:** Implemented unique ID tracking for upload attempts to prevent race conditions when selecting images rapidly.
+
 ## [1.1.0] - 2024-07-27
 
 ### Added
