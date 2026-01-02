@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Automated release.
 
+## [1.1.7] - 2026-01-02
+
+### Fixed
+- **Assets:** Updated and replaced corrupted PNG icons in the `public/` directory to ensure correct rendering on all devices.
+
 ## [1.1.6] - 2026-01-02
 
 ### Fixed
