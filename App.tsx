@@ -933,7 +933,7 @@ function App() {
             onDownload={generateAndSavePdf}
         />
       </Suspense>
-      <DebugConsole />
+      {import.meta.env.DEV && <DebugConsole />}
     </>
   );
 }
