@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.1.5] - 2026-01-02
 
 ### Changed
-- Automated release.
+- **Performance & Best Practices:** Migrated CSS framework from Tailwind CDN to a build-time compilation using **Tailwind CSS v4** and **PostCSS**. This eliminates the "should not be used in production" warning and improves load performance.
 
 ## [1.1.4] - 2026-01-02
 
