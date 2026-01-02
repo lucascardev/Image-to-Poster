@@ -27,6 +27,7 @@ import type { AppSettings, ImageInfo, ResolutionWarning } from './types';
 import { A4_WIDTH_MM, A4_HEIGHT_MM, MM_PER_INCH, RECOMMENDED_DPI } from './constants';
 import { useTranslations } from './hooks/useTranslations';
 import { APP_VERSION } from './version';
+import { debounce, mmToPx, calculateGridDimensions } from './utils';
 
 const initialSettings: AppSettings = {
   gridCols: 3,
@@ -37,28 +38,6 @@ const initialSettings: AppSettings = {
   addOverlap: true,
 };
 
-// A simple debounce function
-function debounce<F extends (...args: any[]) => any>(func: F, waitFor: number) {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-
-  return (...args: Parameters<F>): Promise<ReturnType<F>> =>
-    new Promise(resolve => {
-      try {
-        if (timeout) {
-          clearTimeout(timeout);
-        }
-        timeout = setTimeout(() => {
-            try {
-                resolve(func(...args));
-            } catch (error) {
-                console.error("Error in debounced function:", error);
-            }
-        }, waitFor);
-      } catch (error) {
-          console.error("Error setting up debounce:", error);
-      }
-    });
-}
 
 // --- Start of embedded FullscreenPreviewModal ---
 interface FullscreenPreviewModalProps {
@@ -271,9 +250,6 @@ function App() {
         const pagePrintableWidthMm = A4_WIDTH_MM - (marginInMm * 2);
         const pagePrintableHeightMm = A4_HEIGHT_MM - (marginInMm * 2);
 
-        // Convert dimensions to pixels for canvas operations
-        const mmToPx = (mm: number) => (mm / MM_PER_INCH) * RECOMMENDED_DPI;
-
         const pagePrintableWidthPx = mmToPx(pagePrintableWidthMm);
         const pagePrintableHeightPx = mmToPx(pagePrintableHeightMm);
 
@@ -281,22 +257,12 @@ function App() {
         const totalPrintableHeightPx = pagePrintableHeightPx * settings.gridRows;
 
         // Calculate scaled image dimensions to fit within the total grid, preserving aspect ratio
-        const imageRatio = img.naturalWidth / img.naturalHeight;
-        const totalGridRatio = totalPrintableWidthPx / totalPrintableHeightPx;
-
-        let scaledImgWidth, scaledImgHeight, gridOffsetX, gridOffsetY;
-
-        if (imageRatio > totalGridRatio) { // Pillarbox
-            scaledImgWidth = totalPrintableWidthPx;
-            scaledImgHeight = scaledImgWidth / imageRatio;
-            gridOffsetX = 0;
-            gridOffsetY = (totalPrintableHeightPx - scaledImgHeight) / 2;
-        } else { // Letterbox
-            scaledImgHeight = totalPrintableHeightPx;
-            scaledImgWidth = scaledImgHeight * imageRatio;
-            gridOffsetY = 0;
-            gridOffsetX = (totalPrintableWidthPx - scaledImgWidth) / 2;
-        }
+        const { scaledImgWidth, scaledImgHeight, gridOffsetX, gridOffsetY } = calculateGridDimensions({
+            imageWidth: img.naturalWidth,
+            imageHeight: img.naturalHeight,
+            totalPrintableWidthPx,
+            totalPrintableHeightPx
+        });
 
         // Resolution warning logic, threshold lowered by half per user request
         const requiredWidth = Math.round((pagePrintableWidthMm * settings.gridCols / MM_PER_INCH) * (RECOMMENDED_DPI / 2));
