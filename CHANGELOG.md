@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.4] - 2026-01-02
 
-### Changed
-- Automated release.
+### Added
+- **New Languages:** Added full support for French (Français), Italian (Italiano), and Russian (Русский).
+- **UI Update:** Added flag icons for France, Italy, and Russia to the language switcher.
 
 ## [1.1.3] - 2026-01-02
 
