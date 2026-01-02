@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Automated release.
 
+## [1.1.6] - 2026-01-02
+
+### Fixed
+- **PWA Assets:** Moved `manifest.json`, icons, and `robots.txt` to the `public/` directory to ensure they are correctly served in production.
+- **Manifest:** Fixed references to missing icons in `manifest.json`.
+
 ## [1.1.5] - 2026-01-02
 
 ### Changed
