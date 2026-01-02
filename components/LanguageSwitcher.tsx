@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslations } from '../hooks/useTranslations';
-import { BrazilFlagIcon, UkFlagIcon, SpainFlagIcon, ChinaFlagIcon, JapanFlagIcon, GermanFlagIcon, ChevronDownIcon } from './Icons';
+import { BrazilFlagIcon, UkFlagIcon, SpainFlagIcon, ChinaFlagIcon, JapanFlagIcon, GermanFlagIcon, FranceFlagIcon, ItalyFlagIcon, RussiaFlagIcon, ChevronDownIcon } from './Icons';
 
-type Language = 'en' | 'pt-BR' | 'es' | 'zh' | 'ja' | 'de';
+type Language = 'en' | 'pt-BR' | 'es' | 'zh' | 'ja' | 'de' | 'fr' | 'it' | 'ru';
 
 const languageOptions: { lang: Language; label: string; Icon: React.FC<React.SVGProps<SVGSVGElement>> }[] = [
   { lang: 'pt-BR', label: 'PT-BR', Icon: BrazilFlagIcon },
   { lang: 'es', label: 'ES', Icon: SpainFlagIcon },
+  { lang: 'fr', label: 'FR', Icon: FranceFlagIcon },
   { lang: 'de', label: 'DE', Icon: GermanFlagIcon },
+  { lang: 'it', label: 'IT', Icon: ItalyFlagIcon },
+  { lang: 'ru', label: 'RU', Icon: RussiaFlagIcon },
   { lang: 'zh', label: 'CN', Icon: ChinaFlagIcon },
   { lang: 'ja', label: 'JP', Icon: JapanFlagIcon },
   { lang: 'en', label: 'EN', Icon: UkFlagIcon },

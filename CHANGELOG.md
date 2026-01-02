@@ -7,15 +7,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [1.1.3] - 2026-01-02
+## [1.1.4] - 2026-01-02
 
 ### Changed
 - Automated release.
+
+## [1.1.3] - 2026-01-02
+
+### Fixed
+- **Debug Console Visibility:** Fixed an issue where the "Show Debug" button was visible in the production environment. It is now correctly restricted to development builds only.
 
 ## [1.1.2] - 2026-01-02
 
+### Added
+- **Local Release Automation:** Implemented a `npm run release` script to automate testing, version bumping, changelog updates, and git pushing.
+- **Unit Tests:** Added Vitest framework and unit tests for core utilities (`debounce`, `mmToPx`, `calculateGridDimensions`).
+
 ### Changed
-- Automated release.
+- **Refactoring:** Extracted core logic from `App.tsx` to `utils.ts` to improve code maintainability and testability.
 
 ## [1.1.1] - 2025-12-27
 

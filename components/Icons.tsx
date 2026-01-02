@@ -228,6 +228,51 @@ export const GermanFlagIcon: React.FC<IconProps> = (props) => (
   </svg>
 );
 
+export const FranceFlagIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
+    <defs>
+      <clipPath id="fr-clip">
+        <circle cx="10" cy="10" r="10" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#fr-clip)">
+      <rect width="20" height="20" fill="#fff" />
+      <rect x="0" width="6.67" height="20" fill="#0055A4" />
+      <rect x="13.33" width="6.67" height="20" fill="#EF4135" />
+    </g>
+  </svg>
+);
+
+export const ItalyFlagIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
+    <defs>
+      <clipPath id="it-clip">
+        <circle cx="10" cy="10" r="10" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#it-clip)">
+      <rect width="20" height="20" fill="#fff" />
+      <rect x="0" width="6.67" height="20" fill="#009246" />
+      <rect x="13.33" width="6.67" height="20" fill="#CE2B37" />
+    </g>
+  </svg>
+);
+
+export const RussiaFlagIcon: React.FC<IconProps> = (props) => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" {...props}>
+    <defs>
+      <clipPath id="ru-clip">
+        <circle cx="10" cy="10" r="10" />
+      </clipPath>
+    </defs>
+    <g clipPath="url(#ru-clip)">
+      <rect width="20" height="20" fill="#fff" />
+      <rect y="6.67" width="20" height="6.66" fill="#0039A6" />
+      <rect y="13.33" width="20" height="6.67" fill="#D52B1E" />
+    </g>
+  </svg>
+);
+
 export const ExpandIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75v4.5m0-4.5h-4.5m4.5 0L15 9m5.25 11.25v-4.5m0 4.5h-4.5m4.5 0L15 15" />
