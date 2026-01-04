@@ -119,5 +119,6 @@ export default {
   "donationCompletedDesc": "Your support is greatly appreciated and helps us keep this tool free for everyone. You are amazing!",
   "donationCanceledTitle": "Donation Canceled",
   "donationCanceledDesc": "The donation process was canceled. No problem at all! You can continue to use all features of the site for free.",
-  "backToHomeButton": "Back to Home Page"
+  "backToHomeButton": "Back to Home Page",
+  "keywords": "wall art from any image, enlarge image to multiple pages, rasterbator alternative, huge posters, print and combine, tiled printing, split image, giant poster, multi-page poster, image slicer, poster maker, print large image, diy poster, a4 poster, letter poster, poster splitter, image splitter, large poster printing, poster from home printer"
 }

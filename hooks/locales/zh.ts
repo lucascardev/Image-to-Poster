@@ -118,5 +118,6 @@ export default {
   "donationCompletedDesc": "非常感谢您的支持，这有助于我们让这个工具对所有人免费。您太棒了！",
   "donationCanceledTitle": "捐赠已取消",
   "donationCanceledDesc": "捐赠过程已取消。没关系！您可以继续免费使用网站的所有功能。",
-  "backToHomeButton": "返回主页"
-};
+  "backToHomeButton": "返回主页",
+  "keywords": "任何图像的墙壁艺术, 将图像放大到多页, rasterbator替代品, 巨大的海报, 打印并组合, 平铺打印, 分割图像, 巨型海报, 多页海报, 图像切片机, 海报制作器, 打印大图像, diy海报, a4海报, 信纸海报, 海报分割器, 图像分割器, 大海报打印, 家用打印机海报"
+}

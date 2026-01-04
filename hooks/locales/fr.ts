@@ -118,5 +118,6 @@ export default {
   "donationCompletedDesc": "Votre soutien est grandement apprécié et nous aide à garder cet outil gratuit pour tout le monde. Vous êtes génial !",
   "donationCanceledTitle": "Don annulé",
   "donationCanceledDesc": "Le processus de don a été annulé. Aucun problème ! Vous pouvez continuer à utiliser toutes les fonctionnalités du site gratuitement.",
-  "backToHomeButton": "Retour à l'accueil"
+  "backToHomeButton": "Retour à l'accueil",
+  "keywords": "art mural à partir de n'importe quelle image, agrandir l'image sur plusieurs pages, alternative à rasterbator, affiches énormes, imprimer et combiner, impression en carrelage, diviser l'image, affiche géante, affiche multipages, trancheur d'image, créateur d'affiches, imprimer une grande image, affiche bricolage, affiche a4, affiche lettre, diviseur d'affiche, diviseur d'image, impression d'affiche grande, affiche d'imprimante domestique"
 }

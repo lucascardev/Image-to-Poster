@@ -118,5 +118,6 @@ export default {
   "donationCompletedDesc": "Tu apoyo es muy apreciado y nos ayuda a mantener esta herramienta gratuita para todos. ¡Eres increíble!",
   "donationCanceledTitle": "Donación Cancelada",
   "donationCanceledDesc": "El proceso de donación fue cancelado. ¡No hay ningún problema! Puedes seguir utilizando todas las funciones del sitio de forma gratuita.",
-  "backToHomeButton": "Volver a la Página Principal"
-};
+  "backToHomeButton": "Volver a la Página Principal",
+  "keywords": "arte de pared de cualquier imagen, ampliar imagen a varias páginas, alternativa a rasterbator, pósteres enormes, imprimir y combinar, impresión en mosaico, dividir imagen, póster gigante, póster de varias páginas, cortador de imágenes, creador de pósteres, imprimir imagen grande, póster casero, póster a4, póster carta, divisor de póster, divisor de imagen, impresión de póster grande, póster desde impresora doméstica"
+}
