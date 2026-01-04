@@ -119,5 +119,6 @@ export default {
   "donationCanceledTitle": "Donazione Annullata",
   "donationCanceledDesc": "Il processo di donazione è stato annullato. Nessun problema! Puoi continuare a usare tutte le funzionalità del sito gratuitamente.",
   "backToHomeButton": "Torna alla Pagina Iniziale",
-  "keywords": "arte murale da qualsiasi immagine, ingrandire immagine su più pagine, alternativa rasterbator, poster enormi, stampa e combina, stampa a piastrelle, dividi immagine, poster gigante, poster multipagina, affettatrice immagine, creatore di poster, stampa immagine grande, poster fai da te, poster a4, poster lettera, divisore poster, divisore immagine, stampa poster grande, poster da stampante domestica"
+  "keywords": "arte murale da qualsiasi immagine, ingrandire immagine su più pagine, alternativa rasterbator, poster enormi, stampa e combina, stampa a piastrelle, dividi immagine, poster gigante, poster multipagina, affettatrice immagini, creatore di poster, stampa immagine grande, poster fai da te, poster a4, poster lettera, divisore poster, divisore immagine, stampa grande poster, poster stampante domestica",
+  "featureList": "Dividi immagini, Genera PDF, Griglia Personalizzata, Controllo Margini"
 }

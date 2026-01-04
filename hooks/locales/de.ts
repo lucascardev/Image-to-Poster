@@ -119,5 +119,6 @@ export default {
   "donationCanceledTitle": "Spende abgebrochen",
   "donationCanceledDesc": "Der Spendevorgang wurde abgebrochen. Kein Problem! Sie können weiterhin alle Funktionen der Seite kostenlos nutzen.",
   "backToHomeButton": "Zurück zur Startseite",
-  "keywords": "Wandkunst aus jedem Bild, Bild auf mehrere Seiten vergrößern, Rasterbator-Alternative, riesige Poster, drucken und kombinieren, Kacheldruck, Bild teilen, Riesenposter, mehrseitiges Poster, Bildschneider, Poster-Ersteller, großes Bild drucken, DIY-Poster, A4-Poster, Letter-Poster, Poster-Teiler, Bildteiler, Großformatdruck, Poster vom Heimdrucker"
+  "keywords": "Wandkunst aus jedem Bild, Bild auf mehrere Seiten vergrößern, Rasterbator-Alternative, riesige Poster, drucken und kombinieren, Kacheldruck, Bild teilen, Riesenposter, mehrseitiges Poster, Bildschneider, Poster-Ersteller, großes Bild drucken, DIY-Poster, A4-Poster, Letter-Poster, Poster-Teiler, Bildteiler, Großformatdruck, Poster vom Heimdrucker",
+  "featureList": "Bilder teilen, PDF generieren, Benutzerdefiniertes Raster, Randkontrolle"
 }

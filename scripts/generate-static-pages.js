@@ -78,10 +78,11 @@ async function generateStaticPages() {
         localizedHtml = localizedHtml.replace(/<meta name="twitter:title" content=".*?" \/>/, `<meta name="twitter:title" content="${ogTitle}" />`);
         localizedHtml = localizedHtml.replace(/<meta name="twitter:description" content=".*?" \/>/, `<meta name="twitter:description" content="${ogDescription}" />`);
 
+
         // --- JSON-LD Structured Data Reconstruction ---
 
         // 1. Organization
-        localizedHtml = localizedHtml.replace(/<script type="application\/ld\+json">\s*\{\s*"@context": "https:\/\/schema.org",\s*"@type": "Organization".*?\n\s*\}\s*<\/script>/s,
+        localizedHtml = localizedHtml.replace(/<script type="application\/ld\+json">\s*{\s*"@context": "https:\/\/schema.org",\s*"@type": "Organization".*?\n\s*}\s*<\/script>/s,
             `<script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -93,7 +94,10 @@ async function generateStaticPages() {
     </script>`);
 
         // 2. WebApplication
-        localizedHtml = localizedHtml.replace(/<script type="application\/ld\+json">\s*\{\s*"@context": "https:\/\/schema.org",\s*"@type": "WebApplication".*?\n\s*\}\s*<\/script>/s,
+        // Extract FeatureList if available, fallback to English default
+        const featureList = extractValue(localeContent, 'featureList') || "Split images, Generate PDF, Custom Grid, Margin Control";
+
+        localizedHtml = localizedHtml.replace(/<script type="application\/ld\+json">\s*{\s*"@context": "https:\/\/schema.org",\s*"@type": "WebApplication".*?\n\s*}\s*<\/script>/s,
             `<script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -108,7 +112,7 @@ async function generateStaticPages() {
         "price": "0",
         "priceCurrency": "USD"
       },
-      "featureList": "Split images, Generate PDF, Custom Grid, Margin Control"
+      "featureList": "${featureList}"
     }
     </script>`);
 
@@ -120,7 +124,7 @@ async function generateStaticPages() {
           "text": "${step.text}"
         }`).join(',');
 
-        localizedHtml = localizedHtml.replace(/<script type="application\/ld\+json">\s*\{\s*"@context": "https:\/\/schema.org",\s*"@type": "HowTo".*?\n\s*\}\s*<\/script>/s,
+        localizedHtml = localizedHtml.replace(/<script type="application\/ld\+json">\s*{\s*"@context": "https:\/\/schema.org",\s*"@type": "HowTo".*?\n\s*}\s*<\/script>/s,
             `<script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -133,13 +137,29 @@ async function generateStaticPages() {
     </script>`);
 
 
-        // --- URL Structure ---
+        // --- URL Structure & Hreflang ---
         const urlPath = lang === 'en' ? '' : `/${lang}/`;
         const fullUrl = `${baseUrl}${urlPath}`;
 
         // Canonical
         const canonicalLink = `<link rel="canonical" href="${lang === 'en' ? `${baseUrl}/` : fullUrl}" />`;
         localizedHtml = localizedHtml.replace(/<link rel="canonical" href=".*?" \/>/, canonicalLink);
+
+        // Hreflang Generation
+        // We generate a block of links for ALL languages, pointing to their respective localized URLs
+        const hreflangTags = languages.map(l => {
+            const langUrl = l === 'en' ? `${baseUrl}/` : `${baseUrl}/${l}/`;
+            return `<link rel="alternate" hreflang="${l}" href="${langUrl}" />`;
+        }).join('\n    ');
+
+        // Add x-default (usually English)
+        const xDefaultTag = `<link rel="alternate" hreflang="x-default" href="${baseUrl}/" />`;
+
+        // Replace the EXISTING block of alternate links. 
+        // We assume they are grouped together in the source index.html
+        // Regex matches from the first <link rel="alternate" to the last occurrence
+        const hreflangBlockRegex = /(<link rel="alternate" hreflang=".*?" href=".*?" \/>\s*)+/g;
+        localizedHtml = localizedHtml.replace(hreflangBlockRegex, `${hreflangTags}\n    ${xDefaultTag}\n    `);
 
         // HTML Lang Attribute
         localizedHtml = localizedHtml.replace(/<html lang="en">/, `<html lang="${lang}">`);

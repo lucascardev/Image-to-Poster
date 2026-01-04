@@ -120,5 +120,6 @@ export default {
   "donationCanceledTitle": "Donation Canceled",
   "donationCanceledDesc": "The donation process was canceled. No problem at all! You can continue to use all features of the site for free.",
   "backToHomeButton": "Back to Home Page",
-  "keywords": "wall art from any image, enlarge image to multiple pages, rasterbator alternative, huge posters, print and combine, tiled printing, split image, giant poster, multi-page poster, image slicer, poster maker, print large image, diy poster, a4 poster, letter poster, poster splitter, image splitter, large poster printing, poster from home printer"
+  "keywords": "wall art from any image, enlarge image to multiple pages, rasterbator alternative, huge posters, print and combine, tiled printing, split image, giant poster, multi-page poster, image slicer, poster maker, print large image, diy poster, a4 poster, letter poster, poster splitter, image splitter, large poster printing, poster from home printer",
+  "featureList": "Split images, Generate PDF, Custom Grid, Margin Control"
 }

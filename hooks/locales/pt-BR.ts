@@ -119,5 +119,6 @@ export default {
   "donationCanceledTitle": "Doação Cancelada",
   "donationCanceledDesc": "O processo de doação foi cancelado. Não há problema algum! Você pode continuar a usar todas as funcionalidades do site gratuitamente.",
   "backToHomeButton": "Voltar à Página Inicial",
-  "keywords": "arte de parede de qualquer imagem, ampliar imagem para várias páginas, alternativa ao rasterbator, pôsteres enormes, imprimir e combinar, impressão em azulejos, dividir imagem, pôster gigante, pôster multipáginas, fatiador de imagem, criador de pôster, imprimir imagem grande, pôster faça você mesmo, pôster a4, pôster carta, divisor de pôster, divisor de imagem, impressão de pôster grande, pôster de impressora doméstica"
+  "keywords": "arte de parede de qualquer imagem, ampliar imagem para várias páginas, alternativa ao rasterbator, pôsteres enormes, imprimir e combinar, impressão em azulejos, dividir imagem, pôster gigante, pôster multipáginas, fatiador de imagem, criador de pôster, imprimir imagem grande, pôster faça você mesmo, pôster a4, pôster carta, divisor de pôster, divisor de imagem, impressão de pôster grande, pôster de impressora doméstica",
+  "featureList": "Dividir imagens, Gerar PDF, Grade Personalizada, Controle de Margem"
 }
