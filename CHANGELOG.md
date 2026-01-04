@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.11] - 2026-01-04
 
-### Changed
-- Automated release.
+### Fixed
+- **Deep Localization (SEO):** Resolved an issue where localized static pages still contained English content in Schema.org Structured Data (`HowTo`, `WebApplication`, `Organization`). The build process now fully reconstructs these JSON-LD objects using localized strings, ensuring complete localization for search engines (e.g., displaying Portuguese steps in Google rich results for `/pt-BR/` searches).
+- **Metadata Leakage:** Implemented stricter replacement logic to prevent any English meta tags or descriptions from leaking into localized pages.
 
 ## [1.1.10] - 2026-01-04
 
