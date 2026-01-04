@@ -72,6 +72,14 @@ export const TranslationsProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const setLanguage = (lang: Language) => {
     try {
         localStorage.setItem('language', lang);
+        
+        // Update URL to match language (e.g., /fr/ or /)
+        if (typeof window !== 'undefined') {
+            const newPath = lang === 'en' ? '/' : `/${lang}/`;
+            if (window.location.pathname !== newPath) {
+                 window.history.pushState({}, '', newPath);
+            }
+        }
     } catch (e) {
         console.error('Could not save language to localStorage');
     }
