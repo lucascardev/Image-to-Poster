@@ -9,8 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.8] - 2026-01-04
 
+### Added
+- **SEO Multi-language Support:** Implemented a post-build script to generate static HTML pages for every supported language (e.g., `/pt-BR/`, `/fr/`) with fully localized metadata (`<title>`, `description`, `keywords`, `og:tags`).
+- **Localized Keywords:** Added specific SEO keywords to all translation files (`en`, `pt-BR`, `es`, `fr`, `it`, `ru`, `de`, `ja`, `zh`) to improve search ranking in different regions.
+- **Sitemap Generation:** Updated the build process to automatically generate a `sitemap.xml` that includes all localized sub-paths.
+
 ### Changed
-- Automated release.
+- **Build Process:** Updated `npm run build` to execute the static page generation script automatically, ensuring compatibility with Vercel and other static hosting providers.
+- **Robots.txt:** Verified configuration to correctly point to the comprehensive sitemap.
 
 ## [1.1.7] - 2026-01-02
 
