@@ -37,6 +37,18 @@ const translationsData: Record<Language, Record<string, string>> = {
 export const TranslationsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     try {
+      // 1. Check URL path first (Highest priority for SEO/Direct links)
+      if (typeof window !== 'undefined') {
+        const path = window.location.pathname;
+        // Check for /lang/ or /lang at start of path
+        const customUrlLang = availableLanguages.find(lang => 
+            lang !== 'en' && (path.startsWith(`/${lang}/`) || path === `/${lang}`)
+        );
+        if (customUrlLang) {
+            return customUrlLang;
+        }
+      }
+
       const savedLang = localStorage.getItem('language');
       if (savedLang && availableLanguages.includes(savedLang as Language)) {
         return savedLang as Language;
