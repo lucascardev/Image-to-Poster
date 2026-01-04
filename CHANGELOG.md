@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.10] - 2026-01-04
 
-### Changed
-- Automated release.
+### Fixed
+- **URL Synchronization:** Fixed an issue where changing the language via the user interface did not update the URL. Now, switching languages (e.g., from English to French) strictly updates the browser URL (e.g., to `/fr/`), ensuring the user stays on the correct localized path and improving shareability.
 
 ## [1.1.9] - 2026-01-04
 
