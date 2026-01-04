@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.9] - 2026-01-04
 
+### Added
+- **Client-Side Language Routing:** Updated the application initialization logic to prioritize the URL path for language detection. This ensures that users visiting localized URLs (e.g., `/fr/`, `/es/`) will immediately see the application in the correct language, preventing it from reverting to the browser's default language.
+
 ### Changed
-- Automated release.
+- **SEO Consistency:** The application now stays in sync with the static HTML generated for SEO, providing a seamless experience from search result to interactive app.
 
 ## [1.1.8] - 2026-01-04
 
