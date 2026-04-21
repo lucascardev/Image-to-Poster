@@ -15,9 +15,7 @@ const ResolutionWarningDisplay = lazy(() => import('./components/ResolutionWarni
 const DownloadPanel = lazy(() => import('./components/DownloadPanel'));
 const HowItWorks = lazy(() => import('./components/HowItWorks'));
 const InstallInstructions = lazy(() => import('./components/InstallInstructions'));
-const AdPlaceholder = lazy(() => import('./components/AdPlaceholder'));
 const ThreeBackground = lazy(() => import('./components/ThreeBackground'));
-const AdCountdownModal = lazy(() => import('./components/AdCountdownModal'));
 const DonationCompleted = lazy(() => import('./components/DonationCompleted'));
 const DonationCanceled = lazy(() => import('./components/DonationCanceled'));
 import DebugConsole, { logger } from './components/DebugConsole';
@@ -141,7 +139,6 @@ function App() {
   const [postersCreatedCount, setPostersCreatedCount] = useState(1247); // Start with a realistic number
   const [isFullscreenOpen, setIsFullscreenOpen] = useState(false);
   const [fullPreviewSrc, setFullPreviewSrc] = useState<string | null>(null);
-  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   
@@ -688,7 +685,7 @@ function App() {
   };
   
   const handleDownloadClick = () => {
-    setIsAdModalOpen(true);
+    generateAndSavePdf();
   };
 
   const handleShare = async () => {
@@ -820,11 +817,6 @@ function App() {
                     <Suspense fallback={<LoadingFallback />}>
                       <PreviewArea pages={pages} isLoading={isLoading} settings={settings} onOpenFullscreen={handleOpenFullscreen} />
                     </Suspense>
-                    
-                    <Suspense fallback={null}>
-                        <AdPlaceholder type="sevenkbet" />
-                    </Suspense>
-
                     {/* Wrapper with ID for download scroll targeting */}
                     <div id="download-section">
                         <Suspense fallback={<LoadingFallback />}>
@@ -926,13 +918,6 @@ function App() {
         onClose={handleCloseFullscreen} 
         src={fullPreviewSrc} 
       />
-      <Suspense fallback={null}>
-        <AdCountdownModal
-            isOpen={isAdModalOpen}
-            onClose={() => setIsAdModalOpen(false)}
-            onDownload={generateAndSavePdf}
-        />
-      </Suspense>
       {import.meta.env.DEV && <DebugConsole />}
     </>
   );

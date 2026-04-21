@@ -4,7 +4,7 @@ import { LoadingIcon, ExpandIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
 import { A4_WIDTH_MM, A4_HEIGHT_MM, MM_PER_INCH } from '../constants';
 import type { AppSettings } from '../types';
-import AdPlaceholder from './AdPlaceholder';
+export {};
 
 interface PreviewAreaProps {
   pages: string[];
@@ -41,7 +41,7 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, isLoading, settings, o
         )}
       </div>
 
-      <AdPlaceholder type="honeygain" className="mb-6" />
+
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center min-h-[400px]">

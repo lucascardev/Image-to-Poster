@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import type { AppSettings, CropMarkType } from '../types';
 import { UploadIcon, GridIcon, MarginIcon, CutIcon, GlueIcon, LoadingIcon, WarningIcon } from './Icons';
 import { useTranslations } from '../hooks/useTranslations';
-import AdPlaceholder from './AdPlaceholder';
+export {};
 import ModernSlider from './ModernSlider';
 import { MM_PER_INCH } from '../constants';
 
@@ -291,7 +291,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ settings, onSettingsChang
       )}
 
       <div className="mt-8">
-        <AdPlaceholder type="honeygain-alt" className="h-64 w-full" />
       </div>
     </div>
   );
