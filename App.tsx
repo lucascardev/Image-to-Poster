@@ -18,6 +18,8 @@ const InstallInstructions = lazy(() => import('./components/InstallInstructions'
 const ThreeBackground = lazy(() => import('./components/ThreeBackground'));
 const DonationCompleted = lazy(() => import('./components/DonationCompleted'));
 const DonationCanceled = lazy(() => import('./components/DonationCanceled'));
+const BlogSection = lazy(() => import('./components/BlogSection'));
+import { PrivacyPolicyModal, TermsOfServiceModal, AboutModal } from './components/LegalModals';
 import DebugConsole, { logger } from './components/DebugConsole';
 
 // Types and Constants
@@ -142,6 +144,11 @@ function App() {
   const [shareCopied, setShareCopied] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   
+  // Legal Modals State
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+
   // State for sticky navigation logic
   const [scrollState, setScrollState] = useState<'above' | 'inside' | 'below'>('above');
 
@@ -853,10 +860,27 @@ function App() {
                 )}
               </div>
             </div>
+            {/* Added SEO Blog Component */}
+            <Suspense fallback={null}>
+                <BlogSection />
+            </Suspense>
         </main>
         <footer className="bg-slate-800/90 text-slate-400 mt-24 py-10 text-center text-sm">
-             <p>{t('footerText', { year: new Date().getFullYear() })} | v{APP_VERSION}</p>
+             <div className="container mx-auto px-4">
+                 <div className="flex flex-wrap justify-center gap-4 mb-4">
+                    <button onClick={() => setIsPrivacyOpen(true)} className="hover:text-white transition-colors">Política de Privacidade</button>
+                    <span>|</span>
+                    <button onClick={() => setIsTermsOpen(true)} className="hover:text-white transition-colors">Termos de Serviço</button>
+                    <span>|</span>
+                    <button onClick={() => setIsAboutOpen(true)} className="hover:text-white transition-colors">Sobre / Contato</button>
+                 </div>
+                 <p>{t('footerText', { year: new Date().getFullYear() })} | v{APP_VERSION}</p>
+             </div>
         </footer>
+
+        <PrivacyPolicyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
+        <TermsOfServiceModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
+        <AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
       </div>
       
       {/* Sticky Navigation Buttons */}
