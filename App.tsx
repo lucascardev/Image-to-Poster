@@ -868,11 +868,11 @@ function App() {
         <footer className="bg-slate-800/90 text-slate-400 mt-24 py-10 text-center text-sm">
              <div className="container mx-auto px-4">
                  <div className="flex flex-wrap justify-center gap-4 mb-4">
-                    <button onClick={() => setIsPrivacyOpen(true)} className="hover:text-white transition-colors">Política de Privacidade</button>
+                    <button onClick={() => setIsPrivacyOpen(true)} className="hover:text-white transition-colors">{t('privacyPolicyLink')}</button>
                     <span>|</span>
-                    <button onClick={() => setIsTermsOpen(true)} className="hover:text-white transition-colors">Termos de Serviço</button>
+                    <button onClick={() => setIsTermsOpen(true)} className="hover:text-white transition-colors">{t('termsOfServiceLink')}</button>
                     <span>|</span>
-                    <button onClick={() => setIsAboutOpen(true)} className="hover:text-white transition-colors">Sobre / Contato</button>
+                    <button onClick={() => setIsAboutOpen(true)} className="hover:text-white transition-colors">{t('aboutContactLink')}</button>
                  </div>
                  <p>{t('footerText', { year: new Date().getFullYear() })} | v{APP_VERSION}</p>
              </div>

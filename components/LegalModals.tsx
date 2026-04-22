@@ -1,5 +1,6 @@
 import React from 'react';
 import { CloseIcon } from './Icons';
+import { useTranslations } from '../hooks/useTranslations';
 
 interface LegalModalProps {
   isOpen: boolean;
@@ -28,40 +29,49 @@ const Modal: React.FC<LegalModalProps> = ({ isOpen, onClose, title, children }) 
   );
 };
 
-export const PrivacyPolicyModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => (
-  <Modal isOpen={isOpen} onClose={onClose} title="Política de Privacidade">
-    <p>Bem-vindo ao <strong>Print My Poster</strong>. Sua privacidade é muito importante para nós.</p>
-    <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">Processamento Local</h3>
-    <p>O funcionamento da nossa ferramenta baseia-se em tecnologias nativas de cliente (Client-Side). Isso significa que as imagens que você envia para o site não são salvas, repassadas ou hospedadas em nossos servidores. Todo o processo de conversão em PDF acontece diretamente no seu navegador, prezando de forma total pela confidencialidade dos seus arquivos.</p>
-    
-    <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">Cookies e Google AdSense</h3>
-    <p>Empregamos serviços de terceiros como o Google AdSense e o Google Analytics para manter o projeto gratuito e nos informar como os usuários chegam à nossa página.</p>
-    <p>O Google e seus parceiros utilizam cookies para veicular anúncios com base nas visitas anteriores do usuário a este e a outros sites na Internet. Os usuários podem desativar a publicidade personalizada acessando as <a href="https://myadcenter.google.com/" target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline">Configurações de Anúncios do Google</a>.</p>
-    
-    <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">Informações de Contato</h3>
-    <p>Se você tem qualquer dúvida adicional a respeito da nossa Política de Privacidade, não hesite em entrar em contato.</p>
-  </Modal>
-);
+export const PrivacyPolicyModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+  const { t } = useTranslations();
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={t('privacyTitle')}>
+      <p dangerouslySetInnerHTML={{ __html: t('privacyP1') }} />
+      <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">{t('privacyH1')}</h3>
+      <p>{t('privacyP2')}</p>
+      
+      <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">{t('privacyH2')}</h3>
+      <p>{t('privacyP3')}</p>
+      <p dangerouslySetInnerHTML={{ __html: t('privacyP4') }} />
+      
+      <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">{t('privacyH3')}</h3>
+      <p>{t('privacyP5')}</p>
+    </Modal>
+  );
+};
 
-export const TermsOfServiceModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => (
-  <Modal isOpen={isOpen} onClose={onClose} title="Termos de Serviço">
-    <p>Ao acessar e utilizar o <strong>Print My Poster</strong>, você concorda com estes termos de serviço.</p>
-    <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">Uso da Ferramenta</h3>
-    <p>Nosso aplicativo é disponibilizado gratuitamente sob seu próprio risco. Não oferecemos garantias sobre a exatidão e qualidade da impressão final caso sua impressora ou materiais não possuam as devidas calibrações. Nos eximimos de custos oriundos de tintas utilizadas de forma equivocada.</p>
-    
-    <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">Uso Ilegal</h3>
-    <p>Ao enviar uma imagem ao nosso site, você garante os direitos e copyrights necessários sobre aquele arquivo. É estritamente proibida a utilização do Print My Poster para gerar material ilícito, difamatório ou não-licenciado que afete terceiros ou seja comercializado ilegalmente.</p>
-    
-    <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">Disponibilidade do Serviço</h3>
-    <p>Este sistema pode sair do ar ou ser permanentemente fechado a nosso exclusivo critério sem aviso prévio.</p>
-  </Modal>
-);
+export const TermsOfServiceModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+  const { t } = useTranslations();
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={t('termsTitle')}>
+      <p dangerouslySetInnerHTML={{ __html: t('termsP1') }} />
+      <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">{t('termsH1')}</h3>
+      <p>{t('termsP2')}</p>
+      
+      <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">{t('termsH2')}</h3>
+      <p>{t('termsP3')}</p>
+      
+      <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">{t('termsH3')}</h3>
+      <p>{t('termsP4')}</p>
+    </Modal>
+  );
+};
 
-export const AboutModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => (
-  <Modal isOpen={isOpen} onClose={onClose} title="Sobre e Contato">
-    <p>O <strong>Print My Poster</strong> nasceu da vontade de democratizar artes de paredes complexas e gigantes em casa com zero taxas em gráficas usando metodologias "Rasterbator". Construimos um algoritmo client-side (no seu navegador) inovador e ágil permitindo criações imediatas respeitando os padrões de folhas A4.</p>
-    
-    <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">Falar com o Criador</h3>
-    <p>Caso tenha uma sugestão de melhoria técnica, ou algo reportado que necessita manutenção entre em contato pelo e-mail: <strong>lucasmatheussc97@gmail.com</strong>.</p>
-  </Modal>
-);
+export const AboutModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
+  const { t } = useTranslations();
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} title={t('aboutTitle')}>
+      <p dangerouslySetInnerHTML={{ __html: t('aboutP1') }} />
+      
+      <h3 className="text-lg font-bold text-slate-800 mt-4 mb-2">{t('aboutH1')}</h3>
+      <p dangerouslySetInnerHTML={{ __html: t('aboutP2') }} />
+    </Modal>
+  );
+};
