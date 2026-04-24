@@ -120,7 +120,8 @@ export default {
   "donationCanceledDesc": "捐赠过程已取消。没关系！您可以继续免费使用网站的所有功能。",
   "backToHomeButton": "返回主页",
   "keywords": "任意图片的墙艺术, 将图片放大到多页, rasterbator替代品, 巨型海报, 打印并组合, 平铺打印, 分割图片, 巨型海报, 多页海报, 图片切片器, 海报制作器, 打印大图, DIY海报, A4海报, 信纸海报, 海报分割器, 图片分割器, 大海报打印, 家庭打印机海报",
-  "featureList": "分割图片, 生成 PDF, 自定义网格, 边距控制",\n  "blogTitle": "关于巨型海报你需要了解的一切",
+  "featureList": "分割图片, 生成 PDF, 自定义网格, 边距控制",
+  "blogTitle": "关于巨型海报你需要了解的一切",
   "blogSec1Title": "Print My Poster 上的 Rasterbator 打印如何工作？",
   "blogSec1P1": "如果您一直想创造性地装饰您的房间或办公室，但不知道如何制作巨大的墙画，使用“Rasterbator”格式工具是最好的出路。Print My Poster 的工作原理正是如此：我们接收您的照片或图像，并自动将其切片成多个 A4 尺寸的页面。",
   "blogSec1P2": "这种方法允许您使用家里的普通打印机。无需在打印店订购昂贵的项目，我们的系统直接在您的浏览器中即时处理文件，保持图像的分辨率，而不将其发送到外部服务器。您只需下载 PDF 文件，打印并用胶带并排拼接纸张即可完成组装。当然，它是 100% 免费使用的。",
@@ -161,4 +162,5 @@ export default {
   "aboutTitle": "关于与联系",
   "aboutP1": "<strong>Print My Poster</strong> 诞生于渴望通过使用“Rasterbator”方法在家里实现复杂巨大的墙面艺术创作零收费普及。我们构建了一种创新快速的客户端（您的浏览器内）算法，可以按照 A4 纸张标准进行即时创建。",
   "aboutH1": "与创作者对话",
-  "aboutP2": "如果您有关于技术改进的建议，或报告的某些信息需要维护，请通过电子邮件与我们联系：<strong>lucasmatheussc97@gmail.com</strong>."\n}
+  "aboutP2": "如果您有关于技术改进的建议，或报告的某些信息需要维护，请通过电子邮件与我们联系：<strong>lucasmatheussc97@gmail.com</strong>."
+}

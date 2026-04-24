@@ -120,7 +120,8 @@ export default {
   "donationCanceledDesc": "Der Spendevorgang wurde abgebrochen. Kein Problem! Sie können weiterhin alle Funktionen der Seite kostenlos nutzen.",
   "backToHomeButton": "Zurück zur Startseite",
   "keywords": "Wandkunst aus jedem Bild, Bild auf mehrere Seiten vergrößern, Rasterbator-Alternative, riesige Poster, drucken und kombinieren, Kacheldruck, Bild teilen, Riesenposter, mehrseitiges Poster, Bildschneider, Poster-Ersteller, großes Bild drucken, DIY-Poster, A4-Poster, Letter-Poster, Poster-Teiler, Bildteiler, Großformatdruck, Poster vom Heimdrucker",
-  "featureList": "Bilder teilen, PDF generieren, Benutzerdefiniertes Raster, Randkontrolle",\n  "blogTitle": "Alles, was Sie über Riesenposter wissen müssen",
+  "featureList": "Bilder teilen, PDF generieren, Benutzerdefiniertes Raster, Randkontrolle",
+  "blogTitle": "Alles, was Sie über Riesenposter wissen müssen",
   "blogSec1Title": "Wie funktioniert der Rasterbator-Druck auf Print My Poster?",
   "blogSec1P1": "Wenn Sie schon immer Ihr Zimmer oder Büro kreativ dekorieren wollten, aber nicht wissen, wie man riesige Wandbilder erstellt, ist ein Tool im 'Rasterbator'-Format der beste Ausweg. Print My Poster funktioniert genau so: Wir erhalten Ihr Foto oder Bild und schneiden es automatisch in mehrere A4-Seiten.",
   "blogSec1P2": "Mit dieser Methode können Sie Ihren normalen Drucker zu Hause verwenden. Anstatt ein teures Projekt in einer Druckerei zu bestellen, verarbeitet unser System die Datei on-the-fly direkt in Ihrem Browser und behält die Auflösung Ihres Bildes bei, ohne es an externe Server zu senden. Sie laden einfach die PDF-Datei herunter, drucken sie aus und setzen die Blätter zusammen, indem Sie sie nebeneinander kleben. Und natürlich ist die Nutzung zu 100% kostenlos.",
@@ -161,4 +162,5 @@ export default {
   "aboutTitle": "Über und Kontakt",
   "aboutP1": "<strong>Print My Poster</strong> entstand aus dem Wunsch, komplexe und riesige Wandkunst zu Hause mit null Druckereigebühren mithilfe der 'Rasterbator'-Methodik zu demokratisieren. Wir haben einen innovativen und schnellen clientseitigen (in Ihrem Browser) Algorithmus entwickelt, der sofortige Erstellungen unter Einhaltung der A4-Blattstandards ermöglicht.",
   "aboutH1": "Sprechen Sie mit dem Entwickler",
-  "aboutP2": "Wenn Sie einen Vorschlag zur technischen Verbesserung haben oder etwas melden möchten, das repariert werden muss, kontaktieren Sie uns per E-Mail: <strong>lucasmatheussc97@gmail.com</strong>."\n}
+  "aboutP2": "Wenn Sie einen Vorschlag zur technischen Verbesserung haben oder etwas melden möchten, das repariert werden muss, kontaktieren Sie uns per E-Mail: <strong>lucasmatheussc97@gmail.com</strong>."
+}

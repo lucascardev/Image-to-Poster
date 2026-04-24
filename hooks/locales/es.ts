@@ -120,7 +120,8 @@ export default {
   "donationCanceledDesc": "El proceso de donación fue cancelado. ¡No hay ningún problema! Puedes seguir utilizando todas las funciones del sitio de forma gratuita.",
   "backToHomeButton": "Volver a la Página Principal",
   "keywords": "arte de pared de cualquier imagen, ampliar imagen a varias páginas, alternativa a rasterbator, pósteres enormes, imprimir y combinar, impresión en mosaico, dividir imagen, póster gigante, póster de varias páginas, cortador de imágenes, creador de pósteres, imprimir imagen grande, póster casero, póster a4, póster carta, divisor de póster, divisor de imagen, impresión de póster grande, póster desde impresora doméstica",
-  "featureList": "Dividir imágenes, Generar PDF, Cuadrícula Personalizada, Control de Márgenes",\n  "blogTitle": "Todo lo que necesitas saber sobre los carteles gigantes",
+  "featureList": "Dividir imágenes, Generar PDF, Cuadrícula Personalizada, Control de Márgenes",
+  "blogTitle": "Todo lo que necesitas saber sobre los carteles gigantes",
   "blogSec1Title": "¿Cómo funciona la impresión Rasterbator en Print My Poster?",
   "blogSec1P1": "Si siempre has querido decorar tu habitación u oficina de forma creativa pero no sabes cómo crear grandes impresiones de pared, usar una herramienta en formato 'Rasterbator' es la mejor salida. Print My Poster funciona exactamente así: recibimos tu foto o imagen y la cortamos automáticamente en múltiples páginas tamaño A4.",
   "blogSec1P2": "Este método te permite usar la impresora normal que tienes en casa. En lugar de pedir un proyecto costoso en una imprenta, nuestro sistema procesa el archivo sobre la marcha, directamente en tu navegador, manteniendo la resolución de tu imagen sin enviarla a servidores externos. Simplemente descargas el archivo PDF, lo imprimes y ensamblas las hojas pegándolas una a la otra. Y, por supuesto, su uso es 100% gratuito.",
@@ -161,4 +162,5 @@ export default {
   "aboutTitle": "Acerca de y Contacto",
   "aboutP1": "<strong>Print My Poster</strong> nació del deseo de democratizar el arte de pared grande y complejo en casa con cero tarifas de imprenta utilizando la metodología 'Rasterbator'. Construimos un algoritmo innovador y rápido del lado del cliente (en tu navegador) que permite creaciones inmediatas respetando los estándares de hojas A4.",
   "aboutH1": "Habla con el Creador",
-  "aboutP2": "Si tienes una sugerencia de mejora técnica, o algo que necesite mantenimiento, contáctanos por correo electrónico: <strong>lucasmatheussc97@gmail.com</strong>."\n}
+  "aboutP2": "Si tienes una sugerencia de mejora técnica, o algo que necesite mantenimiento, contáctanos por correo electrónico: <strong>lucasmatheussc97@gmail.com</strong>."
+}
