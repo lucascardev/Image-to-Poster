@@ -29,6 +29,7 @@ const BlogSection: React.FC = () => {
             <li dangerouslySetInnerHTML={{ __html: t('blogSec2Li1') }} />
             <li dangerouslySetInnerHTML={{ __html: t('blogSec2Li2') }} />
             <li dangerouslySetInnerHTML={{ __html: t('blogSec2Li3') }} />
+            <li dangerouslySetInnerHTML={{ __html: t('blogSec2Li4') }} />
           </ul>
         </section>
 

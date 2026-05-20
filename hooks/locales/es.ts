@@ -129,6 +129,7 @@ export default {
   "blogSec2Li1": "<strong>Presta atención a la resolución:</strong> Cuantas más páginas elijas (por ejemplo, una cuadrícula de 4x4), más grande será tu imagen y más 'estirada' estará. Busca imágenes que tengan al menos 2000 px de alto y ancho, como fondos de pantalla Full HD o 4K.",
   "blogSec2Li2": "<strong>Cuidado con los bordes:</strong> Las impresoras domésticas tienen un margen en blanco natural por donde pasa el papel. En nuestra aplicación, establecemos un valor seguro (como 6 mm) para estos bordes. Debes usar unas tijeras o un cúter para quitar este borde antes de unir las páginas.",
   "blogSec2Li3": "<strong>Usa el tipo de papel correcto:</strong> El papel bond estándar de 75 g funciona bien, pero para carteles más duraderos, imprimir en papel fotográfico brillante o papel estucado fino hará que los colores resalten mucho más.",
+  "blogSec2Li4": "<strong>Entiende las marcas de corte y las franjas de pegamento:</strong> Las <strong>líneas discontinuas rojas</strong> indican dónde cortar el margen de cada hoja antes de armar el póster — usa tijeras o un cúter para un corte limpio. Las <strong>franjas azules diagonales</strong> marcan la zona de solapamiento: esa franja quedará cubierta por la hoja adyacente al unirlas. Aplica pegamento o cinta de doble cara ahí para un acabado perfecto.",
   "blogSec3Title": "Dónde pegarlos e ideas de uso",
   "blogSec3P1": "Hay cientos de formas de reutilizar carteles particionados. Algunos de los escenarios más prácticos incluyen:",
   "blogSec3Card1Title": "Decoración de dormitorio",

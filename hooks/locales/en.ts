@@ -130,6 +130,7 @@ export default {
   "blogSec2Li1": "<strong>Pay Attention to Resolution:</strong> The more pages you choose (e.g., a 4x4 grid), the larger your image will be and the more 'stretched' it will become. Look for images that are at least 2000px in height and width, such as Full HD or 4K wallpapers.",
   "blogSec2Li2": "<strong>Mind the Edges:</strong> Home printers have a natural blank margin where the paper rolls through. In our app, we set a safe value (like 6mm) for these edges. You must use scissors or a craft knife to remove this border before joining the pages.",
   "blogSec2Li3": "<strong>Use the Right Paper Type:</strong> Standard 75g bond paper works fine, but for longer-lasting posters, printing on glossy photo paper or fine coated paper will make the colors pop much more.",
+  "blogSec2Li4": "<strong>Understand the Crop Marks and Glue Strips:</strong> The <strong>red dashed lines</strong> show where to cut the margin of each sheet before assembling your poster — use scissors or a craft knife for a clean cut. The <strong>blue diagonal stripes</strong> mark the overlap area: this strip will be covered by the adjacent sheet when you join the pages. Apply glue or double-sided tape there for a seamless finish.",
   "blogSec3Title": "Where to stick them and usage ideas",
   "blogSec3P1": "There are hundreds of ways to reuse fractionated posters. Some of the most practical scenarios include:",
   "blogSec3Card1Title": "Bedroom Decoration",

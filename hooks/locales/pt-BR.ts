@@ -129,6 +129,7 @@ export default {
   "blogSec2Li1": "<strong>Cuidado com a Resolução:</strong> Quanto mais páginas você escolher (ex: grade 4x4), maior sua imagem ficará e mais \"esticada\" ela será. Procure imagens com pelo menos 2000px de altura e largura, como wallpapers em Full HD ou 4K.",
   "blogSec2Li2": "<strong>Atenção às bordas:</strong> As impressoras domésticas possuem uma margem natural em branco por onde o papel rola. No nosso aplicativo, definimos um valor seguro (como 6mm) para essas bordas. Você deve utilizar tesoura ou estilete para remover essa borda antes de unir as páginas.",
   "blogSec2Li3": "<strong>Use o tipo de papel certo:</strong> Papéis Sulfite comuns de 75g servem bem, mas para posters mais duradouros, imprimir em papéis fotográficos ou couchê fina farão as cores brilharem muito mais.",
+  "blogSec2Li4": "<strong>Entenda as marcas de corte e as listras de cola:</strong> As <strong>linhas tracejadas vermelhas</strong> indicam onde cortar a margem de cada folha antes de montar o poster — use tesoura ou estilete para um corte limpo. As <strong>listras azuis diagonais</strong> marcam a área de sobreposição: essa faixa ficará coberta pela folha adjacente na montagem. Aplique cola ou fita dupla-face nessa região para unir as páginas com perfeição.",
   "blogSec3Title": "Onde colar e ideias de uso",
   "blogSec3P1": "Existem centenas de formas de reaproveitar posters fracionados. Alguns dos cenários mais práticos incluem:",
   "blogSec3Card1Title": "Decoração de Quartos",
