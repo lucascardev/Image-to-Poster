@@ -119,11 +119,11 @@ export default {
   "donationCanceledTitle": "Donazione Annullata",
   "donationCanceledDesc": "Il processo di donazione è stato annullato. Nessun problema! Puoi continuare a usare tutte le funzionalità del sito gratuitamente.",
   "backToHomeButton": "Torna alla Pagina Iniziale",
-  "keywords": "arte murale da qualsiasi immagine, ingrandire immagine su più pagine, alternativa rasterbator, poster enormi, stampa e combina, stampa a piastrelle, dividi immagine, poster gigante, poster multipagina, affettatrice immagini, creatore di poster, stampa immagine grande, poster fai da te, poster a4, poster lettera, divisore poster, divisore immagine, stampa grande poster, poster stampante domestica",
+  "keywords": "arte murale da qualsiasi immagine, ingrandire immagine su più pagine, poster enormi, stampa e combina, stampa a piastrelle, dividi immagine, poster gigante, poster multipagina, affettatrice immagini, creatore di poster, stampa immagine grande, poster fai da te, poster a4, poster lettera, divisore poster, divisore immagine, stampa grande poster, poster stampante domestica",
   "featureList": "Dividi immagini, Genera PDF, Griglia Personalizzata, Controllo Margini",
   "blogTitle": "Tutto quello che c'è da sapere sui Poster Giganti",
-  "blogSec1Title": "Come funziona la stampa Rasterbator su Print My Poster?",
-  "blogSec1P1": "Se hai sempre voluto decorare la tua stanza o il tuo ufficio in modo creativo ma non sai come creare stampe murali enormi, utilizzare uno strumento in formato 'Rasterbator' è la soluzione migliore. Print My Poster funziona esattamente così: riceviamo la tua foto o immagine e la tagliamo automaticamente in più pagine in formato A4.",
+  "blogSec1Title": "Come funziona la stampa di poster gigante su Print My Poster?",
+  "blogSec1P1": "Se hai sempre voluto decorare la tua stanza o il tuo ufficio in modo creativo ma non sai come creare stampe murali enormi, <strong>Print My Poster</strong> è lo strumento ideale: riceviamo la tua foto o immagine e la tagliamo automaticamente in più pagine in formato A4.",
   "blogSec1P2": "Questo metodo ti consente di utilizzare la normale stampante che hai in casa. Invece di ordinare un progetto costoso in una tipografia, il nostro sistema elabora il file al volo, direttamente nel tuo browser, mantenendo la risoluzione della tua immagine senza inviarla a server esterni. Devi semplicemente scaricare il file PDF, stamparlo e assemblare i fogli assemblandoli con del nastro adesivo fianco a fianco. E naturalmente, il suo utilizzo è al 100% gratuito.",
   "blogSec2Title": "Suggerimenti per una stampa perfetta",
   "blogSec2Li1": "<strong>Fai attenzione alla risoluzione:</strong> Più pagine scegli (ad es. una griglia 4x4), più grande sarà la tua immagine e più risulterà 'allungata'. Cerca immagini che abbiano almeno 2000px in altezza e larghezza, come sfondi Full HD o 4K.",
@@ -161,7 +161,7 @@ export default {
   "termsH3": "Disponibilità del servizio",
   "termsP4": "Questo sistema può andare offline o essere chiuso in modo permanente a nostra esclusiva discrezione senza preavviso.",
   "aboutTitle": "Chi siamo e Contatti",
-  "aboutP1": "<strong>Print My Poster</strong> è nato dal desiderio di democratizzare le grandi decorazioni da parete a casa senza costi di tipografia utilizzando le metodologie 'Rasterbator'. Abbiamo creato un algoritmo innovativo e veloce lato client (nel tuo browser) che consente creazioni immediate nel rispetto degli standard del foglio A4.",
+  "aboutP1": "<strong>Print My Poster</strong> è nato dal desiderio di democratizzare le grandi decorazioni da parete a casa senza costi di tipografia. Abbiamo creato un algoritmo innovativo e veloce lato client (nel tuo browser) che consente creazioni immediate nel rispetto degli standard del foglio A4.",
   "aboutH1": "Parlane con il Creatore",
   "aboutP2": "Se hai un suggerimento per un miglioramento tecnico, o qualcosa da segnalare che richiede manutenzione, ti preghiamo di contattarci via e-mail: <strong>lucasmatheussc97@gmail.com</strong>."
 }

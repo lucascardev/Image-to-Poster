@@ -120,10 +120,10 @@ export default {
   "donationCanceledDesc": "Le processus de don a été annulé. Aucun problème ! Vous pouvez continuer à utiliser toutes les fonctionnalités du site gratuitement.",
   "backToHomeButton": "Retour à l'accueil",
   "featureList": "Diviser des images, Générer PDF, Grille Personnalisée, Contrôle des Marges",
-  "keywords": "art mural à partir de n'importe quelle image, agrandir l'image sur plusieurs pages, alternative à rasterbator, affiches énormes, imprimer et combiner, impression en carrelage, diviser l'image, affiche géante, affiche multipages, trancheur d'image, créateur d'affiches, imprimer une grande image, affiche bricolage, affiche a4, affiche lettre, diviseur d'affiche, diviseur d'image, impression d'affiche grande, affiche d'imprimante domestique",
+  "keywords": "art mural à partir de n'importe quelle image, agrandir l'image sur plusieurs pages, affiches énormes, imprimer et combiner, impression en carrelage, diviser l'image, affiche géante, affiche multipages, trancheur d'image, créateur d'affiches, imprimer une grande image, affiche bricolage, affiche a4, affiche lettre, diviseur d'affiche, diviseur d'image, impression d'affiche grande, affiche d'imprimante domestique",
   "blogTitle": "Tout ce que vous devez savoir sur les posters géants",
-  "blogSec1Title": "Comment fonctionne l'impression Rasterbator sur Print My Poster?",
-  "blogSec1P1": "Si vous avez toujours voulu décorer votre chambre ou votre bureau de manière créative mais que vous ne savez pas comment créer d'immenses impressions murales, utiliser un outil au format 'Rasterbator' est la meilleure solution. Print My Poster fonctionne exactement comme ça : nous recevons votre photo ou image et la coupons automatiquement en plusieurs pages de format A4.",
+  "blogSec1Title": "Comment fonctionne l'impression de poster géant sur Print My Poster ?",
+  "blogSec1P1": "Si vous avez toujours voulu décorer votre chambre ou votre bureau de manière créative mais que vous ne savez pas comment créer d'immenses impressions murales, <strong>Print My Poster</strong> est l'outil idéal\u00a0: nous recevons votre photo ou image et la découpons automatiquement en plusieurs pages de format A4.",
   "blogSec1P2": "Cette méthode vous permet d'utiliser l'imprimante habituelle que vous avez à la maison. Au lieu de commander un projet coûteux dans une imprimerie, notre système traite le fichier à la volée, directement dans votre navigateur, en conservant la résolution de votre image sans l'envoyer à des serveurs externes. Il vous suffit de télécharger le fichier PDF, de l'imprimer et d'assembler les feuilles en les scotchant côte à côte. Et bien sûr, son utilisation est 100% gratuite.",
   "blogSec2Title": "Conseils pour une impression parfaite",
   "blogSec2Li1": "<strong>Faites attention à la résolution :</strong> Plus vous choisissez de pages (par ex., une grille 4x4), plus votre image sera grande et plus elle sera 'étirée'. Recherchez des images d'au moins 2000 px de hauteur et de largeur, telles que des fonds d'écran Full HD ou 4K.",
@@ -161,7 +161,7 @@ export default {
   "termsH3": "Disponibilité du service",
   "termsP4": "Ce système peut être mis hors ligne ou fermé définitivement à notre seule discrétion sans préavis.",
   "aboutTitle": "À propos et Contact",
-  "aboutP1": "<strong>Print My Poster</strong> est né de la volonté de démocratiser l'art mural géant et complexe à domicile avec zéro frais d'imprimerie grâce à la méthodologie 'Rasterbator'. Nous avons construit un algorithme innovant et rapide côté client (dans votre navigateur) permettant des créations immédiates respectant les standards des feuilles A4.",
+  "aboutP1": "<strong>Print My Poster</strong> est né de la volonté de démocratiser l'art mural géant et complexe à domicile avec zéro frais d'imprimerie. Nous avons construit un algorithme innovant et rapide côté client (dans votre navigateur) permettant des créations immédiates respectant les standards des feuilles A4.",
   "aboutH1": "Parler au Créateur",
   "aboutP2": "Si vous avez une suggestion d'amélioration technique ou un problème signalé nécessitant une maintenance, veuillez nous contacter par e-mail : <strong>lucasmatheussc97@gmail.com</strong>."
 }

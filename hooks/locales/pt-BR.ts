@@ -119,11 +119,11 @@ export default {
   "donationCanceledTitle": "Doação Cancelada",
   "donationCanceledDesc": "O processo de doação foi cancelado. Não há problema algum! Você pode continuar a usar todas as funcionalidades do site gratuitamente.",
   "backToHomeButton": "Voltar à Página Inicial",
-  "keywords": "arte de parede de qualquer imagem, ampliar imagem para várias páginas, alternativa ao rasterbator, pôsteres enormes, imprimir e combinar, impressão em azulejos, dividir imagem, pôster gigante, pôster multipáginas, fatiador de imagem, criador de pôster, imprimir imagem grande, pôster faça você mesmo, pôster a4, pôster carta, divisor de pôster, divisor de imagem, impressão de pôster grande, pôster de impressora doméstica",
+  "keywords": "arte de parede de qualquer imagem, ampliar imagem para várias páginas, pôsteres enormes, imprimir e combinar, impressão em azulejos, dividir imagem, pôster gigante, pôster multipáginas, fatiador de imagem, criador de pôster, imprimir imagem grande, pôster faça você mesmo, pôster a4, pôster carta, divisor de pôster, divisor de imagem, impressão de pôster grande, pôster de impressora doméstica",
   "featureList": "Dividir imagens, Gerar PDF, Grade Personalizada, Controle de Margem",
   "blogTitle": "Tudo o que você precisa saber sobre Posters Gigantes",
-  "blogSec1Title": "Como funciona a impressão Rasterbator no Print My Poster?",
-  "blogSec1P1": "Se você sempre quis decorar seu quarto ou escritório de forma criativa mas não sabe como criar impressões imensas de parede, usar uma ferramenta no formato \"Rasterbator\" é a melhor saída. O <strong>Print My Poster</strong> atua exatamente assim: nós recebemos a sua foto ou imagem e a fatiamos automaticamente em várias páginas tamanho A4.",
+  "blogSec1Title": "Como funciona a impressão de pôster gigante no Print My Poster?",
+  "blogSec1P1": "Se você sempre quis decorar seu quarto ou escritório de forma criativa mas não sabe como criar impressões imensas de parede, o <strong>Print My Poster</strong> é a ferramenta ideal: nós recebemos a sua foto ou imagem e a fatiamos automaticamente em várias páginas tamanho A4.",
   "blogSec1P2": "Esse método permite que você utilize a impressora normal que você tem em casa. Em vez de encomendar um projeto caro em uma gráfica, nosso sistema processa o arquivo na hora, no seu próprio navegador, mantendo a resolução da sua imagem sem enviá-la para servidores externos. Você apenas faz o download do arquivo PDF, imprime e monta as folhas colando-as lado a lado. E claro, nosso uso é 100% gratuito.",
   "blogSec2Title": "Dicas para uma Impressão Perfeita",
   "blogSec2Li1": "<strong>Cuidado com a Resolução:</strong> Quanto mais páginas você escolher (ex: grade 4x4), maior sua imagem ficará e mais \"esticada\" ela será. Procure imagens com pelo menos 2000px de altura e largura, como wallpapers em Full HD ou 4K.",
@@ -161,7 +161,7 @@ export default {
   "termsH3": "Disponibilidade do Serviço",
   "termsP4": "Este sistema pode sair do ar ou ser permanentemente fechado a nosso exclusivo critério sem aviso prévio.",
   "aboutTitle": "Sobre e Contato",
-  "aboutP1": "O <strong>Print My Poster</strong> nasceu da vontade de democratizar artes de paredes complexas e gigantes em casa com zero taxas em gráficas usando metodologias \"Rasterbator\". Construimos um algoritmo client-side (no seu navegador) inovador e ágil permitindo criações imediatas respeitando os padrões de folhas A4.",
+  "aboutP1": "O <strong>Print My Poster</strong> nasceu da vontade de democratizar artes de paredes complexas e gigantes em casa com zero taxas em gráficas. Construimos um algoritmo client-side (no seu navegador) inovador e ágil permitindo criações imediatas respeitando os padrões de folhas A4.",
   "aboutH1": "Falar com o Criador",
   "aboutP2": "Caso tenha uma sugestão de melhoria técnica, ou algo reportado que necessita manutenção entre em contato pelo e-mail: <strong>lucasmatheussc97@gmail.com</strong>."
 }

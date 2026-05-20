@@ -120,11 +120,11 @@ export default {
   "donationCanceledTitle": "Donation Canceled",
   "donationCanceledDesc": "The donation process was canceled. No problem at all! You can continue to use all features of the site for free.",
   "backToHomeButton": "Back to Home Page",
-  "keywords": "wall art from any image, enlarge image to multiple pages, rasterbator alternative, huge posters, print and combine, tiled printing, split image, giant poster, multi-page poster, image slicer, poster maker, print large image, diy poster, a4 poster, letter poster, poster splitter, image splitter, large poster printing, poster from home printer",
+  "keywords": "wall art from any image, enlarge image to multiple pages, huge posters, print and combine, tiled printing, split image, giant poster, multi-page poster, image slicer, poster maker, print large image, diy poster, a4 poster, letter poster, poster splitter, image splitter, large poster printing, poster from home printer",
   "featureList": "Split images, Generate PDF, Custom Grid, Margin Control",
   "blogTitle": "Everything you need to know about Giant Posters",
-  "blogSec1Title": "How does Rasterbator printing work on Print My Poster?",
-  "blogSec1P1": "If you've always wanted to decorate your room or office creatively but don't know how to create huge wall prints, using a 'Rasterbator' format tool is the best way out. Print My Poster works exactly like that: we receive your photo or image and automatically slice it into multiple A4-sized pages.",
+  "blogSec1Title": "How does giant poster printing work on Print My Poster?",
+  "blogSec1P1": "If you've always wanted to decorate your room or office creatively but don't know how to create huge wall prints, <strong>Print My Poster</strong> is the ideal tool: we receive your photo or image and automatically slice it into multiple A4-sized pages.",
   "blogSec1P2": "This method allows you to use the regular printer you have at home. Instead of ordering an expensive project from a print shop, our system processes the file on the fly, right in your browser, maintaining the resolution of your image without sending it to external servers. You simply download the PDF file, print it, and assemble the sheets by taping them side by side. And of course, it's 100% free to use.",
   "blogSec2Title": "Tips for a Perfect Print",
   "blogSec2Li1": "<strong>Pay Attention to Resolution:</strong> The more pages you choose (e.g., a 4x4 grid), the larger your image will be and the more 'stretched' it will become. Look for images that are at least 2000px in height and width, such as Full HD or 4K wallpapers.",
@@ -162,7 +162,7 @@ export default {
   "termsH3": "Service Availability",
   "termsP4": "This system may go offline or be permanently closed at our sole discretion without prior notice.",
   "aboutTitle": "About and Contact",
-  "aboutP1": "<strong>Print My Poster</strong> was born from the desire to democratize complex and giant wall art at home with zero print shop fees using 'Rasterbator' methodologies. We built an innovative and fast client-side (in your browser) algorithm allowing immediate creations respecting A4 sheet standards.",
+  "aboutP1": "<strong>Print My Poster</strong> was born from the desire to democratize complex and giant wall art at home with zero print shop fees. We built an innovative and fast client-side (in your browser) algorithm allowing immediate creations respecting A4 sheet standards.",
   "aboutH1": "Speak with the Creator",
   "aboutP2": "If you have a suggestion for technical improvement, or something reported that needs maintenance, please contact us by email: <strong>lucasmatheussc97@gmail.com</strong>."
 }
