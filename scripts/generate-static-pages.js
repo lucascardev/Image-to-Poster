@@ -44,6 +44,20 @@ function buildLangNav(currentLang) {
   return `      <ul style="list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:.5rem">\n${items}\n        <li><a href="/languages/">All languages</a></li>\n      </ul>`;
 }
 
+// Build a small persistent footer injected OUTSIDE #root — survives React mount
+function buildLangFooter(currentLang) {
+  const links = languages
+    .map((l) => {
+      const href = l === 'en' ? '/' : `/${l}/`;
+      const active = l === currentLang ? ' aria-current="page" style="font-weight:700;color:#4f46e5"' : '';
+      return `<a href="${href}"${active}>${langNames[l]}</a>`;
+    })
+    .join(' &middot; ');
+  return `<footer id="lang-nav-footer" style="text-align:center;padding:.75rem 1rem;font-size:.75rem;color:#94a3b8;font-family:system-ui,sans-serif;border-top:1px solid #e2e8f0;background:#f8fafc">
+  <nav aria-label="Available languages">${links} &middot; <a href="/languages/">All languages</a></nav>
+</footer>`;
+}
+
 // Build static body content injected inside #root — React replaces it on mount
 function buildStaticBody(appTitle, metaDescription, blogSec1P2, currentLang) {
   const p2 = blogSec1P2
@@ -267,8 +281,8 @@ async function generateStaticPages() {
     // --- Inject static body content inside #root ---
     const staticBody = buildStaticBody(appTitle, metaDescription, blogSec1P2, lang);
     localizedHtml = localizedHtml.replace(
-      /<div id="root">[\s\S]*?<\/div>/,
-      `<div id="root">${staticBody}</div>`
+      /<div id="root">[\/\s\S]*?<\/div>/,
+      `<div id="root">${staticBody}</div>\n  ${buildLangFooter(lang)}`
     );
 
     // Write File
