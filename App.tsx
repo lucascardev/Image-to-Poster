@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect, useCallback, useRef, Suspense, lazy } from 'react';
 import jsPDF from 'jspdf';
 
 // Eagerly load essential UI components for LCP (Largest Contentful Paint)
+import DownloadGate from './components/DownloadGate';
 import SettingsPanel from './components/SettingsPanel';
 import { LogoIcon, PayPalIcon, CloseIcon, ShareIcon, CheckCircleIcon, UploadIcon, ChevronDownIcon, ChevronUpIcon, LoadingIcon, GridIcon, DownloadIcon } from './components/Icons';
 import LanguageSwitcher from './components/LanguageSwitcher';
@@ -691,7 +691,13 @@ function App() {
     }
   };
   
+  const [showDownloadGate, setShowDownloadGate] = useState(false);
+
   const handleDownloadClick = () => {
+    setShowDownloadGate(true);
+  };
+
+  const handleGateConfirm = () => {
     generateAndSavePdf();
   };
 
@@ -943,6 +949,12 @@ function App() {
         src={fullPreviewSrc} 
       />
       {import.meta.env.DEV && <DebugConsole />}
+      {showDownloadGate && (
+        <DownloadGate
+          onConfirm={handleGateConfirm}
+          onClose={() => setShowDownloadGate(false)}
+        />
+      )}
     </>
   );
 }
